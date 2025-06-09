@@ -1,0 +1,44 @@
+:host {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: hidden;
+}
+
+.logo {
+  padding: 16px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  img {
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
+    border: 3px solid white;
+    background-color: white;
+    box-shadow: 0 0 6px white; /* ✅ Sombra para resaltar el logo */
+  }
+}
+
+mat-nav-list {
+  width: 100%;
+
+  a {
+    color: white;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    transition: 0.2s ease;
+
+    mat-icon {
+      margin-right: 12px;
+    }
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.08); /* ✅ Hover elegante */
+    }
+  }
+}

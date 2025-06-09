@@ -1,0 +1,28 @@
+.main-container {
+  height: 100vh;
+  margin: 0;
+}
+
+mat-sidenav {
+  width: 240px;
+  background-color: #7B1C1C;
+  padding: 0;
+  margin: 0;
+  border: none;
+  height: 100vh;
+  overflow: hidden;
+}
+
+mat-sidenav-content {
+  background-color: #FAFAFA;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1;
+  padding: 15px; /* ✅ Espacio para respirar en el contenido */
+}

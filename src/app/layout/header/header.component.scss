@@ -1,0 +1,32 @@
+.header {
+  background-color: #7B1C1C;
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  height: 64px;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.welcome {
+  margin-right: 16px; // ✅ separación del botón
+  font-weight: bold;
+}
+
+.logout-button {
+  background-color: #E53935;
+  color: white;
+  font-weight: 600;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s ease;
+
+  &:hover {
+    background-color: #c62828;
+  }
+}
