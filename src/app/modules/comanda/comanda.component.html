@@ -1,0 +1,66 @@
+<!-- Aquí puedes agregar contenido común si necesitas -->
+<router-outlet></router-outlet>
+
+<!-- <ng-container [ngSwitch]="perfil">
+
+  <app-comanda-mozos *ngSwitchCase="'mozo'"></app-comanda-mozos>
+  <app-comanda-cocina *ngSwitchCase="'cocina'"></app-comanda-cocina>
+  <app-comanda-admin *ngSwitchCase="'admin'"></app-comanda-admin>
+
+  <p *ngSwitchDefault>Perfil no reconocido</p>
+
+</ng-container>
+ -->
+
+<!-- 
+
+<mat-tab-group>
+
+  <mat-tab label="🪑 Comanda para mesas">
+    <div class="filtros">
+      <mat-form-field appearance="outline">
+        <mat-label>Buscar mesa</mat-label>
+        <input matInput [(ngModel)]="busqueda" placeholder="Ej: MESA 03" />
+      </mat-form-field>
+
+      <mat-button-toggle-group [(ngModel)]="filtroEstado" appearance="legacy">
+        <mat-button-toggle value="Todos">Todos</mat-button-toggle>
+        <mat-button-toggle value="Disponible">Disponibles</mat-button-toggle>
+        <mat-button-toggle value="Ocupado">Ocupadas</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+
+    <ng-container *ngFor="let amb of ambientes">
+      <h2>🪑 {{ amb.nombre }} <span class="badge piso">Piso: {{ amb.piso }}</span></h2>
+      <div class="mesa-grid">
+        <ng-container *ngFor="let mesa of mesasFiltradas(amb.mesas)">
+          <div class="mesa-card" [ngClass]="{ 'disponible': mesa.estado === 'Disponible', 'ocupado': mesa.estado !== 'Disponible' }">
+            <div class="mesa-info">
+              <h3>{{ mesa.nombre }}</h3>
+              <span *ngIf="mesa.estado === 'Disponible'">Disponible</span>
+              <ng-container *ngIf="mesa.estado !== 'Disponible'">
+                <p><mat-icon fontIcon="schedule"></mat-icon> {{ mesa.fecha }}</p>
+                <small>{{ mesa.usuario }} • Hace {{ minutosOcupado(mesa.fecha) }} min</small>
+              </ng-container>
+            </div>
+            <button *ngIf="mesa.estado !== 'Disponible'" mat-button [matMenuTriggerFor]="menu">Acciones <mat-icon>expand_more</mat-icon></button>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+  </mat-tab>
+
+  <mat-tab label="🥡 Pedido para llevar">
+    <p>Aquí irán las comandas para llevar (pendiente de maquetar)</p>
+  </mat-tab>
+
+  <mat-tab label="🙵️ Delivery">
+    <p>Aquí irán los pedidos de delivery (pendiente de maquetar)</p>
+  </mat-tab>
+</mat-tab-group>
+
+<mat-menu #menu="matMenu">
+  <button mat-menu-item><mat-icon>restaurant</mat-icon> Ver Pedido</button>
+  <button mat-menu-item><mat-icon>edit</mat-icon> Editar</button>
+  <button mat-menu-item><mat-icon>delete</mat-icon> Cerrar Mesa</button>
+</mat-menu> -->

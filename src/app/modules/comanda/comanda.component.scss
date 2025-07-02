@@ -1,0 +1,11 @@
+.perfil-selector {
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+
+  mat-button-toggle-group {
+    background: #f1f1f1;
+    border-radius: 8px;
+    padding: 0.5rem;
+  }
+}

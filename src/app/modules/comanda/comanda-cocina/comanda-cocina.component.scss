@@ -1,0 +1,25 @@
+.cocina-container {
+  padding: 1rem;
+}
+
+.pedido-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.pedido-card {
+  border-left: 5px solid #ff9800;
+  background-color: #fff3e0;
+}
+
+.estado {
+  display: inline-block;
+  background-color: #ffa000;
+  color: white;
+  padding: 0.2rem 0.5rem;
+  border-radius: 5px;
+  font-size: 0.75rem;
+  margin-top: 8px;
+}

@@ -1,0 +1,33 @@
+<div class="admin-container">
+  <h2>👨‍💼 Resumen de Pedidos</h2>
+
+  <div class="resumen-grid">
+    <mat-card class="resumen-card activo">
+      <mat-card-title>Pedidos Activos</mat-card-title>
+      <mat-card-content>
+        <h1>{{ pedidosActivos }}</h1>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="resumen-card llevar">
+      <mat-card-title>Para llevar</mat-card-title>
+      <mat-card-content>
+        <h1>{{ pedidosLlevar }}</h1>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="resumen-card delivery">
+      <mat-card-title>Delivery</mat-card-title>
+      <mat-card-content>
+        <h1>{{ pedidosDelivery }}</h1>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="resumen-card finalizado">
+      <mat-card-title>Entregados</mat-card-title>
+      <mat-card-content>
+        <h1>{{ pedidosEntregados }}</h1>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

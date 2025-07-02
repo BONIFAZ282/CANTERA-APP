@@ -1,0 +1,36 @@
+.admin-container {
+  padding: 1rem;
+}
+
+.resumen-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 1rem;
+}
+
+.resumen-card {
+  text-align: center;
+  color: #fff;
+
+  &.activo {
+    background-color: #0288d1;
+  }
+
+  &.llevar {
+    background-color: #7b1fa2;
+  }
+
+  &.delivery {
+    background-color: #f57c00;
+  }
+
+  &.finalizado {
+    background-color: #2e7d32;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    margin: 0;
+  }
+}

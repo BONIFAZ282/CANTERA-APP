@@ -14,6 +14,10 @@ const routes: Routes = [
           import('./modules/dashboard/dashboard.module').then(m => m.DashboardModule)
       },
       {
+        path: 'comanda',
+        loadChildren: () => import('./modules/comanda/comanda.module').then(m => m.ComandaModule)
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'

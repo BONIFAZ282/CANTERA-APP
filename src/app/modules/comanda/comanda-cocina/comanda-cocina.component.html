@@ -1,0 +1,29 @@
+<div class="cocina-container">
+  <h2>👨‍🍳 Pedidos en cocina</h2>
+
+  <mat-tab-group>
+    <mat-tab label="🪑 Mesas">
+      <div class="pedido-grid">
+        <ng-container *ngFor="let pedido of pedidosMesas">
+          <mat-card class="pedido-card">
+            <mat-card-title>{{ pedido.mesa }}</mat-card-title>
+            <mat-card-content>
+              <p><strong>Hora:</strong> {{ pedido.hora }}</p>
+              <p><strong>Items:</strong></p>
+              <ul>
+                <li *ngFor="let item of pedido.items">{{ item }}</li>
+              </ul>
+              <span class="estado">{{ pedido.estado }}</span>
+            </mat-card-content>
+          </mat-card>
+        </ng-container>
+      </div>
+    </mat-tab>
+    <mat-tab label="🥡 Para llevar">
+      <p>En construcción</p>
+    </mat-tab>
+    <mat-tab label="🙵️ Delivery">
+      <p>En construcción</p>
+    </mat-tab>
+  </mat-tab-group>
+</div>
