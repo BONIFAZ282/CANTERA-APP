@@ -25,13 +25,19 @@ import { MatInputModule } from '@angular/material/input';
 
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { FormsModule } from '@angular/forms';
+import { MatOption } from '@angular/material/select';
 
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatCardModule } from '@angular/material/card';
+import { HttpClientModule } from '@angular/common/http';
+import { LoginComponent } from './modules/auth/login/login.component';
+import { RegisterComponent } from './modules/auth/register/register.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    LoginComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
@@ -48,7 +54,9 @@ import { MatCardModule } from '@angular/material/card';
     MatButtonToggleModule,
     FormsModule,
     MatBadgeModule,
-    MatCardModule
+    MatCardModule,
+    HttpClientModule,
+    MatOption
   ],
   providers: [
     provideAnimationsAsync()

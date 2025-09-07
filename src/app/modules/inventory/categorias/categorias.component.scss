@@ -1,0 +1,98 @@
+.categoria-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+.tabs-card {
+  padding: 1rem;
+  border-radius: 16px;
+}
+
+.tab-content {
+  padding: 1.5rem 0;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+  mat-form-field {
+    flex: 1 1 200px;
+  }
+
+  mat-slide-toggle {
+    align-self: center;
+    margin-left: 1rem;
+  }
+}
+
+.button-group {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.mat-table {
+  width: 100%;
+}
+
+.activo {
+  color: green;
+  font-weight: bold;
+}
+
+.inactivo {
+  color: red;
+  font-weight: bold;
+}
+
+// Estilos específicos para tabs
+mat-tab-group {
+  ::ng-deep {
+    .mat-tab-header {
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .mat-tab-label {
+      font-weight: 500;
+      opacity: 0.7;
+      
+      &.mat-tab-label-active {
+        opacity: 1;
+        font-weight: 600;
+      }
+    }
+
+    .mat-tab-body-content {
+      padding: 0;
+    }
+  }
+}
+
+.imagen-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  input[type="file"] {
+    margin-top: 0.5rem;
+  }
+
+  .imagen-preview {
+    max-width: 200px;
+    max-height: 200px;
+    object-fit: contain;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
+}
+
+.imagen-tabla {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+}

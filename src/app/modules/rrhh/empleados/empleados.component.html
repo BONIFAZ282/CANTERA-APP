@@ -1,0 +1,108 @@
+<div class="empleado-container">
+  <mat-card class="tabs-card">
+    <mat-tab-group mat-align-tabs="start" [(selectedIndex)]="selectedTabIndex">
+      
+      <!-- Tab 1: Formulario -->
+      <mat-tab label="Registrar Empleado">
+        <div class="tab-content">
+          <mat-card-title>{{ modoEdicion ? 'Editar Empleado' : 'Registrar Empleado' }}</mat-card-title>
+          <form [formGroup]="formEmpleado" (ngSubmit)="registrarEmpleado()">
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>DNI</mat-label>
+                <input matInput formControlName="dni" maxlength="8" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Nombres</mat-label>
+                <input matInput formControlName="nombres" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Cargo</mat-label>
+                <mat-select formControlName="cargo">
+                  <mat-option *ngFor="let c of cargos" [value]="c">{{ c }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-slide-toggle formControlName="estado" color="primary">
+                Activo
+              </mat-slide-toggle>
+            </div>
+
+            <div class="button-group">
+              <button mat-raised-button color="primary" type="submit" [disabled]="formEmpleado.invalid">
+                {{ modoEdicion ? 'Actualizar' : 'Registrar' }}
+              </button>
+              <button mat-stroked-button type="button" (click)="cancelar()">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </mat-tab>
+
+      <!-- Tab 2: Listado -->
+      <mat-tab label="Lista de Empleados">
+        <div class="tab-content">
+          <mat-card-title>Lista de Empleados</mat-card-title>
+          
+          <!-- Filtro de búsqueda -->
+          <!-- <div class="search-container">
+            <mat-form-field appearance="outline">
+              <mat-label>Buscar por nombre</mat-label>
+              <input matInput (keyup)="applyFilter($event)" placeholder="Filtrar empleados...">
+              <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+          </div> -->
+
+          <mat-table [dataSource]="dataSource" class="mat-elevation-z2" matSort>
+
+            <ng-container matColumnDef="dni">
+              <mat-header-cell *matHeaderCellDef>DNI</mat-header-cell>
+              <mat-cell *matCellDef="let empleado">{{ empleado.dni }}</mat-cell>
+            </ng-container>
+
+
+            <ng-container matColumnDef="nombres">
+              <mat-header-cell *matHeaderCellDef>Nombres</mat-header-cell>
+              <mat-cell *matCellDef="let empleado">{{ empleado.nombres }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="cargo">
+              <mat-header-cell *matHeaderCellDef>Cargo</mat-header-cell>
+              <mat-cell *matCellDef="let empleado">{{ empleado.cargo }}</mat-cell>
+            </ng-container>
+
+
+            <ng-container matColumnDef="estado">
+              <mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
+              <mat-cell *matCellDef="let empleado">
+                <span [ngClass]="{ 'activo': empleado.estado, 'inactivo': !empleado.estado}">
+                  {{ empleado.estado? 'Activo' : 'Inactivo' }}
+                </span>
+              </mat-cell>
+            </ng-container>
+
+
+            <ng-container matColumnDef="acciones">
+              <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
+              <mat-cell *matCellDef="let empleado">
+                <button mat-icon-button color="accent" (click)="editarEmpleado(empleado)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="eliminarEmpleado(empleado.id)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </mat-cell>
+            </ng-container>
+
+
+
+            <mat-header-row *matHeaderRowDef="columnas"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: columnas;"></mat-row>
+          </mat-table>
+        </div>
+      </mat-tab>
+
+    </mat-tab-group>
+  </mat-card>
+</div>

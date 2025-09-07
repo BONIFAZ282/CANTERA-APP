@@ -1,0 +1,96 @@
+<div class="categoria-container">
+    <mat-card class="tabs-card">
+        <mat-tab-group mat-align-tabs="start" [(selectedIndex)]="selectedTabIndex">
+
+            <mat-tab label="Registrar Categoria">
+                <div class="tab-content">
+                    <!-- <mat-card-title>{{ modoEdicion ? 'Editar Categoria' : 'Registrar Categoria' }}</mat-card-title> -->
+                    <form [formGroup]="categoriaForm" (ngSubmit)="guardarCategoria()">
+                        <div class="form-row">
+                            <mat-form-field appearance="outline">
+                                <mat-label>Nombre del Categoria</mat-label>
+                                <input matInput formControlName="nombre" />
+                            </mat-form-field>
+
+                            <mat-form-field appearance="outline">
+                                <mat-label>Descripcion de Categoria</mat-label>
+                                <input matInput formControlName="descripcion" />
+                            </mat-form-field>
+
+                            <div class="imagen-upload">
+                                <label>Imagen:</label>
+                                <input type="file" accept="image/*" (change)="onFileSelected($event)" />
+                                <img *ngIf="previewImage" [src]="previewImage" alt="Vista previa"
+                                    class="imagen-preview" />
+                            </div>
+
+                            <!-- 
+                            <mat-slide-toggle formControlName="estado" color="primary">
+                                Activo
+                            </mat-slide-toggle> -->
+                        </div>
+
+                        <div class="button-group">
+                            <button mat-raised-button color="primary" type="submit" [disabled]="categoriaForm.invalid">
+                                {{ modoEdicion ? 'Actualizar' : 'Registrar' }}
+                            </button>
+                            <button mat-stroked-button type="button" (click)="cancelar()">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </mat-tab>
+
+            <mat-tab label="Listado de Categoria">
+                <div class="tab-content">
+                    <!-- <mat-card-title>Listado de Categoria</mat-card-title> -->
+                    <mat-table [dataSource]="dataSource" class="mat-elevation-z2" matSort>
+
+                        <ng-container matColumnDef="nombre">
+                            <mat-header-cell *matHeaderCellDef>Nombre</mat-header-cell>
+                            <mat-cell *matCellDef="let categoria">{{ categoria.nameCategory }}</mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="descripcion">
+                            <mat-header-cell *matHeaderCellDef>Inicio</mat-header-cell>
+                            <mat-cell *matCellDef="let categoria">{{ categoria.descriptionCategory }}</mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="imagen">
+                            <mat-header-cell *matHeaderCellDef>Fin</mat-header-cell>
+                            <mat-cell *matCellDef="let categoria">
+                                <img [src]="categoria.imageCategory" alt="Imagen" class="imagen-tabla" />
+                            </mat-cell>
+
+                        </ng-container>
+
+                        <ng-container matColumnDef="estado">
+                            <mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
+                            <mat-cell *matCellDef="let categoria">
+                                <span
+                                    [ngClass]="{ 'activo': categoria.stateCategory, 'inactivo': !categoria.stateCategory }">
+                                    {{ categoria.stateCategory ? 'Activo' : 'Inactivo' }}
+                                </span>
+                            </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="acciones">
+                            <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
+                            <mat-cell *matCellDef="let categoria">
+                                <button mat-icon-button color="accent" (click)="editarCategoria(categoria)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                                <button mat-icon-button color="warn" (click)="eliminarCategoria(categoria)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </mat-cell>
+                        </ng-container>
+
+                        <mat-header-row *matHeaderRowDef="columnas"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: columnas;"></mat-row>
+                    </mat-table>
+                </div>
+            </mat-tab>
+
+        </mat-tab-group>
+    </mat-card>
+</div>

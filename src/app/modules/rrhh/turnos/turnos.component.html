@@ -1,0 +1,89 @@
+<div class="turno-container">
+  <mat-card class="tabs-card">
+    <mat-tab-group mat-align-tabs="start" [(selectedIndex)]="selectedTabIndex">
+
+      <mat-tab label="Registrar Turno">
+        <div class="tab-content">
+          <mat-card-title>{{ modoEdicion ? 'Editar Turno' : 'Registrar Turno' }}</mat-card-title>
+          <form [formGroup]="turnoForm" (ngSubmit)="guardarTurno()">
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Nombre del Turno</mat-label>
+                <input matInput formControlName="nombre" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Hora Inicio</mat-label>
+                <input matInput type="time" formControlName="horaInicio" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Hora Fin</mat-label>
+                <input matInput type="time" formControlName="horaFin" />
+              </mat-form-field>
+
+              <!-- <mat-slide-toggle formControlName="estado" color="primary">
+                Activo
+              </mat-slide-toggle> -->
+            </div>
+
+            <div class="button-group">
+              <button mat-raised-button color="primary" type="submit" [disabled]="turnoForm.invalid">
+                {{ modoEdicion ? 'Actualizar' : 'Registrar' }}
+              </button>
+              <button mat-stroked-button type="button" (click)="cancelar()">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Listado de Turnos">
+        <div class="tab-content">
+          <mat-card-title>Listado de Turnos</mat-card-title>
+          <mat-table [dataSource]="dataSource" class="mat-elevation-z2" matSort>
+
+            <ng-container matColumnDef="nombre">
+              <mat-header-cell *matHeaderCellDef>Nombre</mat-header-cell>
+              <mat-cell *matCellDef="let turno">{{ turno.nameshift }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="horaInicio">
+              <mat-header-cell *matHeaderCellDef>Inicio</mat-header-cell>
+              <mat-cell *matCellDef="let turno">{{ turno.startTime }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="horaFin">
+              <mat-header-cell *matHeaderCellDef>Fin</mat-header-cell>
+              <mat-cell *matCellDef="let turno">{{ turno.endTime }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="estado">
+              <mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
+              <mat-cell *matCellDef="let turno">
+                <span [ngClass]="{ 'activo': turno.stateshift, 'inactivo': !turno.stateshift }">
+                  {{ turno.stateshift ? 'Activo' : 'Inactivo' }}
+                </span>
+              </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="acciones">
+              <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
+              <mat-cell *matCellDef="let turno">
+                <button mat-icon-button color="accent" (click)="editarTurno(turno)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="eliminarTurno(turno)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="columnas"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: columnas;"></mat-row>
+          </mat-table>
+        </div>
+      </mat-tab>
+
+    </mat-tab-group>
+  </mat-card>
+</div>

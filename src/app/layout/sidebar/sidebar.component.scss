@@ -42,3 +42,23 @@ mat-nav-list {
     }
   }
 }
+
+
+.rrhh-panel, .finance-panel, .inventory-panel {
+  background: transparent;
+  box-shadow: none;
+   margin-left: 5px;
+
+  .mat-expansion-panel-header {
+    padding-left: 15px;
+  }
+
+  mat-icon {
+    margin-right: 8px;
+  }
+
+  a.mat-list-item {
+    padding-left: 32px;
+  }
+}
+

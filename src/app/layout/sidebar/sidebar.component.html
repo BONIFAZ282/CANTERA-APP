@@ -3,13 +3,82 @@
 </div>
 
 <mat-nav-list>
-  <a mat-list-item routerLink="/dashboard"><mat-icon>dashboard</mat-icon> Dashboard</a>
-  <a mat-list-item routerLink="/pos"><mat-icon>point_of_sale</mat-icon> POS</a>
-  <a mat-list-item routerLink="/inventory"><mat-icon>inventory</mat-icon> Inventario</a>
-  <a mat-list-item routerLink="/kitchen"><mat-icon>restaurant_menu</mat-icon> Cocina</a>
-  <a mat-list-item routerLink="/comanda"><mat-icon>call_to_action</mat-icon> Comanda</a>
-  <a mat-list-item routerLink="/reports"><mat-icon>bar_chart</mat-icon> Reportes</a>
-  <a mat-list-item routerLink="/finance"><mat-icon>account_balance</mat-icon> Finanzas</a>
-  <a mat-list-item routerLink="/customers"><mat-icon>group</mat-icon> Clientes</a>
-  <a mat-list-item routerLink="/config"><mat-icon>settings</mat-icon> Configuración</a>
+  <a mat-list-item routerLink="/dashboard">
+    <mat-icon>dashboard</mat-icon> Dashboard
+  </a>
+
+  <a mat-list-item routerLink="/pos">
+    <mat-icon>point_of_sale</mat-icon> POS
+  </a>
+
+  <!-- Inventario -->
+  <mat-expansion-panel class="mat-elevation-z0 inventory-panel">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon>inventory_2</mat-icon> Inventario
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-nav-list>
+      <a mat-list-item routerLink="/inventory/productos"><mat-icon>category</mat-icon> Productos</a>
+      <a mat-list-item routerLink="/inventory/categorias"><mat-icon>list</mat-icon> Categorías</a>
+      <a mat-list-item routerLink="/inventory/movimientos"><mat-icon>compare_arrows</mat-icon> Movimientos</a>
+      <a mat-list-item routerLink="/inventory/proveedores"><mat-icon>local_shipping</mat-icon> Proveedores</a>
+      <a mat-list-item routerLink="/inventory/ordenes"><mat-icon>receipt_long</mat-icon> Órdenes de compra</a>
+      <a mat-list-item routerLink="/inventory/mermas"><mat-icon>delete_sweep</mat-icon> Mermas</a>
+      <a mat-list-item routerLink="/inventory/transferencias"><mat-icon>swap_horiz</mat-icon> Transferencias</a>
+      <a mat-list-item routerLink="/inventory/auditoria"><mat-icon>search</mat-icon> Auditoría</a>
+      <a mat-list-item routerLink="/inventory/alertas"><mat-icon>warning</mat-icon> Alertas de stock</a>
+    </mat-nav-list>
+  </mat-expansion-panel>
+
+  <a mat-list-item routerLink="/kitchen">
+    <mat-icon>restaurant_menu</mat-icon> Cocina
+  </a>
+
+  <a mat-list-item routerLink="/comanda">
+    <mat-icon>call_to_action</mat-icon> Comanda
+  </a>
+
+  <a mat-list-item routerLink="/reports">
+    <mat-icon>bar_chart</mat-icon> Reportes
+  </a>
+
+  <!-- Finanzas -->
+  <mat-expansion-panel class="mat-elevation-z0 finance-panel">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon>account_balance_wallet</mat-icon> Finanzas
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-nav-list>
+      <a mat-list-item routerLink="/finance/aperturas"><mat-icon>login</mat-icon> Apertura de caja</a>
+      <a mat-list-item routerLink="/finance/cierres"><mat-icon>logout</mat-icon> Cierre de caja</a>
+      <a mat-list-item routerLink="/finance/historial"><mat-icon>history</mat-icon> Historial de cajas</a>
+      <a mat-list-item routerLink="/finance/autorizaciones"><mat-icon>verified_user</mat-icon> Autorizaciones</a>
+    </mat-nav-list>
+  </mat-expansion-panel>
+
+  <a mat-list-item routerLink="/customers">
+    <mat-icon>group</mat-icon> Clientes
+  </a>
+
+  <!-- RRHH -->
+  <mat-expansion-panel class="mat-elevation-z0 rrhh-panel">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon>badge</mat-icon> RRHH
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-nav-list>
+      <a mat-list-item routerLink="/rrhh/cargos"><mat-icon>work</mat-icon> Cargos</a>
+      <a mat-list-item routerLink="/rrhh/turnos"><mat-icon>schedule</mat-icon> Turnos</a>
+      <a mat-list-item routerLink="/rrhh/empleados"><mat-icon>people</mat-icon> Empleados</a>
+      <a mat-list-item routerLink="/rrhh/privilegios"><mat-icon>security</mat-icon> Privilegios</a>
+      <a mat-list-item routerLink="/rrhh/usuarios"><mat-icon>person</mat-icon> Usuarios</a>
+    </mat-nav-list>
+  </mat-expansion-panel>
+
+  <a mat-list-item routerLink="/config">
+    <mat-icon>settings</mat-icon> Configuración
+  </a>
 </mat-nav-list>

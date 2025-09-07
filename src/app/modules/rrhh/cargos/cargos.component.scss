@@ -1,0 +1,529 @@
+$primary-color: #3f51b5;
+$accent-color: #ff4081;
+$warn-color: #f44336;
+$success-color: #4caf50;
+$background-color: #f5f5f5;
+$card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+$hover-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+.cargos-container {
+  background-color: $background-color;
+  min-height: 70vh;
+
+  .header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 20px;
+    
+    .title-container {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      
+      .title-icon {
+        font-size: 36px;
+        color: $primary-color;
+        width: 36px;
+        height: 36px;
+      }
+      
+      .main-title {
+        margin: 0;
+        font-size: 32px;
+        font-weight: 300;
+        color: #333;
+      }
+    }
+    
+    .stats-container {
+      display: flex;
+      gap: 20px;
+      
+      .stat-card {
+        background: linear-gradient(135deg, $primary-color, darken($primary-color, 20%));
+        color: white;
+        padding: 20px;
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: $card-shadow;
+        min-width: 120px;
+        
+        .stat-number {
+          font-size: 28px;
+          font-weight: bold;
+          margin-bottom: 4px;
+        }
+        
+        .stat-label {
+          font-size: 14px;
+          opacity: 0.9;
+        }
+      }
+    }
+  }
+  
+  .tabs-card {
+    box-shadow: $card-shadow;
+    border-radius: 12px;
+    overflow: hidden;
+    
+    .custom-tabs {
+      ::ng-deep .mat-tab-label {
+        padding: 20px 32px;
+        font-size: 16px;
+        font-weight: 500;
+        opacity: 0.7;
+        transition: all 0.3s ease;
+        
+        &.mat-tab-label-active {
+          opacity: 1;
+          color: $primary-color;
+        }
+        
+        .tab-icon {
+          margin-right: 8px;
+          font-size: 20px;
+        }
+      }
+      
+      .tab-content {
+        padding: 32px;
+        min-height: 60vh;
+        background: white;
+      }
+    }
+  }
+  
+  .form-section {
+    max-width: 800px;
+    margin: 0 auto;
+    
+    .form-header {
+      text-align: center;
+      margin-bottom: 40px;
+      
+      h2 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        font-size: 24px;
+        font-weight: 500;
+        color: #333;
+        margin-bottom: 8px;
+        
+        mat-icon {
+          color: $primary-color;
+          font-size: 28px;
+        }
+      }
+      
+      .form-subtitle {
+        color: #666;
+        font-size: 16px;
+        margin: 0;
+      }
+    }
+    
+    .form-grid {
+      .form-row {
+        margin-bottom: 32px;
+        
+        .full-width {
+          width: 100%;
+        }
+      }
+      
+      .form-row-split {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 40px;
+        align-items: center;
+        margin-bottom: 32px;
+        
+        .sueldo-field {
+          min-width: 200px;
+        }
+        
+        .toggle-container {
+          display: flex;
+          align-items: center;
+          background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+          padding: 20px 24px;
+          border-radius: 12px;
+          border: 1px solid #e0e0e0;
+          min-width: 180px;
+          
+          .toggle-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            
+            mat-icon {
+              font-size: 20px;
+              color: $primary-color;
+            }
+            
+            .toggle-label {
+              font-weight: 500;
+              font-size: 16px;
+            }
+          }
+        }
+      }
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin-top: 40px;
+      padding-top: 24px;
+      border-top: 1px solid #e0e0e0;
+      
+      button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 32px;
+        height: 48px;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        
+        &[color="primary"] {
+          background: linear-gradient(135deg, $primary-color, darken($primary-color, 10%));
+          
+          &:hover:not([disabled]) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+          }
+        }
+        
+        &[mat-stroked-button] {
+          &:hover {
+            background-color: #f5f5f5;
+          }
+        }
+      }
+    }
+  }
+  
+  .table-section {
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 20px;
+      
+      .table-title {
+        h2 {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          font-size: 24px;
+          font-weight: 500;
+          color: #333;
+          margin-bottom: 8px;
+          
+          mat-icon {
+            color: $primary-color;
+            font-size: 28px;
+          }
+        }
+        
+        .table-subtitle {
+          color: #666;
+          font-size: 16px;
+          margin: 0;
+        }
+      }
+      
+      .table-controls {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        
+        .search-field {
+          width: 300px;
+        }
+        
+        button[mat-fab] {
+          width: 50px;
+          height: 50px;
+          
+          mat-icon {
+            font-size: 24px;
+          }
+        }
+      }
+    }
+    
+    .table-container {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: $card-shadow;
+      
+      .modern-table {
+        width: 100%;
+        
+        .mat-header-row {
+          background: linear-gradient(135deg, #fafafa, #f0f0f0);
+          border-bottom: 2px solid $primary-color;
+          
+          .mat-header-cell {
+            border-bottom: none;
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+            padding: 20px 24px;
+            
+            .header-cell {
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              
+              mat-icon {
+                font-size: 18px;
+                color: $primary-color;
+              }
+            }
+          }
+        }
+        
+        // Row styles
+        .mat-row {
+          transition: all 0.3s ease;
+          border-bottom: 1px solid #f0f0f0;
+          
+          &:hover {
+            background-color: #f8f9fa;
+            transform: translateX(4px);
+            box-shadow: -4px 0 0 $primary-color;
+          }
+          
+          &.inactive-row {
+            opacity: 0.7;
+            background-color: #fafafa;
+          }
+          
+          .mat-cell {
+            padding: 20px 24px;
+            border-bottom: none;
+            
+            .cell-content {
+              display: flex;
+              align-items: center;
+              
+              .cargo-info {
+                .cargo-nombre {
+                  font-size: 16px;
+                  color: #333;
+                }
+              }
+              
+              .description-cell {
+                max-width: 250px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                color: #666;
+                line-height: 1.4;
+              }
+              
+              .sueldo-cell {
+                font-weight: 500;
+                
+                .currency {
+                  color: $success-color;
+                  font-weight: 600;
+                  margin-right: 4px;
+                }
+                
+                .amount {
+                  font-size: 16px;
+                  color: #333;
+                }
+              }
+            }
+          }
+        }
+        
+        .status-chip {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 8px 16px;
+          border-radius: 20px;
+          font-size: 12px;
+          font-weight: 500;
+          border: none;
+          
+          &.active {
+            background: linear-gradient(135deg, $success-color, darken($success-color, 10%));
+            color: white;
+          }
+          
+          &.inactive {
+            background: linear-gradient(135deg, #ffa726, darken(#ffa726, 10%));
+            color: white;
+          }
+          
+          mat-icon {
+            font-size: 16px;
+          }
+        }
+        
+
+        .action-buttons {
+          display: flex;
+          gap: 8px;
+          
+          button {
+            width: 36px;
+            height: 36px;
+            transition: all 0.3s ease;
+            
+            &:hover {
+              transform: scale(1.1);
+            }
+            
+            mat-icon {
+              font-size: 18px;
+            }
+          }
+        }
+      }
+      
+      .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        color: #666;
+        
+        mat-icon {
+          font-size: 64px;
+          color: #ccc;
+          margin-bottom: 16px;
+        }
+        
+        h3 {
+          font-size: 24px;
+          font-weight: 400;
+          margin-bottom: 8px;
+        }
+        
+        p {
+          font-size: 16px;
+          margin-bottom: 24px;
+        }
+        
+        button {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin: 0 auto;
+        }
+      }
+    }
+  }
+}
+
+
+@media (max-width: 768px) {
+  .cargos-container {
+    padding: 16px;
+    
+    .header-section {
+      flex-direction: column;
+      align-items: flex-start;
+      
+      .stats-container {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+    
+    .tabs-card {
+      .custom-tabs {
+        .tab-content {
+          padding: 20px 16px;
+        }
+      }
+    }
+    
+    .form-section {
+      .form-grid {
+        .form-row-split {
+          grid-template-columns: 1fr;
+          gap: 20px;
+          
+          .toggle-container {
+            justify-content: center;
+          }
+        }
+      }
+      
+      .form-actions {
+        flex-direction: column;
+        
+        button {
+          width: 100%;
+        }
+      }
+    }
+    
+    .table-section {
+      .table-header {
+        flex-direction: column;
+        align-items: flex-start;
+        
+        .table-controls {
+          width: 100%;
+          justify-content: space-between;
+          
+          .search-field {
+            flex: 1;
+            max-width: none;
+          }
+        }
+      }
+    }
+  }
+}
+
+::ng-deep {
+  .mat-form-field {
+    .mat-form-field-outline {
+      border-radius: 8px;
+    }
+    
+    .mat-form-field-label {
+      color: #666;
+    }
+    
+    &.mat-focused {
+      .mat-form-field-label {
+        color: $primary-color;
+      }
+    }
+  }
+  
+  .mat-slide-toggle {
+    .mat-slide-toggle-thumb {
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+  }
+  
+  .mat-tab-group {
+    .mat-tab-header {
+      border-bottom: 1px solid #e0e0e0;
+    }
+  }
+}

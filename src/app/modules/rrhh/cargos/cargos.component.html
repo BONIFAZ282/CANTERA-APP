@@ -1,0 +1,233 @@
+<div class="cargos-container">
+  <div class="header-section">
+    <div class="title-container">
+      <mat-icon class="title-icon">work</mat-icon>
+      <h1 class="main-title">Gestión de Cargos</h1>
+    </div>
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-number">{{ totalCargos }}</div>
+        <div class="stat-label">Total Cargos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ cargosActivos }}</div>
+        <div class="stat-label">Activos</div>
+      </div>
+    </div>
+  </div>
+
+  <mat-card class="tabs-card">
+    <mat-tab-group mat-align-tabs="start" class="custom-tabs" #tabGroup>
+      
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">{{ modoEdicion ? 'edit' : 'add' }}</mat-icon>
+          <span>{{ modoEdicion ? 'Editar Cargo' : 'Nuevo Cargo' }}</span>
+        </ng-template>
+        
+        <div class="tab-content">
+          <div class="form-section">
+            <div class="form-header">
+              <h2>
+                <mat-icon>{{ modoEdicion ? 'edit' : 'add' }}</mat-icon>
+                {{ modoEdicion ? 'Editar información del cargo' : 'Registrar nuevo cargo' }}
+              </h2>
+              <p class="form-subtitle">{{ modoEdicion ? 'Modifica los datos del cargo seleccionado' : 'Complete la información para crear un nuevo cargo' }}</p>
+            </div>
+            
+            <form [formGroup]="cargoForm" (ngSubmit)="guardarCargo()">
+              <div class="form-grid">
+                <div class="form-row">
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Nombre del Cargo</mat-label>
+                    <input matInput formControlName="nombre" required placeholder="Ej: Administrador, Cocinero, Mozo..." />
+                    <mat-icon matSuffix>badge</mat-icon>
+                    <mat-error *ngIf="cargoForm.get('nombre')?.hasError('required')">
+                      Campo obligatorio
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Descripción del Cargo</mat-label>
+                    <textarea matInput formControlName="descripcion" rows="4" 
+                              placeholder="Describe las responsabilidades y funciones del cargo..."></textarea>
+                    <mat-icon matSuffix>description</mat-icon>
+                  </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Sueldo Mensual</mat-label>
+                    <input matInput type="number" rows="4" formControlName="sueldo" placeholder="0.00" />
+                    <span matPrefix>S/&nbsp;</span>
+                    <mat-icon matSuffix>attach_money</mat-icon>
+                  </mat-form-field>
+
+                  <!-- <div class="toggle-container">
+                    <mat-slide-toggle formControlName="estado" color="primary">
+                      <div class="toggle-content">
+                        <span class="toggle-label">{{ cargoForm.get('estado')?.value ? 'Activo' : 'Inactivo' }}</span>
+                      </div>
+                    </mat-slide-toggle>
+                  </div> -->
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button mat-raised-button color="primary" type="submit" [disabled]="cargoForm.invalid">
+                  <mat-icon>{{ modoEdicion ? 'update' : 'save' }}</mat-icon>
+                  {{ modoEdicion ? 'Actualizar Cargo' : 'Guardar Cargo' }}
+                </button>
+                <button mat-stroked-button type="button" (click)="cancelar()" *ngIf="modoEdicion">
+                  <mat-icon>cancel</mat-icon>
+                  Cancelar Edición
+                </button>
+                <button mat-stroked-button type="button" (click)="limpiarFormulario()" *ngIf="!modoEdicion">
+                  <mat-icon>clear</mat-icon>
+                  Limpiar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </mat-tab>
+
+
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">list</mat-icon>
+          <span>Lista de Cargos</span>
+        </ng-template>
+        
+        <div class="tab-content">
+          <div class="table-section">
+            <div class="table-header">
+              <div class="table-title">
+                <h2>
+                  <mat-icon>list</mat-icon>
+                  Cargos Registrados
+                </h2>
+                <p class="table-subtitle">Administra y visualiza todos los cargos del sistema</p>
+              </div>
+              
+              <div class="table-controls">
+                <mat-form-field appearance="outline" class="search-field">
+                  <mat-label>Buscar cargo</mat-label>
+                  <input matInput (keyup)="applyFilter($event)" placeholder="Nombre, descripción o sueldo...">
+                  <mat-icon matSuffix>search</mat-icon>
+                </mat-form-field>
+                
+                <button mat-fab color="primary" (click)="switchToRegistroTab()" matTooltip="Crear nuevo cargo">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </div>
+            </div>
+
+            <div class="table-container">
+              <table mat-table [dataSource]="dataSource" class="modern-table" matSort>
+
+                <ng-container matColumnDef="nombre">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                    <div class="header-cell">
+                      <span>Nombre Cargo</span>
+                    </div>
+                  </th>
+                  <td mat-cell *matCellDef="let cargo">
+                    <div class="cell-content">
+                      <div class="cargo-info">
+                        <strong class="cargo-nombre">{{ cargo.nameCargue }}</strong>
+                      </div>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="descripcion">
+                  <th mat-header-cell *matHeaderCellDef>
+                    <div class="header-cell">
+                      <span>Descripción</span>
+                    </div>
+                  </th>
+                  <td mat-cell *matCellDef="let cargo">
+                    <div class="cell-content">
+                      <div class="description-cell" [matTooltip]="cargo.descriptioncargue || 'Sin descripción'">
+                        {{ cargo.descriptioncargue || 'Sin descripción' }}
+                      </div>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="sueldo">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                    <div class="header-cell">
+                      <span>Sueldo</span>
+                    </div>
+                  </th>
+                  <td mat-cell *matCellDef="let cargo">
+                    <div class="cell-content">
+                      <div class="sueldo-cell">
+                        <span class="currency">S/</span>
+                        <span class="amount">{{ cargo.salary | number: '1.2-2' }}</span>
+                      </div>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="estado">
+                  <th mat-header-cell *matHeaderCellDef>
+                    <div class="header-cell">
+                      <span>Estado</span>
+                    </div>
+                  </th>
+                  <td mat-cell *matCellDef="let cargo">
+                    <div class="cell-content">
+                      <mat-chip class="status-chip" [ngClass]="cargo.stateCargue ? 'active' : 'inactive'">
+                        {{ cargo.stateCargue ? 'Activo' : 'Inactivo' }}
+                      </mat-chip>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="acciones">
+                  <th mat-header-cell *matHeaderCellDef>
+                    <div class="header-cell">
+                      <span>Acciones</span>
+                    </div>
+                  </th>
+                  <td mat-cell *matCellDef="let cargo">
+                    <div class="action-buttons">
+                      <button mat-mini-fab color="primary" (click)="editarCargo(cargo)" 
+                              matTooltip="Editar cargo">
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                      <button mat-mini-fab color="warn" (click)="eliminarCargo(cargo)" 
+                              matTooltip="Eliminar cargo">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="columnas; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: columnas;" 
+                    class="table-row"
+                    [ngClass]="{'inactive-row': !row.estado}"></tr>
+              </table>
+              
+              <div class="empty-state" *ngIf="dataSource.data.length === 0">
+                <mat-icon>work_off</mat-icon>
+                <h3>No hay cargos registrados</h3>
+                <p>Crea el primer cargo para comenzar</p>
+                <button mat-raised-button color="primary" (click)="switchToRegistroTab()">
+                  <mat-icon>add</mat-icon>
+                  Crear Cargo
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card>
+</div>
