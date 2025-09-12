@@ -1,0 +1,155 @@
+<div class="dashboard-container">
+
+  <div class="content-section">
+    <div class="form-container">
+      <form [formGroup]="ordenForm" (ngSubmit)="onSubmit()">
+        
+        <!-- Información General -->
+        <div class="form-section">
+          <div class="section-header">
+            <h3>Información General</h3>
+            <p>Complete los datos básicos de la orden de compra</p>
+          </div>
+          
+          <div class="form-grid">
+            <div class="form-field">
+              <label class="form-label">Proveedor *</label>
+              <select class="form-control" formControlName="nProveedorId">
+                <option value="">Seleccionar proveedor...</option>
+                <option *ngFor="let proveedor of proveedores" [value]="proveedor.id">
+                  {{ proveedor.nombre }}
+                </option>
+              </select>
+              <div *ngIf="ordenForm.get('nProveedorId')?.invalid && ordenForm.get('nProveedorId')?.touched" 
+                   class="error-message">
+                El proveedor es requerido
+              </div>
+            </div>
+            
+            <div class="form-field">
+              <label class="form-label">Fecha *</label>
+              <input type="date" class="form-control" formControlName="dFecha">
+              <div *ngIf="ordenForm.get('dFecha')?.invalid && ordenForm.get('dFecha')?.touched" 
+                   class="error-message">
+                La fecha es requerida
+              </div>
+            </div>
+            
+            <div class="form-field">
+              <label class="form-label">Estado *</label>
+              <select class="form-control" formControlName="nEstado">
+                <option value="Pendiente">Pendiente</option>
+                <option value="Aprobada">Aprobada</option>
+                <option value="Enviada">Enviada</option>
+                <option value="Recibida">Recibida</option>
+                <option value="Cancelada">Cancelada</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detalles de la Orden -->
+        <div class="form-section">
+          <div class="section-header">
+            <div class="header-with-action">
+              <div>
+                <h3>Artículos de la Orden</h3>
+                <p>Agregue los productos que desea comprar</p>
+              </div>
+              <button type="button" class="btn-add" (click)="agregarDetalle()">
+                ➕ Agregar artículo
+              </button>
+            </div>
+          </div>
+
+          <div formArrayName="detalles" class="details-container">
+            <div class="detail-card" *ngFor="let detalle of detallesArray.controls; let i = index" [formGroupName]="i">
+              <div class="detail-header">
+                <span class="detail-number">Artículo {{ i + 1 }}</span>
+                <button type="button" 
+                        class="btn-remove" 
+                        (click)="eliminarDetalle(i)"
+                        [disabled]="detallesArray.length === 1">
+                  🗑️
+                </button>
+              </div>
+              
+              <div class="detail-grid">
+                <div class="form-field">
+                  <label class="form-label">Insumo *</label>
+                  <select class="form-control" formControlName="nInsumoId">
+                    <option value="">Seleccionar insumo...</option>
+                    <option *ngFor="let insumo of insumos" [value]="insumo.id">
+                      {{ insumo.nombre }}
+                    </option>
+                  </select>
+                  <div *ngIf="detalle.get('nInsumoId')?.invalid && detalle.get('nInsumoId')?.touched" 
+                       class="error-message">
+                    El insumo es requerido
+                  </div>
+                </div>
+                
+                <div class="form-field">
+                  <label class="form-label">Cantidad *</label>
+                  <input type="number" 
+                         class="form-control" 
+                         formControlName="nCantidad"
+                         min="0.01"
+                         step="0.01"
+                         placeholder="0.00">
+                  <div *ngIf="detalle.get('nCantidad')?.invalid && detalle.get('nCantidad')?.touched" 
+                       class="error-message">
+                    <span *ngIf="detalle.get('nCantidad')?.errors?.['required']">La cantidad es requerida</span>
+                    <span *ngIf="detalle.get('nCantidad')?.errors?.['min']">Debe ser mayor a 0</span>
+                  </div>
+                </div>
+                
+                <div class="form-field">
+                  <label class="form-label">Precio Unitario *</label>
+                  <input type="number" 
+                         class="form-control" 
+                         formControlName="nPrecioUnitario"
+                         min="0.01"
+                         step="0.01"
+                         placeholder="0.00">
+                  <div *ngIf="detalle.get('nPrecioUnitario')?.invalid && detalle.get('nPrecioUnitario')?.touched" 
+                       class="error-message">
+                    <span *ngIf="detalle.get('nPrecioUnitario')?.errors?.['required']">El precio es requerido</span>
+                    <span *ngIf="detalle.get('nPrecioUnitario')?.errors?.['min']">Debe ser mayor a 0</span>
+                  </div>
+                </div>
+                
+                <div class="form-field">
+                  <label class="form-label">Subtotal</label>
+                  <div class="subtotal-display">
+                    {{ formatearMoneda(calcularSubtotal(detalle)) }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Total General -->
+          <div class="total-card">
+            <div class="total-content">
+              <span class="total-label">Total General</span>
+              <span class="total-amount">{{ formatearMoneda(calcularTotal()) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="cancelar()">
+            Cancelar
+          </button>
+          <button type="submit" 
+                  class="btn-primary"
+                  [disabled]="ordenForm.invalid || detallesArray.length === 0">
+            {{ esEdicion ? '💾 Actualizar' : '💾 Guardar' }} Orden
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

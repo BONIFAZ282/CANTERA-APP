@@ -1,10 +1,5 @@
-<!-- LIBRE, EN ESPERA, OCUPADA -->
-
 <div class="comanda-container">
-  <!-- <div class="header-section">
-    <h1>🍽️ Sistema de Comanda</h1>
-    <p>Gestión de mesas y pedidos</p>
-  </div> -->
+
 
   <mat-tab-group class="custom-tabs" animationDuration="300ms">
     <mat-tab>
@@ -12,7 +7,7 @@
         <mat-icon>restaurant</mat-icon>
         <span>Mesas</span>
       </ng-template>
-      
+
       <div class="tab-content">
         <div class="filtros-section">
           <div class="search-container">
@@ -22,7 +17,7 @@
               <mat-icon matSuffix>search</mat-icon>
             </mat-form-field>
           </div>
-          
+
           <div class="filter-container">
             <mat-button-toggle-group [(ngModel)]="filtroEstado" class="custom-toggle-group">
               <mat-button-toggle value="Todos" class="toggle-btn">
@@ -42,72 +37,80 @@
         </div>
 
         <div class="ambientes-container">
-          <ng-container *ngFor="let amb of ambientes">
-            <div class="ambiente-section">
-              <div class="ambiente-header">
-                <h2>
-                  <mat-icon>location_on</mat-icon>
-                  {{ amb.nombre }}
-                </h2>
-                <span class="piso-badge">
-                  <mat-icon>layers</mat-icon>
-                  Piso {{ amb.piso }}
-                </span>
-              </div>
-              
-              <div class="mesas-grid">
-                <ng-container *ngFor="let mesa of mesasFiltradas(amb.mesas)">
-                  <div class="mesa-card" 
-                       [ngClass]="{ 'disponible': mesa.estado === 'Disponible', 'ocupado': mesa.estado !== 'Disponible' }">
-                    
-                    <div class="mesa-header">
-                      <div class="mesa-nombre">
-                        <mat-icon>{{ mesa.estado === 'Disponible' ? 'event_available' : 'schedule' }}</mat-icon>
-                        <h3>{{ mesa.nombre }}</h3>
-                      </div>
-                      <div class="mesa-status" [ngClass]="mesa.estado === 'Disponible' ? 'status-disponible' : 'status-ocupado'">
-                        {{ mesa.estado === 'Disponible' ? 'Libre' : 'Ocupada' }}
-                      </div>
-                    </div>
+          <!-- Y reemplázalo por esto: -->
+          <div class="mesas-grid">
+            <ng-container *ngFor="let mesa of mesasFiltradas()">
+              <!-- Mantén todo el contenido de la mesa aquí -->
+              <div class="mesa-card" [ngClass]="{ 
+      'disponible': getEstadoMesa(mesa) === 'Disponible', 
+      'ocupado': getEstadoMesa(mesa) !== 'Disponible',
+      'mi-mesa': getEstadoMesa(mesa) !== 'Disponible' && puedeGestionarMesa(mesa),
+      'otra-mesa': getEstadoMesa(mesa) !== 'Disponible' && !puedeGestionarMesa(mesa)
+    }" (click)="abrirPedido(mesa)">
 
-                    <div class="mesa-body">
-                      <ng-container *ngIf="mesa.estado === 'Disponible'; else ocupadaTemplate">
-                        <div class="disponible-info">
-                          <mat-icon>event_available</mat-icon>
-                          <span>Lista para usar</span>
-                        </div>
-                      </ng-container>
-                      
-                      <ng-template #ocupadaTemplate>
-                        <div class="ocupada-info">
-                          <div class="tiempo-info">
-                            <mat-icon>access_time</mat-icon>
-                            <span>{{ mesa.fecha }}</span>
-                          </div>
-                          <div class="usuario-info">
-                            <mat-icon>person</mat-icon>
-                            <span>{{ mesa.usuario }}</span>
-                          </div>
-                          <div class="duracion-info">
-                            <mat-icon>timer</mat-icon>
-                            <span>{{ minutosOcupado(mesa.fecha) }} min</span>
-                          </div>
-                        </div>
-                      </ng-template>
-                    </div>
-
-                    <div class="mesa-actions" *ngIf="mesa.estado !== 'Disponible'">
-                      <button mat-icon-button 
-                              [matMenuTriggerFor]="menu" 
-                              class="actions-btn">
-                        <mat-icon>more_vert</mat-icon>
-                      </button>
-                    </div>
+                <div class="mesa-header">
+                  <div class="mesa-nombre">
+                    <mat-icon>{{ getEstadoMesa(mesa) === 'Disponible' ? 'event_available' : 'schedule' }}</mat-icon>
+                    <h3>{{ mesa.tableCode }}</h3>
                   </div>
-                </ng-container>
+                  <div class="mesa-status"
+                    [ngClass]="getEstadoMesa(mesa) === 'Disponible' ? 'status-disponible' : 'status-ocupado'">
+                    {{ getEstadoMesa(mesa) === 'Disponible' ? 'Libre' : 'Ocupada' }}
+                  </div>
+                </div>
+
+                <div class="mesa-body">
+                  <ng-container *ngIf="getEstadoMesa(mesa) === 'Disponible'; else ocupadaTemplate">
+                    <div class="disponible-info">
+                      <mat-icon>event_available</mat-icon>
+                      <span>Lista para usar</span>
+                    </div>
+                  </ng-container>
+
+                  <ng-template #ocupadaTemplate>
+                    <div class="ocupada-info">
+                      <!-- <div class="tiempo-info">
+              <mat-icon>access_time</mat-icon>
+              <span>{{ mesa.fechaOcupacion | date:'short' }}</span>
+            </div> -->
+                      <div class="usuario-info">
+                        <mat-icon>person</mat-icon>
+                        <span>{{ mesa.username }}</span>
+                        <span *ngIf="puedeGestionarMesa(mesa)" class="mi-mesa-badge">TU MESA</span>
+                      </div>
+                      <!-- <div class="duracion-info">
+              <mat-icon>timer</mat-icon>
+              <span>{{ minutosOcupado(mesa.fechaOcupacion) }} min</span>
+            </div> -->
+                    </div>
+                  </ng-template>
+                </div>
+
+                <div class="mesa-actions" *ngIf="getEstadoMesa(mesa) !== 'Disponible' && puedeGestionarMesa(mesa)">
+                  <button mat-icon-button [matMenuTriggerFor]="menu" class="actions-btn">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                </div>
+
+                <div class="mesa-locked" *ngIf="getEstadoMesa(mesa) !== 'Disponible' && !puedeGestionarMesa(mesa)">
+                  <mat-icon>lock</mat-icon>
+                </div>
               </div>
-            </div>
-          </ng-container>
+
+              <mat-menu #menu="matMenu" class="custom-menu">
+                <button mat-menu-item>
+                  <mat-icon>restaurant_menu</mat-icon>
+                  <span>Ver Pedido</span>
+                </button>
+                <hr class="menu-divider">
+                <button mat-menu-item class="danger-item" (click)="cerrarMesa(mesa); $event.stopPropagation()"
+                 *ngIf="puedeGestionarMesa(mesa)">
+                  <mat-icon>close</mat-icon>
+                  <span>Cerrar Mesa</span>
+                </button>
+              </mat-menu>
+            </ng-container>
+          </div>
         </div>
       </div>
     </mat-tab>
@@ -140,7 +143,7 @@
                     {{ order.estado }}
                   </div>
                 </div>
-                
+
                 <div class="order-details">
                   <div class="detail-item">
                     <mat-icon>schedule</mat-icon>
@@ -258,23 +261,7 @@
         </div>
       </div>
     </mat-tab>
-  
-  
+
+
   </mat-tab-group>
 </div>
-
-<mat-menu #menu="matMenu" class="custom-menu">
-  <button mat-menu-item>
-    <mat-icon>restaurant_menu</mat-icon>
-    <span>Ver Pedido</span>
-  </button>
-  <button mat-menu-item>
-    <mat-icon>edit</mat-icon>
-    <span>Editar Mesa</span>
-  </button>
-  <hr class="menu-divider">
-  <button mat-menu-item class="danger-item">
-    <mat-icon>close</mat-icon>
-    <span>Cerrar Mesa</span>
-  </button>
-</mat-menu>

@@ -1,46 +1,46 @@
-<div class="categoria-container">
+<div class="mesa-container">
     <mat-card class="tabs-card">
         <mat-tab-group mat-align-tabs="start" [(selectedIndex)]="selectedTabIndex">
 
-                        <mat-tab label="Listado de Categoria">
+                        <mat-tab label="Listado de Mesa">
                 <div class="tab-content">
                     <mat-table [dataSource]="dataSource" class="mat-elevation-z2" matSort>
 
                         <ng-container matColumnDef="nombre">
                             <mat-header-cell *matHeaderCellDef>Nombre</mat-header-cell>
-                            <mat-cell *matCellDef="let categoria">{{ categoria.nameCategory }}</mat-cell>
+                            <mat-cell *matCellDef="let mesa">{{ mesa.nameCategory }}</mat-cell>
                         </ng-container>
 
                         <ng-container matColumnDef="descripcion">
                             <mat-header-cell *matHeaderCellDef>Inicio</mat-header-cell>
-                            <mat-cell *matCellDef="let categoria">{{ categoria.descriptionCategory }}</mat-cell>
+                            <mat-cell *matCellDef="let mesa">{{ mesa.descriptionCategory }}</mat-cell>
                         </ng-container>
 
                         <ng-container matColumnDef="imagen">
                             <mat-header-cell *matHeaderCellDef>Fin</mat-header-cell>
-                            <mat-cell *matCellDef="let categoria">
-                                <img [src]="categoria.imageCategory" alt="Imagen" class="imagen-tabla" />
+                            <mat-cell *matCellDef="let mesa">
+                                <img [src]="mesa.imageCategory" alt="Imagen" class="imagen-tabla" />
                             </mat-cell>
 
                         </ng-container>
 
                         <ng-container matColumnDef="estado">
                             <mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
-                            <mat-cell *matCellDef="let categoria">
+                            <mat-cell *matCellDef="let mesa">
                                 <span
-                                    [ngClass]="{ 'activo': categoria.stateCategory, 'inactivo': !categoria.stateCategory }">
-                                    {{ categoria.stateCategory ? 'Activo' : 'Inactivo' }}
+                                    [ngClass]="{ 'activo': mesa.stateCategory, 'inactivo': !mesa.stateCategory }">
+                                    {{ mesa.stateCategory ? 'Activo' : 'Inactivo' }}
                                 </span>
                             </mat-cell>
                         </ng-container>
 
                         <ng-container matColumnDef="acciones">
                             <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
-                            <mat-cell *matCellDef="let categoria">
-                                <button mat-icon-button color="accent" (click)="editarCategoria(categoria)">
+                            <mat-cell *matCellDef="let mesa">
+                                <button mat-icon-button color="accent" (click)="editarCategoria(mesa)">
                                     <mat-icon>edit</mat-icon>
                                 </button>
-                                <button mat-icon-button color="warn" (click)="eliminarCategoria(categoria)">
+                                <button mat-icon-button color="warn" (click)="eliminarCategoria(mesa)">
                                     <mat-icon>delete</mat-icon>
                                 </button>
                             </mat-cell>
@@ -52,18 +52,18 @@
                 </div>
             </mat-tab>
             
-            <mat-tab label="Registrar Categoria">
+            <mat-tab label="Registrar Mesa">
                 <div class="tab-content">
-                    <!-- <mat-card-title>{{ modoEdicion ? 'Editar Categoria' : 'Registrar Categoria' }}</mat-card-title> -->
-                    <form [formGroup]="categoriaForm" (ngSubmit)="guardarCategoria()">
+                    <!-- <mat-card-title>{{ modoEdicion ? 'Editar Mesa' : 'Registrar Mesa' }}</mat-card-title> -->
+                    <!-- <form [formGroup]="mesaForm" (ngSubmit)="guardarCategoria()">
                         <div class="form-row">
                             <mat-form-field appearance="outline">
-                                <mat-label>Nombre del Categoria</mat-label>
+                                <mat-label>Nombre del Mesa</mat-label>
                                 <input matInput formControlName="nombre" />
                             </mat-form-field>
 
                             <mat-form-field appearance="outline">
-                                <mat-label>Descripcion de Categoria</mat-label>
+                                <mat-label>Descripcion de Mesa</mat-label>
                                 <input matInput formControlName="descripcion" />
                             </mat-form-field>
 
@@ -76,12 +76,12 @@
                         </div>
 
                         <div class="button-group">
-                            <button mat-raised-button color="primary" type="submit" [disabled]="categoriaForm.invalid">
+                            <button mat-raised-button color="primary" type="submit" [disabled]="mesaForm.invalid">
                                 {{ modoEdicion ? 'Actualizar' : 'Registrar' }}
                             </button>
                             <button mat-stroked-button type="button" (click)="cancelar()">Cancelar</button>
                         </div>
-                    </form>
+                    </form> -->
                 </div>
             </mat-tab>
 

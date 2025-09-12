@@ -22,13 +22,15 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { FormsModule } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
+import { ComandaPedidoComponent } from './comanda-pedido/comanda-pedido.component';
 
 @NgModule({
   declarations: [
     ComandaComponent,
     ComandaMozosComponent,
     ComandaCocinaComponent,
-    ComandaAdminComponent
+    ComandaAdminComponent,
+    ComandaPedidoComponent
   ],
   imports: [
     CommonModule,

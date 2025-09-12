@@ -4,6 +4,7 @@ import { ComandaComponent } from './comanda.component';
 import { ComandaMozosComponent } from './comanda-mozos/comanda-mozos.component';
 import { ComandaCocinaComponent } from './comanda-cocina/comanda-cocina.component';
 import { ComandaAdminComponent } from './comanda-admin/comanda-admin.component';
+import { ComandaPedidoComponent } from './comanda-pedido/comanda-pedido.component';
 
 const routes: Routes = [
   {
@@ -13,6 +14,7 @@ const routes: Routes = [
       { path: 'mozos', component: ComandaMozosComponent },
       { path: 'cocina', component: ComandaCocinaComponent },
       { path: 'admin', component: ComandaAdminComponent },
+      { path: 'pedido/:mesa', component: ComandaPedidoComponent },
       { path: '', redirectTo: 'mozos', pathMatch: 'full' }
     ]
   }

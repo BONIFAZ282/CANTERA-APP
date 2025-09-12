@@ -1,16 +1,36 @@
 .main-container {
   height: 100vh;
   margin: 0;
+  position: relative;
 }
 
 mat-sidenav {
-  width: 240px;
+  width: 260px;
   background-color: #7B1C1C;
   padding: 0;
   margin: 0;
   border: none;
   height: 100vh;
-  overflow: hidden;
+  overflow-y: auto;
+  box-shadow: 3px 0 6px rgba(0, 0, 0, 0.1);
+  
+  // Scrollbar personalizado
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.5);
+    }
+  }
 }
 
 mat-sidenav-content {
@@ -20,9 +40,52 @@ mat-sidenav-content {
   height: 100vh;
   display: flex;
   flex-direction: column;
+  transition: margin-left 0.3s ease;
 }
 
 .content {
   flex: 1;
-  padding: 15px; /* ✅ Espacio para respirar en el contenido */
+  padding: 20px;
+  overflow-y: auto;
+  min-height: 0; // Importante para el scroll
+}
+
+// Responsive breakpoints
+@media (max-width: 1024px) {
+  mat-sidenav {
+    width: 240px;
+  }
+  
+  .content {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  mat-sidenav {
+    width: 280px; // Más ancho en móvil para mejor usabilidad
+  }
+  
+  .content {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  mat-sidenav {
+    width: 100vw; // Pantalla completa en móviles pequeños
+  }
+  
+  .content {
+    padding: 8px;
+  }
+}
+
+// Overlay para móviles
+@media (max-width: 768px) {
+  .main-container {
+    .mat-drawer-backdrop {
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+  }
 }

@@ -18,11 +18,14 @@ export class CategoriasComponent {
   columnas: string[] = ['nombre', 'descripcion', 'imagen', 'estado', 'acciones'];
   dataSource = new MatTableDataSource<Categoria>();
 
-  selectedTabIndex = 0; // 0 = Formulario, 1 = Listado
+  selectedTabIndex = 0;
 
   previewImage: string | null = null;
 
-  constructor(private fb: FormBuilder, private categoriService: CategoriService) { }
+  constructor(
+    private fb: FormBuilder, 
+    private categoriService: CategoriService
+  ) { }
 
   ngOnInit(): void {
     this.inicializarFormulario();

@@ -1,84 +1,158 @@
-<div class="logo">
-  <img src="../../../assets/logo_cantera.jpg" alt="Logo La Cantera" />
+<!-- sidebar.component.html -->
+<div class="sidebar-content">
+  <!-- Logo -->
+  <div class="logo">
+    <img src="../../../assets/logo_cantera.jpg" alt="Logo La Cantera" />
+    <span class="logo-text">LA CANTERA</span>
+  </div>
+
+  <!-- Navegación -->
+  <mat-nav-list class="nav-list">
+    <a mat-list-item routerLink="/dashboard" (click)="onItemClick()">
+      <mat-icon>dashboard</mat-icon> 
+      <span class="nav-text">Dashboard</span>
+    </a>
+
+    <a mat-list-item routerLink="/pos" (click)="onItemClick()">
+      <mat-icon>point_of_sale</mat-icon> 
+      <span class="nav-text">POS</span>
+    </a>
+
+    <!-- Inventario -->
+    <mat-expansion-panel class="nav-expansion-panel inventory-panel">
+      <mat-expansion-panel-header class="expansion-header">
+        <mat-panel-title class="panel-title">
+          <mat-icon>inventory_2</mat-icon> 
+          <span class="nav-text">Inventario</span>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <mat-nav-list class="sub-nav">
+        <a mat-list-item routerLink="/inventory/mesas" (click)="onItemClick()">
+          <mat-icon>table_restaurant</mat-icon> 
+          <span class="nav-text">Mesas</span>
+        </a>
+        <a mat-list-item routerLink="/inventory/productos" (click)="onItemClick()">
+          <mat-icon>category</mat-icon> 
+          <span class="nav-text">Productos</span>
+        </a>
+        <a mat-list-item routerLink="/inventory/categorias" (click)="onItemClick()">
+          <mat-icon>list</mat-icon> 
+          <span class="nav-text">Categorías</span>
+        </a>
+        <a mat-list-item routerLink="/inventory/movimientos" (click)="onItemClick()">
+          <mat-icon>compare_arrows</mat-icon> 
+          <span class="nav-text">Movimientos</span>
+        </a>
+        <a mat-list-item routerLink="/inventory/proveedores" (click)="onItemClick()">
+          <mat-icon>local_shipping</mat-icon> 
+          <span class="nav-text">Proveedores</span>
+        </a>
+        <a mat-list-item routerLink="/ordenes" (click)="onItemClick()">
+          <mat-icon>receipt_long</mat-icon> 
+          <span class="nav-text">Órdenes de compra</span>
+        </a>
+        <a mat-list-item routerLink="/inventory/mermas" (click)="onItemClick()">
+          <mat-icon>delete_sweep</mat-icon> 
+          <span class="nav-text">Mermas</span>
+        </a>
+        <a mat-list-item routerLink="/inventory/transferencias" (click)="onItemClick()">
+          <mat-icon>swap_horiz</mat-icon> 
+          <span class="nav-text">Transferencias</span>
+        </a>
+        <a mat-list-item routerLink="/inventory/auditoria" (click)="onItemClick()">
+          <mat-icon>search</mat-icon> 
+          <span class="nav-text">Auditoría</span>
+        </a>
+        <a mat-list-item routerLink="/inventory/alertas" (click)="onItemClick()">
+          <mat-icon>warning</mat-icon> 
+          <span class="nav-text">Alertas de stock</span>
+        </a>
+      </mat-nav-list>
+    </mat-expansion-panel>
+
+    <a mat-list-item routerLink="/kitchen" (click)="onItemClick()">
+      <mat-icon>restaurant_menu</mat-icon> 
+      <span class="nav-text">Cocina</span>
+    </a>
+
+    <a mat-list-item routerLink="/comanda" (click)="onItemClick()">
+      <mat-icon>receipt</mat-icon> 
+      <span class="nav-text">Comanda</span>
+    </a>
+
+    <a mat-list-item routerLink="/reports" (click)="onItemClick()">
+      <mat-icon>bar_chart</mat-icon> 
+      <span class="nav-text">Reportes</span>
+    </a>
+
+    <!-- Finanzas -->
+    <mat-expansion-panel class="nav-expansion-panel finance-panel">
+      <mat-expansion-panel-header class="expansion-header">
+        <mat-panel-title class="panel-title">
+          <mat-icon>account_balance_wallet</mat-icon> 
+          <span class="nav-text">Finanzas</span>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <mat-nav-list class="sub-nav">
+        <a mat-list-item routerLink="/finance/aperturas" (click)="onItemClick()">
+          <mat-icon>login</mat-icon> 
+          <span class="nav-text">Apertura de caja</span>
+        </a>
+        <a mat-list-item routerLink="/finance/cierres" (click)="onItemClick()">
+          <mat-icon>logout</mat-icon> 
+          <span class="nav-text">Cierre de caja</span>
+        </a>
+        <a mat-list-item routerLink="/finance/historial" (click)="onItemClick()">
+          <mat-icon>history</mat-icon> 
+          <span class="nav-text">Historial de cajas</span>
+        </a>
+        <a mat-list-item routerLink="/finance/autorizaciones" (click)="onItemClick()">
+          <mat-icon>verified_user</mat-icon> 
+          <span class="nav-text">Autorizaciones</span>
+        </a>
+      </mat-nav-list>
+    </mat-expansion-panel>
+
+    <a mat-list-item routerLink="/customers" (click)="onItemClick()">
+      <mat-icon>group</mat-icon> 
+      <span class="nav-text">Clientes</span>
+    </a>
+
+    <!-- RRHH -->
+    <mat-expansion-panel class="nav-expansion-panel rrhh-panel">
+      <mat-expansion-panel-header class="expansion-header">
+        <mat-panel-title class="panel-title">
+          <mat-icon>badge</mat-icon> 
+          <span class="nav-text">RRHH</span>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <mat-nav-list class="sub-nav">
+        <a mat-list-item routerLink="/rrhh/cargos" (click)="onItemClick()">
+          <mat-icon>work</mat-icon> 
+          <span class="nav-text">Cargos</span>
+        </a>
+        <a mat-list-item routerLink="/rrhh/turnos" (click)="onItemClick()">
+          <mat-icon>schedule</mat-icon> 
+          <span class="nav-text">Turnos</span>
+        </a>
+        <a mat-list-item routerLink="/rrhh/empleados" (click)="onItemClick()">
+          <mat-icon>people</mat-icon> 
+          <span class="nav-text">Empleados</span>
+        </a>
+        <a mat-list-item routerLink="/rrhh/privilegios" (click)="onItemClick()">
+          <mat-icon>security</mat-icon> 
+          <span class="nav-text">Privilegios</span>
+        </a>
+        <a mat-list-item routerLink="/rrhh/usuarios" (click)="onItemClick()">
+          <mat-icon>person</mat-icon> 
+          <span class="nav-text">Usuarios</span>
+        </a>
+      </mat-nav-list>
+    </mat-expansion-panel>
+
+    <a mat-list-item routerLink="/config" (click)="onItemClick()">
+      <mat-icon>settings</mat-icon> 
+      <span class="nav-text">Configuración</span>
+    </a>
+  </mat-nav-list>
 </div>
-
-<mat-nav-list>
-  <a mat-list-item routerLink="/dashboard">
-    <mat-icon>dashboard</mat-icon> Dashboard
-  </a>
-
-  <a mat-list-item routerLink="/pos">
-    <mat-icon>point_of_sale</mat-icon> POS
-  </a>
-
-  <!-- Inventario -->
-  <mat-expansion-panel class="mat-elevation-z0 inventory-panel">
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        <mat-icon>inventory_2</mat-icon> Inventario
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-    <mat-nav-list>
-      <a mat-list-item routerLink="/inventory/productos"><mat-icon>category</mat-icon> Productos</a>
-      <a mat-list-item routerLink="/inventory/categorias"><mat-icon>list</mat-icon> Categorías</a>
-      <a mat-list-item routerLink="/inventory/movimientos"><mat-icon>compare_arrows</mat-icon> Movimientos</a>
-      <a mat-list-item routerLink="/inventory/proveedores"><mat-icon>local_shipping</mat-icon> Proveedores</a>
-      <a mat-list-item routerLink="/inventory/ordenes"><mat-icon>receipt_long</mat-icon> Órdenes de compra</a>
-      <a mat-list-item routerLink="/inventory/mermas"><mat-icon>delete_sweep</mat-icon> Mermas</a>
-      <a mat-list-item routerLink="/inventory/transferencias"><mat-icon>swap_horiz</mat-icon> Transferencias</a>
-      <a mat-list-item routerLink="/inventory/auditoria"><mat-icon>search</mat-icon> Auditoría</a>
-      <a mat-list-item routerLink="/inventory/alertas"><mat-icon>warning</mat-icon> Alertas de stock</a>
-    </mat-nav-list>
-  </mat-expansion-panel>
-
-  <a mat-list-item routerLink="/kitchen">
-    <mat-icon>restaurant_menu</mat-icon> Cocina
-  </a>
-
-  <a mat-list-item routerLink="/comanda">
-    <mat-icon>call_to_action</mat-icon> Comanda
-  </a>
-
-  <a mat-list-item routerLink="/reports">
-    <mat-icon>bar_chart</mat-icon> Reportes
-  </a>
-
-  <!-- Finanzas -->
-  <mat-expansion-panel class="mat-elevation-z0 finance-panel">
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        <mat-icon>account_balance_wallet</mat-icon> Finanzas
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-    <mat-nav-list>
-      <a mat-list-item routerLink="/finance/aperturas"><mat-icon>login</mat-icon> Apertura de caja</a>
-      <a mat-list-item routerLink="/finance/cierres"><mat-icon>logout</mat-icon> Cierre de caja</a>
-      <a mat-list-item routerLink="/finance/historial"><mat-icon>history</mat-icon> Historial de cajas</a>
-      <a mat-list-item routerLink="/finance/autorizaciones"><mat-icon>verified_user</mat-icon> Autorizaciones</a>
-    </mat-nav-list>
-  </mat-expansion-panel>
-
-  <a mat-list-item routerLink="/customers">
-    <mat-icon>group</mat-icon> Clientes
-  </a>
-
-  <!-- RRHH -->
-  <mat-expansion-panel class="mat-elevation-z0 rrhh-panel">
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        <mat-icon>badge</mat-icon> RRHH
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-    <mat-nav-list>
-      <a mat-list-item routerLink="/rrhh/cargos"><mat-icon>work</mat-icon> Cargos</a>
-      <a mat-list-item routerLink="/rrhh/turnos"><mat-icon>schedule</mat-icon> Turnos</a>
-      <a mat-list-item routerLink="/rrhh/empleados"><mat-icon>people</mat-icon> Empleados</a>
-      <a mat-list-item routerLink="/rrhh/privilegios"><mat-icon>security</mat-icon> Privilegios</a>
-      <a mat-list-item routerLink="/rrhh/usuarios"><mat-icon>person</mat-icon> Usuarios</a>
-    </mat-nav-list>
-  </mat-expansion-panel>
-
-  <a mat-list-item routerLink="/config">
-    <mat-icon>settings</mat-icon> Configuración
-  </a>
-</mat-nav-list>

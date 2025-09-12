@@ -1,88 +1,87 @@
-
 <body>
-    <div class="particles">
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-    </div>
+  <div class="particles">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+  </div>
 
-    <div class="login-container">
-        <div class="login-card">
-            <div class="logo-section">
-                <div class="logo">
-                   <img src="../../../assets/logo_cantera.jpg" alt="Logo La Cantera" />
-                </div>
-                <h1 class="app-title">LA CANTERA</h1>
-                <p class="app-subtitle">Sistema de Gestión Restaurante</p>
-            </div>
-
-            <form>
-                <div class="form-group">
-                    <div class="input-wrapper">
-                        <input type="email" class="form-input" placeholder="Correo electrónico" required>
-                        <i class="fas fa-envelope input-icon"></i>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="input-wrapper">
-                        <input type="password" class="form-input" id="password" placeholder="Contraseña" required>
-                        <i class="fas fa-lock input-icon"></i>
-                        <button type="button" class="password-toggle" onclick="togglePassword()">
-                            <i class="fas fa-eye" id="toggleIcon"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="remember-forgot">
-                    <div class="remember-me">
-                        <input type="checkbox" id="remember">
-                        <label for="remember">Recordarme</label>
-                    </div>
-                    <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
-                </div>
-
-                <button type="submit" class="login-button">
-                    <i class="fas fa-sign-in-alt" style="margin-right: 8px;"></i>
-                    Iniciar Sesión
-                </button>
-            </form>
-
-            <div class="divider">
-                <span>o continuar con</span>
-            </div>
-
-            <div class="social-login">
-                <button class="social-button google">
-                    <i class="fab fa-google"></i>
-                </button>
-                <button class="social-button facebook">
-                    <i class="fab fa-facebook-f"></i>
-                </button>
-            </div>
-
-            <p class="footer-text">
-                ¿No tienes cuenta? <a href="#">Regístrate aquí</a>
-            </p>
+  <div class="login-container">
+    <div class="login-card">
+      <div class="logo-section">
+        <div class="logo">
+          <img src="../../../assets/logo_cantera.jpg" alt="Logo La Cantera" />
         </div>
-    </div>
+        <h1 class="app-title">LA CANTERA</h1>
+        <p class="app-subtitle">Sistema de Gestión Restaurante</p>
+      </div>
 
-    <script>
-        function togglePassword() {
-            const passwordInput = document.getElementById('password');
-            const toggleIcon = document.getElementById('toggleIcon');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggleIcon.classList.remove('fa-eye');
-                toggleIcon.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                toggleIcon.classList.remove('fa-eye-slash');
-                toggleIcon.classList.add('fa-eye');
-            }
-        }
-    </script>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <div class="input-wrapper">
+            <input type="email" class="form-input" formControlName="username" placeholder="Correo electrónico" required>
+            <i class="fas fa-envelope input-icon"></i>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="input-wrapper">
+            <input type="password" class="form-input" formControlName="password" placeholder="Contraseña" required>
+            <i class="fas fa-lock input-icon"></i>
+            <button type="button" class="password-toggle" (click)="togglePassword()">
+              <i class="fas fa-eye" id="toggleIcon"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="remember-forgot">
+          <div class="remember-me">
+            <input type="checkbox" id="remember">
+            <label for="remember">Recordarme</label>
+          </div>
+          <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
+        </div>
+
+        <button type="submit" class="login-button" [disabled]="loginForm.invalid">
+          <i class="fas fa-sign-in-alt" style="margin-right: 8px;"></i>
+          Iniciar Sesión
+        </button>
+      </form>
+
+      <div class="divider">
+        <span>o continuar con</span>
+      </div>
+
+      <div class="social-login">
+        <button class="social-button google">
+          <i class="fab fa-google"></i>
+        </button>
+        <button class="social-button facebook">
+          <i class="fab fa-facebook-f"></i>
+        </button>
+      </div>
+
+      <p class="footer-text">
+        ¿No tienes cuenta? <a href="#">Regístrate aquí</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    function togglePassword() {
+      const passwordInput = document.getElementById('password');
+      const toggleIcon = document.getElementById('toggleIcon');
+      
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+      } else {
+        passwordInput.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+      }
+    }
+  </script>
 </body>

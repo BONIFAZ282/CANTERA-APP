@@ -1,0 +1,165 @@
+<div class="pedido-container">
+  <div class="pedido-header">
+    <div class="header-left">
+      <button mat-icon-button class="back-btn" (click)="cancelar()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div class="mesa-info">
+        <h1>{{ mesa }}</h1>
+        <span class="mesa-status">Nuevo Pedido</span>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button mat-stroked-button class="cancel-btn" (click)="cancelar()">
+        <mat-icon>close</mat-icon>
+        Cancelar
+      </button>
+      <button mat-raised-button color="primary" class="save-btn" [disabled]="itemsPedido.length === 0"
+        (click)="guardarPedido()">
+        <mat-icon>save</mat-icon>
+        Guardar Pedido
+      </button>
+    </div>
+  </div>
+
+  <div class="pedido-content">
+    <div class="productos-panel">
+      <div class="categorias-section">
+        <h3>Categorías</h3>
+        <div class="categorias-grid">
+          <div *ngFor="let categoria of categorias" class="categoria-card"
+            [class.activa]="categoria.categoryId === categoriaSeleccionada"
+            (click)="seleccionarCategoria(categoria.categoryId)">
+
+            <div class="categoria-imagen" *ngIf="categoria.imageCategory">
+              <img [src]="categoria.imageCategory" [alt]="categoria.nameCategory">
+            </div>
+
+            <div class="categoria-icon" *ngIf="!categoria.imageCategory"
+              [style.background-color]="getColorCategoria(categoria.categoryId)">
+              <mat-icon>category</mat-icon>
+            </div>
+
+            <span class="categoria-nombre">{{ categoria.nameCategory }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="productos-section">
+        <h3>{{ getNombreCategoria() }}</h3>
+        <div class="productos-grid">
+          <div *ngFor="let producto of productosFiltrados" class="producto-card" (click)="agregarProducto(producto)">
+            <div class="producto-imagen">
+              <img [src]="producto.productimg || 'https://via.placeholder.com/150'" [alt]="producto.productName">
+            </div>
+            <div class="producto-info">
+              <h4 class="producto-nombre">{{ producto.productName }}</h4>
+              <p class="producto-descripcion">{{ producto.productDescription }}</p>
+              <div class="producto-precio">{{ formatearMoneda(producto.productPryce) }}</div>
+            </div>
+            <div class="add-btn">
+              <mat-icon>add</mat-icon>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="carrito-panel">
+      <div class="carrito-header">
+        <h3>Pedido</h3>
+        <div class="pedido-stats">
+          <span class="items-count">{{ cantidadTotalItems }} items</span>
+        </div>
+      </div>
+
+      <div class="pedido-info">
+        <div class="info-row">
+          <mat-form-field appearance="outline" class="mesa-field">
+            <mat-label>Mesa</mat-label>
+            <input matInput [value]="mesa" readonly>
+            <mat-icon matSuffix>restaurant</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div class="info-row">
+          <mat-form-field appearance="outline" class="mozo-field">
+            <mat-label>Mozo</mat-label>
+            <input matInput [value]="mozoLogeado" readonly>
+            <mat-icon matSuffix>person</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div class="info-row">
+          <mat-form-field appearance="outline" class="personas-field">
+            <mat-label>Número de Personas</mat-label>
+            <input matInput type="number" [(ngModel)]="numeroPersonas" min="1" max="20">
+            <mat-icon matSuffix>people</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="carrito-items">
+        <div class="items-header">
+          <h4>Artículos</h4>
+        </div>
+
+        <div class="items-list">
+          <div *ngFor="let item of itemsPedido; let i = index" class="item-pedido">
+            <div class="item-info">
+              <h5 class="item-nombre">{{ item.producto.productName }}</h5>
+              <p class="item-precio">{{ formatearMoneda(item.producto.productPryce) }} c/u</p>
+            </div>
+
+            <div class="item-controls">
+              <div class="cantidad-controls">
+                <button mat-icon-button class="cantidad-btn" (click)="actualizarCantidad(i, item.cantidad - 1)">
+                  <mat-icon>remove</mat-icon>
+                </button>
+                <span class="cantidad">{{ item.cantidad }}</span>
+                <button mat-icon-button class="cantidad-btn" (click)="actualizarCantidad(i, item.cantidad + 1)">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </div>
+
+              <div class="item-subtotal">{{ formatearMoneda(item.subtotal) }}</div>
+
+              <button mat-icon-button class="remove-btn" (click)="eliminarItem(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <div *ngIf="itemsPedido.length === 0" class="carrito-vacio">
+            <mat-icon>shopping_cart</mat-icon>
+            <p>No hay productos en el pedido</p>
+            <span>Selecciona productos para agregar</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="observaciones-section">
+        <mat-form-field appearance="outline" class="observacion-field">
+          <mat-label>Observaciones del pedido</mat-label>
+          <textarea matInput [(ngModel)]="observacionGeneral" placeholder="Comentarios adicionales..." rows="3">
+          </textarea>
+          <mat-icon matSuffix>note</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <div class="carrito-total">
+        <div class="total-row">
+          <span class="total-label">Total:</span>
+          <span class="total-amount">{{ formatearMoneda(totalPedido) }}</span>
+        </div>
+
+        <button mat-raised-button color="primary" class="finalizar-btn" [disabled]="itemsPedido.length === 0"
+          (click)="guardarPedido()">
+          <mat-icon>receipt</mat-icon>
+          Confirmar Pedido
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

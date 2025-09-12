@@ -1,12 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { InventoryRoutingModule } from './inventory-routing.module';
-import { InventoryComponent } from './inventory.component';
-import { CategoriasComponent } from './categorias/categorias.component';
-
-
-
+import { OrdenesCompraRoutingModule } from './ordenes-compra-routing.module';
+import { OrdenesCompraComponent } from './ordenes-compra.component';
 
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -23,19 +19,19 @@ import { MatTab } from '@angular/material/tabs';
 import { MatTabGroup } from '@angular/material/tabs';
 import { MatOption } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
-
 import { MatSelectModule } from '@angular/material/select';
-import { MesasComponent } from './mesas/mesas.component';
+import { OrdenesCompraListarComponent } from './ordenes-compra-listar/ordenes-compra-listar.component';
+import { OrdenesCompraAgregarComponent } from './ordernes-compra-agregar/ordenes-compra-agregar.component';
 
 @NgModule({
   declarations: [
-    InventoryComponent,
-    CategoriasComponent,
-    MesasComponent
+    OrdenesCompraComponent,
+    OrdenesCompraListarComponent,
+    OrdenesCompraAgregarComponent
   ],
   imports: [
     CommonModule,
-    InventoryRoutingModule,
+    OrdenesCompraRoutingModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatSlideToggleModule,
@@ -54,4 +50,4 @@ import { MesasComponent } from './mesas/mesas.component';
     MatSelectModule
   ]
 })
-export class InventoryModule { }
+export class OrdenesCompraModule { }

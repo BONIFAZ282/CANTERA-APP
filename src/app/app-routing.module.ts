@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 import { LoginComponent } from './modules/auth/login/login.component';
+// import { AuthGuard, RoleGuard  } from './auth/pages/RoleGuard';
 
 
 
@@ -35,13 +36,20 @@ const routes: Routes = [
           import('./modules/rrhh/rrhh.module').then(m => m.RrhhModule)
       },
       {
+        path: 'ordenes',
+        loadChildren: () =>
+          import('./modules/ordenes-compra/ordenes-compra.module').then(m => m.OrdenesCompraModule)
+      },
+      {
         path: 'inventory',
         loadChildren: () =>
           import('./modules/inventory/inventory.module').then(m => m.InventoryModule)
-      }
+      },
+      { path: 'ordenes-compra', loadChildren: () => import('./modules/ordenes-compra/ordenes-compra.module').then(m => m.OrdenesCompraModule) },
     ]
   },
   { path: 'inventory', loadChildren: () => import('./modules/inventory/inventory.module').then(m => m.InventoryModule) },
+  
   // fallback
   { path: '**', redirectTo: 'login' }
 ];

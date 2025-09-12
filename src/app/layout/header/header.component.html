@@ -1,6 +1,58 @@
 <mat-toolbar class="header">
+  <!-- Botón de menú para móvil/tablet -->
+  <button 
+    *ngIf="showMenuButton"
+    mat-icon-button 
+    class="menu-button"
+    (click)="onToggleSidenav()">
+    <mat-icon>menu</mat-icon>
+  </button>
+  
+  <!-- Logo/Título -->
   <span class="title">LA CANTERA</span>
+  
   <span class="spacer"></span>
-  <span class="welcome">Bienvenido, Usuario</span>
-  <button class="logout-button">Cerrar sesión</button>
+  
+  <!-- Usuario autenticado -->
+  <ng-container *ngIf="estaAutenticado">
+    <span class="welcome" [class.hide-mobile]="true">
+      Bienvenido, {{ nombreUsuario }}
+    </span>
+    
+    <!-- Menú de usuario para móvil -->
+    <button 
+      mat-icon-button 
+      class="user-menu-button mobile-only"
+      [matMenuTriggerFor]="userMenu">
+      <mat-icon>account_circle</mat-icon>
+    </button>
+    
+    <!-- Botón de cerrar sesión para desktop -->
+    <button 
+      class="logout-button desktop-only" 
+      (click)="cerrarSesion()">
+      Cerrar sesión
+    </button>
+  </ng-container>
+  
+  <!-- No autenticado -->
+  <ng-container *ngIf="!estaAutenticado">
+    <button class="login-button" (click)="router.navigate(['/login'])">
+      <span class="hide-mobile">Iniciar sesión</span>
+      <mat-icon class="mobile-only">login</mat-icon>
+    </button>
+  </ng-container>
 </mat-toolbar>
+
+<!-- Menú desplegable de usuario para móvil -->
+<mat-menu #userMenu="matMenu" class="user-dropdown">
+  <div class="user-info" mat-menu-item disabled>
+    <mat-icon>person</mat-icon>
+    <span>{{ nombreUsuario }}</span>
+  </div>
+  <mat-divider></mat-divider>
+  <button mat-menu-item (click)="cerrarSesion()">
+    <mat-icon>logout</mat-icon>
+    <span>Cerrar sesión</span>
+  </button>
+</mat-menu>

@@ -1,16 +1,10 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-
 import { LayoutModule } from './layout/layout.module';
-// ELIMINA ESTAS IMPORTACIONES - ya no las necesitas en AppModule
-// import { ComandaComponent } from './modules/comanda/comanda.component';
-// import { ComandaCocinaComponent } from './modules/comanda/comanda-cocina/comanda-cocina.component';
-// import { ComandaAdminComponent } from './modules/comanda/comanda-admin/comanda-admin.component';
-// import { ComandaMozosComponent } from './modules/comanda/comanda-mozos/comanda-mozos.component';
-
+import { LoginComponent } from './modules/auth/login/login.component';
+import { HeaderComponent } from './layout/header/header.component';
 /* LIBRERIAS O COMPONENTES DE LAS INTERFACES*/
 import { MatIconModule } from '@angular/material/icon';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -30,14 +24,13 @@ import { MatOption } from '@angular/material/select';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatCardModule } from '@angular/material/card';
 import { HttpClientModule } from '@angular/common/http';
-import { LoginComponent } from './modules/auth/login/login.component';
-import { RegisterComponent } from './modules/auth/register/register.component';
+import { ReactiveFormsModule } from '@angular/forms';
+
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent,
-    RegisterComponent
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -56,7 +49,8 @@ import { RegisterComponent } from './modules/auth/register/register.component';
     MatBadgeModule,
     MatCardModule,
     HttpClientModule,
-    MatOption
+    MatOption,
+    ReactiveFormsModule
   ],
   providers: [
     provideAnimationsAsync()
