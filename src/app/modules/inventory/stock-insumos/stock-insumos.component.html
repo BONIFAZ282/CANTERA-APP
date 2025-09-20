@@ -1,0 +1,158 @@
+<div class="stock-container">
+  <div class="header-section">
+    <div class="header-content">
+      <h1>📦 Stock de Insumos</h1>
+      <p>Control de inventario en tiempo real</p>
+    </div>
+    <div class="header-actions">
+      <button mat-raised-button color="primary" (click)="refrescar()" class="refresh-btn">
+        <mat-icon>refresh</mat-icon>
+        Actualizar
+      </button>
+    </div>
+  </div>
+
+  <div class="filtros-section">
+    <div class="filtros-row">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Buscar insumo</mat-label>
+        <input matInput [(ngModel)]="busqueda" (ngModelChange)="onBusquedaChange()" placeholder="Nombre del insumo">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Categoría</mat-label>
+        <mat-select [(ngModel)]="filtroCategoria" (selectionChange)="onFiltroCategoriaChange()">
+          <mat-option *ngFor="let categoria of categorias" [value]="categoria">
+            {{ categoria }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Estado de Stock</mat-label>
+        <mat-select [(ngModel)]="filtroEstado" (selectionChange)="onFiltroEstadoChange()">
+          <mat-option value="Todos">Todos</mat-option>
+          <mat-option value="SIN STOCK">Sin Stock</mat-option>
+          <mat-option value="STOCK BAJO">Stock Bajo</mat-option>
+          <mat-option value="STOCK MEDIO">Stock Medio</mat-option>
+          <mat-option value="STOCK ALTO">Stock Alto</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="contenido" *ngIf="!cargando">
+    <div class="stats-cards">
+      <div class="stat-card sin-stock">
+        <mat-icon>error</mat-icon>
+        <div class="stat-info">
+          <span class="stat-number">{{ getCountByEstado('SIN STOCK') }}</span>
+          <span class="stat-label">Sin Stock</span>
+        </div>
+      </div>
+      
+      <div class="stat-card stock-bajo">
+        <mat-icon>warning</mat-icon>
+        <div class="stat-info">
+          <span class="stat-number">{{ getCountByEstado('STOCK BAJO') }}</span>
+          <span class="stat-label">Stock Bajo</span>
+        </div>
+      </div>
+      
+      <div class="stat-card stock-medio">
+        <mat-icon>info</mat-icon>
+        <div class="stat-info">
+          <span class="stat-number">{{ getCountByEstado('STOCK MEDIO') }}</span>
+          <span class="stat-label">Stock Medio</span>
+        </div>
+      </div>
+      
+      <div class="stat-card stock-alto">
+        <mat-icon>check_circle</mat-icon>
+        <div class="stat-info">
+          <span class="stat-number">{{ getCountByEstado('STOCK ALTO') }}</span>
+          <span class="stat-label">Stock Alto</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabla-section">
+      <div class="tabla-header">
+        <h3>Insumos ({{ insumosFiltrados.length }})</h3>
+      </div>
+
+      <div class="tabla-wrapper">
+        <table mat-table [dataSource]="insumosFiltrados" class="insumos-table">
+          
+          <ng-container matColumnDef="nombre">
+            <th mat-header-cell *matHeaderCellDef>Insumo</th>
+            <td mat-cell *matCellDef="let insumo">
+              <div class="insumo-info">
+                <span class="nombre">{{ insumo.nombreInsumo }}</span>
+                <span class="categoria">{{ insumo.categoria }}</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="stock">
+            <th mat-header-cell *matHeaderCellDef>Stock Actual</th>
+            <td mat-cell *matCellDef="let insumo">
+              <div class="stock-info">
+                <span class="cantidad">{{ insumo.stockActual }}</span>
+                <span class="unidad">{{ insumo.unidadMedida }}</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="estado">
+            <th mat-header-cell *matHeaderCellDef>Estado</th>
+            <td mat-cell *matCellDef="let insumo">
+              <div class="estado-badge" [ngClass]="getEstadoClass(insumo.estadoStock)">
+                <mat-icon>{{ getEstadoIcon(insumo.estadoStock) }}</mat-icon>
+                <span>{{ insumo.estadoStock }}</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="acciones">
+            <th mat-header-cell *matHeaderCellDef>Acciones</th>
+            <td mat-cell *matCellDef="let insumo">
+              <button mat-icon-button [matMenuTriggerFor]="menu" class="action-btn">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item>
+                  <mat-icon>add</mat-icon>
+                  <span>Agregar Stock</span>
+                </button>
+                <button mat-menu-item>
+                  <mat-icon>remove</mat-icon>
+                  <span>Reducir Stock</span>
+                </button>
+                <button mat-menu-item>
+                  <mat-icon>history</mat-icon>
+                  <span>Ver Movimientos</span>
+                </button>
+              </mat-menu>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="['nombre', 'stock', 'estado', 'acciones']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['nombre', 'stock', 'estado', 'acciones']"></tr>
+        </table>
+      </div>
+
+      <div class="empty-state" *ngIf="insumosFiltrados.length === 0">
+        <mat-icon>inventory_2</mat-icon>
+        <h3>No se encontraron insumos</h3>
+        <p>Ajusta los filtros para ver más resultados</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="loading-container" *ngIf="cargando">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Cargando stock de insumos...</p>
+  </div>
+</div>

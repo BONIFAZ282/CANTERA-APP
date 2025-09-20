@@ -10,13 +10,6 @@
 
       <div class="tab-content">
         <div class="filtros-section">
-          <div class="search-container">
-            <mat-form-field appearance="outline" class="search-field">
-              <mat-label>Buscar mesa</mat-label>
-              <input matInput [(ngModel)]="busqueda" placeholder="Ej: MESA 03">
-              <mat-icon matSuffix>search</mat-icon>
-            </mat-form-field>
-          </div>
 
           <div class="filter-container">
             <mat-button-toggle-group [(ngModel)]="filtroEstado" class="custom-toggle-group">
@@ -98,164 +91,21 @@
               </div>
 
               <mat-menu #menu="matMenu" class="custom-menu">
-                <button mat-menu-item>
+                <button mat-menu-item (click)="verPedido(mesa); $event.stopPropagation()">
                   <mat-icon>restaurant_menu</mat-icon>
-                  <span>Ver Pedido</span>
+                  <span>Ver/Editar Pedido</span>
+                </button>
+                <button mat-menu-item (click)="cobrarPedido(mesa); $event.stopPropagation()">
+                  <mat-icon>payment</mat-icon>
+                  <span>Cobrar</span>
                 </button>
                 <hr class="menu-divider">
                 <button mat-menu-item class="danger-item" (click)="cerrarMesa(mesa); $event.stopPropagation()"
-                 *ngIf="puedeGestionarMesa(mesa)">
+                  *ngIf="puedeGestionarMesa(mesa)">
                   <mat-icon>close</mat-icon>
                   <span>Cerrar Mesa</span>
                 </button>
               </mat-menu>
-            </ng-container>
-          </div>
-        </div>
-      </div>
-    </mat-tab>
-
-    <mat-tab>
-      <ng-template mat-tab-label>
-        <mat-icon>takeout_dining</mat-icon>
-        <span>Para Llevar</span>
-      </ng-template>
-      <div class="tab-content">
-        <div class="takeaway-section">
-          <div class="section-header">
-            <h2>🥡 Pedidos Para Llevar</h2>
-            <button mat-raised-button color="primary" class="new-order-btn">
-              <mat-icon>add</mat-icon>
-              Nuevo Pedido
-            </button>
-          </div>
-
-          <div class="orders-timeline">
-            <div class="timeline-item" *ngFor="let order of takeawayOrders">
-              <div class="timeline-marker" [ngClass]="'marker-' + order.estado.toLowerCase()"></div>
-              <div class="order-card takeaway-card">
-                <div class="order-header">
-                  <div class="order-info">
-                    <h3>#{{ order.numero }}</h3>
-                    <span class="customer-name">{{ order.cliente }}</span>
-                  </div>
-                  <div class="order-status" [ngClass]="'status-' + order.estado.toLowerCase()">
-                    {{ order.estado }}
-                  </div>
-                </div>
-
-                <div class="order-details">
-                  <div class="detail-item">
-                    <mat-icon>schedule</mat-icon>
-                    <span>{{ order.horaEstimada }}</span>
-                  </div>
-                  <div class="detail-item">
-                    <mat-icon>payments</mat-icon>
-                    <span>S/ {{ order.total }}</span>
-                  </div>
-                  <div class="detail-item">
-                    <mat-icon>restaurant</mat-icon>
-                    <span>{{ order.items }} items</span>
-                  </div>
-                </div>
-
-                <div class="order-actions">
-                  <button mat-stroked-button>
-                    <mat-icon>visibility</mat-icon>
-                    Ver Detalles
-                  </button>
-                  <button mat-button *ngIf="order.estado === 'Preparando'">
-                    <mat-icon>check</mat-icon>
-                    Marcar Listo
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </mat-tab>
-
-    <mat-tab>
-      <ng-template mat-tab-label>
-        <mat-icon>delivery_dining</mat-icon>
-        <span>Delivery</span>
-      </ng-template>
-      <div class="tab-content">
-        <div class="delivery-section">
-          <div class="section-header">
-            <h2>🚴‍♂️ Pedidos Delivery</h2>
-            <div class="header-controls">
-              <button mat-raised-button color="primary" class="new-order-btn">
-                <mat-icon>add</mat-icon>
-                Nuevo Delivery
-              </button>
-            </div>
-          </div>
-
-          <div class="delivery-grid">
-            <ng-container *ngFor="let delivery of deliveryOrders">
-              <div class="delivery-card" [ngClass]="'delivery-' + delivery.estado.toLowerCase()">
-                <div class="delivery-header">
-                  <div class="delivery-info">
-                    <h3>#{{ delivery.numero }}</h3>
-                    <div class="customer-details">
-                      <span class="customer-name">{{ delivery.cliente }}</span>
-                      <span class="customer-phone">{{ delivery.telefono }}</span>
-                    </div>
-                  </div>
-                  <div class="delivery-status" [ngClass]="'status-' + delivery.estado.toLowerCase()">
-                    <mat-icon>{{ getDeliveryIcon(delivery.estado) }}</mat-icon>
-                    {{ delivery.estado }}
-                  </div>
-                </div>
-
-                <div class="delivery-address">
-                  <mat-icon>location_on</mat-icon>
-                  <div class="address-info">
-                    <span class="address">{{ delivery.direccion }}</span>
-                    <span class="zone">{{ delivery.zona }}</span>
-                  </div>
-                </div>
-
-                <div class="delivery-details">
-                  <div class="detail-row">
-                    <div class="detail-item">
-                      <mat-icon>schedule</mat-icon>
-                      <span>{{ delivery.tiempoEstimado }} min</span>
-                    </div>
-                    <div class="detail-item">
-                      <mat-icon>payments</mat-icon>
-                      <span>S/ {{ delivery.total }}</span>
-                    </div>
-                  </div>
-                  <div class="detail-row">
-                    <div class="detail-item">
-                      <mat-icon>person</mat-icon>
-                      <span>{{ delivery.repartidor || 'Sin asignar' }}</span>
-                    </div>
-                    <div class="detail-item">
-                      <mat-icon>restaurant</mat-icon>
-                      <span>{{ delivery.items }} items</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="delivery-actions">
-                  <button mat-stroked-button>
-                    <mat-icon>visibility</mat-icon>
-                    Ver Pedido
-                  </button>
-                  <button mat-button *ngIf="delivery.estado === 'Preparando'">
-                    <mat-icon>motorcycle</mat-icon>
-                    Asignar Repartidor
-                  </button>
-                  <button mat-button *ngIf="delivery.estado === 'En Camino'" color="primary">
-                    <mat-icon>check_circle</mat-icon>
-                    Marcar Entregado
-                  </button>
-                </div>
-              </div>
             </ng-container>
           </div>
         </div>

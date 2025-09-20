@@ -31,4 +31,8 @@ export class MesaService {
   actualizarMesaOcupada(tableCode: string): Observable<void> {
     return this.http.put<void>(`${this.baseUrl}/mesaocupada`, { tableCode });
   }
+
+  actualizarMesaDesocupada(tableCode: string): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/mesadesocupada`, { tableCode });
+  }
 }

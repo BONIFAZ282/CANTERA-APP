@@ -1,0 +1,117 @@
+<div class="cliente-popup-modern">
+  <div class="popup-header">
+    <div class="header-content">
+      <div class="header-icon">
+        <mat-icon>person_add</mat-icon>
+      </div>
+      <div class="header-text">
+        <h2 mat-dialog-title>Datos del Cliente</h2>
+        <p>Ingresa la información del cliente para el comprobante</p>
+      </div>
+    </div>
+    <button mat-icon-button mat-dialog-close class="close-btn">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content class="popup-content">
+    <form [formGroup]="clienteForm" class="cliente-form">
+      <!-- DNI Field -->
+      <div class="form-group">
+        <label class="form-label">
+          <mat-icon>badge</mat-icon>
+          Documento de Identidad *
+        </label>
+        <mat-form-field appearance="outline" class="modern-field">
+          <mat-label>DNI</mat-label>
+          <input matInput 
+                 formControlName="dni"
+                 placeholder="12345678"
+                 maxlength="8"
+                 pattern="[0-9]*">
+          <mat-icon matSuffix color="primary">credit_card</mat-icon>
+          <mat-error *ngIf="clienteForm.get('dni')?.hasError('required')">
+            El DNI es obligatorio
+          </mat-error>
+          <mat-error *ngIf="clienteForm.get('dni')?.hasError('pattern')">
+            Solo se permiten números
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Nombres y Apellidos -->
+      <div class="form-group">
+        <label class="form-label">
+          <mat-icon>person</mat-icon>
+          Información Personal *
+        </label>
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="modern-field">
+            <mat-label>Nombres</mat-label>
+            <input matInput formControlName="nombre" placeholder="Juan Carlos">
+            <mat-error *ngIf="clienteForm.get('nombre')?.hasError('required')">
+              Los nombres son obligatorios
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="modern-field">
+            <mat-label>Apellidos</mat-label>
+            <input matInput formControlName="apellido" placeholder="Pérez García">
+            <mat-error *ngIf="clienteForm.get('apellido')?.hasError('required')">
+              Los apellidos son obligatorios
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Información de Contacto -->
+      <div class="form-group">
+        <label class="form-label">
+          <mat-icon>contact_phone</mat-icon>
+          Información de Contacto <span class="optional">(Opcional)</span>
+        </label>
+        
+        <mat-form-field appearance="outline" class="modern-field">
+          <mat-label>Correo Electrónico</mat-label>
+          <input matInput 
+                 formControlName="email" 
+                 type="email"
+                 placeholder="cliente@email.com">
+          <mat-icon matSuffix>email</mat-icon>
+          <mat-error *ngIf="clienteForm.get('email')?.hasError('email')">
+            Formato de email inválido
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="modern-field">
+          <mat-label>Teléfono</mat-label>
+          <input matInput 
+                 formControlName="telefono"
+                 placeholder="987654321"
+                 maxlength="9"
+                 pattern="[0-9]*">
+          <mat-icon matSuffix>phone</mat-icon>
+          <mat-error *ngIf="clienteForm.get('telefono')?.hasError('pattern')">
+            Solo se permiten números
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="popup-actions">
+    <button mat-stroked-button mat-dialog-close class="cancel-btn">
+      <mat-icon>close</mat-icon>
+      Cancelar
+    </button>
+    
+    <button mat-raised-button 
+            color="primary" 
+            [disabled]="!clienteForm.valid"
+            (click)="guardarCliente()"
+            class="save-btn">
+      <mat-icon>save</mat-icon>
+      Guardar Cliente
+    </button>
+  </mat-dialog-actions>
+</div>

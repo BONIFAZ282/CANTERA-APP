@@ -1,0 +1,185 @@
+<div class="reporte-container">
+    <div class="header-section">
+        <div class="header-content">
+            <h1>📊 Reporte de Movimientos</h1>
+            <p>Historial detallado de movimientos de inventario</p>
+        </div>
+        <div class="header-actions">
+            <button mat-stroked-button (click)="exportarExcel()" class="export-btn">
+                <mat-icon>file_download</mat-icon>
+                Exportar Excel
+            </button>
+        </div>
+    </div>
+
+    <div class="filtros-section">
+        <form [formGroup]="filtrosForm" class="filtros-form">
+            <div class="filtros-row">
+                <mat-form-field appearance="outline" class="fecha-field">
+                    <mat-label>Fecha Desde</mat-label>
+                    <input matInput type="date" formControlName="fechaDesde">
+                    <mat-icon matSuffix>date_range</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="fecha-field">
+                    <mat-label>Fecha Hasta</mat-label>
+                    <input matInput type="date" formControlName="fechaHasta">
+                    <mat-icon matSuffix>date_range</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="filter-field">
+                    <mat-label>Tipo de Operación</mat-label>
+                    <mat-select formControlName="tipoOperacion" (selectionChange)="onTipoOperacionChange()">
+                        <mat-option value="Todos">Todos</mat-option>
+                        <mat-option value="ENTRADA">Entradas</mat-option>
+                        <mat-option value="SALIDA">Salidas</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <button mat-raised-button color="primary" (click)="aplicarFiltros()" class="aplicar-btn">
+                    <mat-icon>search</mat-icon>
+                    Aplicar Filtros
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="contenido" *ngIf="!cargando">
+        <div class="resumen-cards">
+            <div class="resumen-card entradas">
+                <mat-icon>arrow_upward</mat-icon>
+                <div class="resumen-info">
+                    <span class="resumen-numero">
+                        {{ getCountByTipo('ENTRADA') }}
+                    </span>
+                    <span class="resumen-label">Entradas</span>
+                </div>
+            </div>
+
+            <div class="resumen-card salidas">
+                <mat-icon>arrow_downward</mat-icon>
+                <div class="resumen-info">
+                    <span class="resumen-numero">
+                        {{ getCountByTipo('SALIDA') }}
+                    </span>
+                    <span class="resumen-label">Salidas</span>
+                </div>
+            </div>
+
+            <div class="resumen-card total">
+                <mat-icon>receipt</mat-icon>
+                <div class="resumen-info">
+                    <span class="resumen-numero">{{ movimientosFiltrados.length }}</span>
+                    <span class="resumen-label">Total Movimientos</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tabla-section">
+            <div class="tabla-header">
+                <h3>Movimientos ({{ movimientosFiltrados.length }})</h3>
+            </div>
+
+            <div class="tabla-wrapper">
+                <table mat-table [dataSource]="movimientosFiltrados" class="movimientos-table">
+
+                    <ng-container matColumnDef="fecha">
+                        <th mat-header-cell *matHeaderCellDef>Fecha y Hora</th>
+                        <td mat-cell *matCellDef="let movimiento">
+                            <div class="fecha-info">
+                                <span class="fecha">{{ formatearFecha(movimiento.fechaMovimiento) }}</span>
+                            </div>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="insumo">
+                        <th mat-header-cell *matHeaderCellDef>Insumo</th>
+                        <td mat-cell *matCellDef="let movimiento">
+                            <div class="insumo-info">
+                                <span class="nombre">{{ movimiento.nombreInsumo }}</span>
+                                <span class="unidad">{{ movimiento.unidadMedida }}</span>
+                            </div>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="operacion">
+                        <th mat-header-cell *matHeaderCellDef>Operación</th>
+                        <td mat-cell *matCellDef="let movimiento">
+                            <div class="operacion-badge" [ngClass]="getOperacionClass(movimiento.tipoOperacion)">
+                                <mat-icon>{{ getOperacionIcon(movimiento.tipoOperacion) }}</mat-icon>
+                                <span>{{ movimiento.tipoOperacion }}</span>
+                            </div>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="cantidad">
+                        <th mat-header-cell *matHeaderCellDef>Cantidad</th>
+                        <td mat-cell *matCellDef="let movimiento">
+                            <div class="cantidad-info" [ngClass]="getOperacionClass(movimiento.tipoOperacion)">
+                                <span class="cantidad">{{ formatearCantidad(movimiento.cantidadMovimiento) }}</span>
+                            </div>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="stock">
+                        <th mat-header-cell *matHeaderCellDef>Stock</th>
+                        <td mat-cell *matCellDef="let movimiento">
+                            <div class="stock-info">
+                                <span class="anterior">{{ movimiento.stockAnterior }}</span>
+                                <mat-icon>arrow_forward</mat-icon>
+                                <span class="nuevo">{{ movimiento.stockNuevo }}</span>
+                            </div>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="tipo">
+                        <th mat-header-cell *matHeaderCellDef>Tipo Movimiento</th>
+                        <td mat-cell *matCellDef="let movimiento">
+                            <span class="tipo-movimiento">{{ movimiento.tipoMovimiento }}</span>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="observaciones">
+                        <th mat-header-cell *matHeaderCellDef>Observaciones</th>
+                        <td mat-cell *matCellDef="let movimiento">
+                            <div class="observaciones" [matTooltip]="movimiento.observaciones">
+                                {{ movimiento.observaciones | slice:0:50 }}
+                                <span
+                                    *ngIf="movimiento.observaciones && movimiento.observaciones.length > 50">...</span>
+                            </div>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="pedido">
+                        <th mat-header-cell *matHeaderCellDef>Pedido</th>
+                        <td mat-cell *matCellDef="let movimiento">
+                            <div class="pedido-info" *ngIf="movimiento.pedidoId">
+                                <mat-icon>receipt</mat-icon>
+                                <span>#{{ movimiento.pedidoId }}</span>
+                            </div>
+                            <span *ngIf="!movimiento.pedidoId" class="no-pedido">-</span>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row
+                        *matHeaderRowDef="['fecha', 'insumo', 'operacion', 'cantidad', 'stock', 'tipo', 'observaciones', 'pedido']">
+                    </tr>
+                    <tr mat-row
+                        *matRowDef="let row; columns: ['fecha', 'insumo', 'operacion', 'cantidad', 'stock', 'tipo', 'observaciones', 'pedido']">
+                    </tr>
+                </table>
+            </div>
+
+            <div class="empty-state" *ngIf="movimientosFiltrados.length === 0">
+                <mat-icon>receipt_long</mat-icon>
+                <h3>No se encontraron movimientos</h3>
+                <p>Ajusta los filtros de fecha para ver más resultados</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading-container" *ngIf="cargando">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Cargando reporte de movimientos...</p>
+    </div>
+</div>

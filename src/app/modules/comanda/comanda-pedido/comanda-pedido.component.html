@@ -15,10 +15,10 @@
         <mat-icon>close</mat-icon>
         Cancelar
       </button>
-      <button mat-raised-button color="primary" class="save-btn" [disabled]="itemsPedido.length === 0"
-        (click)="guardarPedido()">
-        <mat-icon>save</mat-icon>
-        Guardar Pedido
+      <button mat-raised-button color="primary" class="finalizar-btn"
+        [disabled]="itemsPedido.length === 0 || (modoEdicion && !puedeEditar)" (click)="guardarPedido()">
+        <mat-icon>{{ modoEdicion ? 'edit' : 'receipt' }}</mat-icon>
+        {{ modoEdicion ? 'Actualizar Pedido' : 'Confirmar Pedido' }}
       </button>
     </div>
   </div>

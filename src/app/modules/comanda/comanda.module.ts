@@ -1,16 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-// Importa el routing module
 import { ComandaRoutingModule } from './comanda-routing.module';
 
-// Importa los componentes
 import { ComandaComponent } from './comanda.component';
 import { ComandaMozosComponent } from './comanda-mozos/comanda-mozos.component';
 import { ComandaCocinaComponent } from './comanda-cocina/comanda-cocina.component';
 import { ComandaAdminComponent } from './comanda-admin/comanda-admin.component';
 
-// Importa los módulos de Material que necesitas
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,9 +17,18 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatRadioModule } from '@angular/material/radio';
 import { FormsModule } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
 import { ComandaPedidoComponent } from './comanda-pedido/comanda-pedido.component';
+import { CobrarPedidoComponent } from './cobrar-pedido/cobrar-pedido.component';
+import { ClientePopupComponent } from './cliente-popup/cliente-popup.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ComandaCocinerosComponent } from './comanda-cocineros/comanda-cocineros.component';
+
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -30,12 +36,14 @@ import { ComandaPedidoComponent } from './comanda-pedido/comanda-pedido.componen
     ComandaMozosComponent,
     ComandaCocinaComponent,
     ComandaAdminComponent,
-    ComandaPedidoComponent
+    ComandaPedidoComponent,
+    CobrarPedidoComponent,
+    ClientePopupComponent,
+    ComandaCocinerosComponent
   ],
   imports: [
     CommonModule,
     ComandaRoutingModule,
-    // Módulos de Material necesarios
     MatCardModule,
     MatIconModule,
     MatButtonModule,
@@ -46,10 +54,14 @@ import { ComandaPedidoComponent } from './comanda-pedido/comanda-pedido.componen
     MatInputModule,
     MatButtonToggleModule,
     FormsModule,
-    MatBadgeModule
+    MatBadgeModule,
+    MatProgressSpinnerModule,
+    MatRadioModule,
+    MatDialogModule,
+    ReactiveFormsModule,
+    MatCheckboxModule
   ],
   exports: [
-    // Exporta los componentes si necesitas usarlos fuera de este módulo
     ComandaComponent,
     ComandaMozosComponent,
     ComandaCocinaComponent,

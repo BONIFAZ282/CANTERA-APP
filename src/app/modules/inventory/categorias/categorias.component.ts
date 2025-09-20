@@ -1,156 +1,285 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatTableDataSource } from '@angular/material/table';
-import Swal from 'sweetalert2';
+import { Component, OnInit } from '@angular/core';
 import { Categoria } from '../../../auth/models/categoria.model';
+import { Producto } from '../../../auth/models/producto.model';
 import { CategoriService } from '../../../auth/services/caterogia.service';
 
+import Swal from 'sweetalert2';
+import { ProductoService } from '../../../auth/services/producto.service';
 
 @Component({
-  selector: 'app-categorias',
+  selector: 'app-admin-categorias-productos',
   templateUrl: './categorias.component.html',
-  styleUrl: './categorias.component.scss'
+  styleUrls: ['./categorias.component.scss']
 })
-export class CategoriasComponent {
-  categoriaForm!: FormGroup;
-  modoEdicion = false;
-  idEnEdicion: number | null = null;
-  columnas: string[] = ['nombre', 'descripcion', 'imagen', 'estado', 'acciones'];
-  dataSource = new MatTableDataSource<Categoria>();
+export class CategoriasComponent implements OnInit {
 
-  selectedTabIndex = 0;
+  vista: 'categorias' | 'productos' = 'categorias';
+  categoriaSeleccionada: Categoria | null = null;
+  mostrarModalCategoria: boolean = false;
+  mostrarModalProducto: boolean = false;
+  editandoCategoria: Categoria | null = null;
+  editandoProducto: Producto | null = null;
 
-  previewImage: string | null = null;
+  categorias: Categoria[] = [];
+  productos: Producto[] = [];
+
+  formCategoria: Partial<Categoria> = {
+    nameCategory: '',
+    descriptionCategory: '',
+    imageCategory: '',
+    stateCategory: true
+  };
+
+  formProducto: Partial<Producto> = {
+    productName: '',
+    productDescription: '',
+    productimg: '',
+    productPryce: 0,
+    stateproduct: true
+  };
 
   constructor(
-    private fb: FormBuilder, 
-    private categoriService: CategoriService
+    private categoriaService: CategoriService,
+    private productoService: ProductoService
   ) { }
 
   ngOnInit(): void {
-    this.inicializarFormulario();
-    this.listarCategoria();
+    this.cargarCategorias();
+    this.cargarProductos();
   }
 
-  inicializarFormulario(): void {
-    this.categoriaForm = this.fb.group({
-      nombre: ['', Validators.required],
-      descripcion: ['', Validators.required],
-      imagen: ['', Validators.required],
-      estado: [true]
-    });
-  }
-
-
-  listarCategoria(): void {
-    this.categoriService.listarCategoria().subscribe({
-      next: categoria => {
-        console.log('Categorías recibidas:', categoria); // 👈 aquí va tu log
-        this.dataSource.data = categoria;
+  cargarCategorias(): void {
+    this.categoriaService.listarCategoria().subscribe({
+      next: (categorias) => {
+        this.categorias = categorias;
       },
-      error: () => Swal.fire('Error', 'No se pudo cargar las categorías', 'error')
+      error: () => {
+        Swal.fire('Error', 'No se pudieron cargar las categorías', 'error');
+      }
     });
   }
 
+  cargarProductos(): void {
+    this.productoService.listarProducto().subscribe({
+      next: (productos) => {
+        this.productos = productos;
+      },
+      error: () => {
+        Swal.fire('Error', 'No se pudieron cargar los productos', 'error');
+      }
+    });
+  }
+
+  abrirModalCategoria(categoria: Categoria | null = null): void {
+    if (categoria) {
+      this.editandoCategoria = categoria;
+      this.formCategoria = { ...categoria };
+    } else {
+      this.editandoCategoria = null;
+      this.formCategoria = {
+        nameCategory: '',
+        descriptionCategory: '',
+        imageCategory: '',
+        stateCategory: true
+      };
+    }
+    this.mostrarModalCategoria = true;
+  }
+
+  cerrarModalCategoria(): void {
+    this.mostrarModalCategoria = false;
+    this.editandoCategoria = null;
+  }
 
   guardarCategoria(): void {
-    if (this.categoriaForm.invalid) return;
+    if (!this.formCategoria.nameCategory || !this.formCategoria.descriptionCategory) {
+      Swal.fire('Error', 'Por favor complete todos los campos requeridos', 'error');
+      return;
+    }
 
-    const formValue = this.categoriaForm.value;
     const categoria: Categoria = {
-      categoryId: this.idEnEdicion ?? 0,
-      nameCategory: formValue.nombre,
-      descriptionCategory: formValue.descripcion,
-      imageCategory: formValue.imagen,
-      stateCategory: formValue.estado
+      categoryId: this.editandoCategoria?.categoryId || 0,
+      nameCategory: this.formCategoria.nameCategory!,
+      descriptionCategory: this.formCategoria.descriptionCategory!,
+      imageCategory: this.formCategoria.imageCategory || '',
+      stateCategory: this.formCategoria.stateCategory ?? true
     };
 
-    const request = this.modoEdicion
-      ? this.categoriService.actualizarCategoria(categoria)
-      : this.categoriService.registrarCategoria(categoria);
+    const request = this.editandoCategoria
+      ? this.categoriaService.actualizarCategoria(categoria)
+      : this.categoriaService.registrarCategoria(categoria);
 
     request.subscribe({
       next: () => {
         Swal.fire({
           icon: 'success',
-          title: `Categoria ${this.modoEdicion ? 'actualizado' : 'registrado'} correctamente`,
+          title: `Categoría ${this.editandoCategoria ? 'actualizada' : 'registrada'} correctamente`,
           timer: 1500,
           showConfirmButton: false
         });
-        this.listarCategoria();
-        this.cancelar();
-        this.selectedTabIndex = 1;
+        this.cargarCategorias();
+        this.cerrarModalCategoria();
       },
-      error: () => Swal.fire('Error', 'No se pudo guardar la categoria', 'error')
+      error: () => {
+        Swal.fire('Error', 'No se pudo guardar la categoría', 'error');
+      }
     });
   }
-
-  applyFilter(event: Event): void {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
-
-
-editarCategoria(categoria: Categoria): void {
-  this.categoriaForm.patchValue({
-    nombre: categoria.nameCategory,
-    descripcion: categoria.descriptionCategory,
-    imagen: categoria.imageCategory,
-    estado: categoria.stateCategory
-  });
-  this.previewImage = categoria.imageCategory;
-  this.modoEdicion = true;
-  this.idEnEdicion = categoria.categoryId;
-  this.selectedTabIndex = 0;
-}
-
-
 
   eliminarCategoria(categoria: Categoria): void {
     Swal.fire({
       title: '¿Estás seguro?',
-      text: `Eliminarás la Categoria "${categoria.categoryId}"`,
+      text: `Eliminarás la categoría "${categoria.nameCategory}"`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sí, eliminar',
       cancelButtonText: 'Cancelar'
     }).then(result => {
       if (result.isConfirmed) {
-        this.categoriService.eliminarCategoria(categoria.categoryId).subscribe({
+        this.categoriaService.eliminarCategoria(categoria.categoryId).subscribe({
           next: () => {
-            Swal.fire('Eliminado', 'Categoria eliminado correctamente', 'success');
-            this.listarCategoria();
+            Swal.fire('Eliminado', 'Categoría eliminada correctamente', 'success');
+            this.cargarCategorias();
           },
-          error: () => Swal.fire('Error', 'No se pudo eliminar el Categoria', 'error')
+          error: () => {
+            Swal.fire('Error', 'No se pudo eliminar la categoría', 'error');
+          }
         });
       }
     });
   }
 
-  cancelar(): void {
-    this.modoEdicion = false;
-    this.idEnEdicion = null;
-    this.categoriaForm.reset({ estado: true });
-    this.selectedTabIndex = 1;
+  abrirModalProducto(producto: Producto | null = null): void {
+    if (producto) {
+      this.editandoProducto = producto;
+      this.formProducto = { ...producto };
+    } else {
+      this.editandoProducto = null;
+      this.formProducto = {
+        productName: '',
+        productDescription: '',
+        productimg: '',
+        productPryce: 0,
+        stateproduct: true
+      };
+    }
+    this.mostrarModalProducto = true;
   }
 
+  cerrarModalProducto(): void {
+    this.mostrarModalProducto = false;
+    this.editandoProducto = null;
+  }
 
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (!input.files || input.files.length === 0) return;
+  guardarProducto(): void {
+    if (!this.formProducto.productName || !this.formProducto.productDescription || !this.categoriaSeleccionada) {
+      Swal.fire('Error', 'Por favor complete todos los campos requeridos', 'error');
+      return;
+    }
 
-    const file = input.files[0];
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      const base64 = reader.result as string;
-      this.categoriaForm.patchValue({ imagen: base64 });
-      this.previewImage = base64;
-      console.log('Imagen base64:', base64);
+    const productoParaEnviar = {
+      productId: this.editandoProducto?.productId || 0,
+      categoryId: this.categoriaSeleccionada.categoryId,
+      productName: this.formProducto.productName!,
+      productDescription: this.formProducto.productDescription!,
+      productimg: this.formProducto.productimg || '',
+      productPryce: this.formProducto.productPryce || 0
     };
 
+    const request = this.editandoProducto
+      ? this.productoService.actualizarProducto(productoParaEnviar as any)
+      : this.productoService.registrarProducto(productoParaEnviar as any);
+
+    request.subscribe({
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: `Producto ${this.editandoProducto ? 'actualizado' : 'registrado'} correctamente`,
+          timer: 1500,
+          showConfirmButton: false
+        });
+        this.cargarProductos();
+        this.cerrarModalProducto();
+      },
+      error: () => {
+        Swal.fire('Error', 'No se pudo guardar el producto', 'error');
+      }
+    });
+  }
+
+  eliminarProducto(producto: Producto): void {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: `Eliminarás el producto "${producto.productName}"`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then(result => {
+      if (result.isConfirmed) {
+        this.productoService.eliminarProducto(producto.productId).subscribe({
+          next: () => {
+            Swal.fire('Eliminado', 'Producto eliminado correctamente', 'success');
+            this.cargarProductos();
+          },
+          error: () => {
+            Swal.fire('Error', 'No se pudo eliminar el producto', 'error');
+          }
+        });
+      }
+    });
+  }
+
+  verProductos(categoria: Categoria): void {
+    this.categoriaSeleccionada = categoria;
+    this.vista = 'productos';
+  }
+
+  volverACategorias(): void {
+    this.vista = 'categorias';
+    this.categoriaSeleccionada = null;
+  }
+
+  get todasLasCategorias(): Categoria[] {
+    return this.categorias;
+  }
+
+  get todosLosProductosDeCategoria(): Producto[] {
+    if (!this.categoriaSeleccionada) return [];
+    return this.productos.filter(
+      prod => prod.categoryId === this.categoriaSeleccionada!.categoryId // Mostrar todos, no solo los activos
+    );
+  }
+
+  onFileSelected(event: any, tipo: 'categoria' | 'producto'): void {
+    const file = event.target.files[0];
+    if (file) {
+      this.convertToBase64(file, tipo);
+    }
+  }
+
+  convertToBase64(file: File, tipo: 'categoria' | 'producto'): void {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64String = reader.result as string;
+      if (tipo === 'categoria') {
+        this.formCategoria.imageCategory = base64String;
+      } else {
+        this.formProducto.productimg = base64String;
+      }
+    };
     reader.readAsDataURL(file);
   }
 
+  limpiarImagen(tipo: 'categoria' | 'producto'): void {
+    if (tipo === 'categoria') {
+      this.formCategoria.imageCategory = '';
+    } else {
+      this.formProducto.productimg = '';
+    }
+  }
 
+  isBase64Image(data: string): boolean {
+    return data.startsWith('data:image/');
+  }
 }

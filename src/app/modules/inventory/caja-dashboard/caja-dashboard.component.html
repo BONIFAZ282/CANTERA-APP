@@ -1,0 +1,147 @@
+<div class="caja-container">
+  <div class="header-section">
+    <div class="header-content">
+      <h1>💰 Control de Caja</h1>
+      <p>Gestión de ingresos y egresos del día</p>
+    </div>
+    <div class="estado-caja">
+      <div class="estado-badge" [ngClass]="estadoCaja.toLowerCase()">
+        <mat-icon>{{ estadoCaja === 'Abierta' ? 'lock_open' : 'lock' }}</mat-icon>
+        <span>{{ estadoCaja }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estado sin sesión activa -->
+  <div class="sin-sesion" *ngIf="!cargando && (!resumenCaja || !resumenCaja.tieneSesionActiva)">
+    <div class="sin-sesion-card">
+      <div class="sin-sesion-icon">
+        <mat-icon>point_of_sale</mat-icon>
+      </div>
+      <div class="sin-sesion-content">
+        <h3>No hay sesión de caja activa</h3>
+        <p>Para comenzar a procesar ventas, debes abrir una sesión de caja</p>
+        <p class="usuario-info">Usuario: <strong>{{ usuario }}</strong></p>
+      </div>
+      <button mat-raised-button color="primary" (click)="abrirCaja()" class="abrir-caja-btn">
+        <mat-icon>lock_open</mat-icon>
+        Abrir Caja
+      </button>
+    </div>
+  </div>
+
+  <!-- Dashboard con sesión activa -->
+  <div class="con-sesion" *ngIf="!cargando && resumenCaja?.tieneSesionActiva">
+    <div class="resumen-cards">
+      <div class="resumen-card apertura">
+        <div class="card-header">
+          <mat-icon>schedule</mat-icon>
+          <h3>Apertura</h3>
+        </div>
+        <div class="card-content">
+          <div class="monto-principal">{{ formatearMoneda(resumenCaja?.montoApertura) }}</div>
+          <div class="fecha-info">{{ formatearFecha(resumenCaja?.fechaApertura) }}</div>
+        </div>
+      </div>
+
+      <div class="resumen-card ingresos">
+        <div class="card-header">
+          <mat-icon>trending_up</mat-icon>
+          <h3>Ingresos</h3>
+        </div>
+        <div class="card-content">
+          <div class="monto-principal">{{ formatearMoneda(resumenCaja?.totalIngresos) }}</div>
+          <div class="detalle-info">{{ resumenCaja?.totalVentas }} ventas</div>
+        </div>
+      </div>
+
+      <div class="resumen-card egresos">
+        <div class="card-header">
+          <mat-icon>trending_down</mat-icon>
+          <h3>Egresos</h3>
+        </div>
+        <div class="card-content">
+          <div class="monto-principal">{{ formatearMoneda(resumenCaja?.totalEgresos) }}</div>
+          <div class="detalle-info">Gastos y descuentos</div>
+        </div>
+      </div>
+
+      <div class="resumen-card total">
+        <div class="card-header">
+          <mat-icon>account_balance_wallet</mat-icon>
+          <h3>En Caja</h3>
+        </div>
+        <div class="card-content">
+          <div class="monto-principal">{{ formatearMoneda(resumenCaja?.montoActualCaja) }}</div>
+          <div class="detalle-info" [ngClass]="diferenciaCaja >= 0 ? 'positivo' : 'negativo'">
+            {{ diferenciaCaja >= 0 ? '+' : '' }}{{ formatearMoneda(diferenciaCaja) }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acciones-section">
+      <div class="acciones-card">
+        <div class="acciones-header">
+          <h3>Acciones de Caja</h3>
+          <p>Gestiona tu sesión de caja actual</p>
+        </div>
+
+        <div class="acciones-buttons">
+          <button mat-stroked-button (click)="verReporteCaja()" class="accion-btn reporte">
+            <mat-icon>assessment</mat-icon>
+            <div class="btn-content">
+              <span class="btn-title">Ver Reporte</span>
+              <span class="btn-subtitle">Movimientos del día</span>
+            </div>
+          </button>
+
+          <button mat-stroked-button class="accion-btn gasto">
+            <mat-icon>remove_circle_outline</mat-icon>
+            <div class="btn-content">
+              <span class="btn-title">Registrar Gasto</span>
+              <span class="btn-subtitle">Egresos operativos</span>
+            </div>
+          </button>
+
+          <button mat-raised-button color="warn" (click)="cerrarCaja()" class="accion-btn cerrar">
+            <mat-icon>lock</mat-icon>
+            <div class="btn-content">
+              <span class="btn-title">Cerrar Caja</span>
+              <span class="btn-subtitle">Finalizar turno</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-adicional">
+      <div class="info-card">
+        <div class="info-header">
+          <mat-icon>info</mat-icon>
+          <h4>Información de la Sesión</h4>
+        </div>
+        <div class="info-content">
+          <div class="info-item">
+            <span class="info-label">Usuario:</span>
+                              <span class="info-value">{{ resumenCaja?.usuario }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Sesión ID:</span>
+            <span class="info-value">#{{ resumenCaja?.sesionId }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Fecha de apertura:</span>
+                              <span class="info-value">{{ formatearFecha(resumenCaja?.fechaApertura) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-container" *ngIf="cargando">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Cargando información de caja...</p>
+  </div>
+</div>

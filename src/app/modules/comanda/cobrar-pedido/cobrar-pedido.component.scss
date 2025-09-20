@@ -1,0 +1,1176 @@
+// Variables
+$primary-color: #4f46e5;
+$success-color: #059669;
+$warning-color: #f59e0b;
+$danger-color: #dc2626;
+$gray-50: #f9fafb;
+$gray-100: #f3f4f6;
+$gray-200: #e5e7eb;
+$gray-300: #d1d5db;
+$gray-500: #6b7280;
+$gray-600: #4b5563;  // ← Agrega esta línea
+
+$gray-700: #374151;
+$gray-900: #111827;
+
+.cobrar-container {
+  min-height: 100vh;
+  background: $gray-50;
+  display: flex;
+  flex-direction: column;
+
+  // Header
+  .cobrar-header {
+    background: white;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid $gray-200;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      .pedido-info {
+        h1 {
+          margin: 0;
+          font-size: 1.5rem;
+          font-weight: 600;
+          color: $gray-900;
+          
+          @media (max-width: 768px) {
+            font-size: 1.25rem;
+          }
+        }
+
+        .mesa-info {
+          font-size: 0.875rem;
+          color: $gray-500;
+          font-weight: 500;
+        }
+      }
+    }
+
+    .header-actions {
+      @media (max-width: 640px) {
+        .cancel-btn span {
+          display: none;
+        }
+      }
+    }
+  }
+
+  // Content
+  .cobrar-content {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 2rem;
+    padding: 2rem;
+    overflow: auto;
+
+    // Responsive layout
+    @media (max-width: 1200px) {
+      grid-template-columns: 1fr 350px;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 968px) {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      padding: 1rem;
+    }
+
+    @media (max-width: 640px) {
+      padding: 0.75rem;
+      gap: 1rem;
+    }
+  }
+
+  // Panel base
+  .resumen-panel,
+  .pago-panel {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid $gray-200;
+    overflow: hidden;
+  }
+
+  // Panel header
+  .panel-header {
+    padding: 1.5rem 1.5rem 1rem;
+    border-bottom: 1px solid $gray-100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+
+    h2 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: $gray-900;
+    }
+
+    .pedido-stats {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.875rem;
+      color: $gray-500;
+
+      @media (max-width: 640px) {
+        flex-direction: column;
+        gap: 0.25rem;
+        text-align: right;
+      }
+
+      .items-count {
+        background: $primary-color;
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 6px;
+        font-weight: 500;
+      }
+    }
+
+    .estado-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+
+      &.estado-pendiente {
+        background: #fef3c7;
+        color: #92400e;
+      }
+
+      &.estado-preparando {
+        background: #dbeafe;
+        color: #1e40af;
+      }
+
+      mat-icon {
+        font-size: 1rem;
+        width: 1rem;
+        height: 1rem;
+      }
+    }
+  }
+
+  // Resumen Panel
+  .resumen-panel {
+    .pedido-detalle {
+      padding: 1.5rem;
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 1rem;
+
+        .info-card {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          padding: 1rem;
+          background: $gray-50;
+          border-radius: 12px;
+          border: 1px solid $gray-200;
+
+          mat-icon {
+            color: $primary-color;
+            font-size: 1.25rem;
+            width: 1.25rem;
+            height: 1.25rem;
+          }
+
+          .info-content {
+            .info-label {
+              display: block;
+              font-size: 0.75rem;
+              color: $gray-500;
+              text-transform: uppercase;
+              letter-spacing: 0.05em;
+              font-weight: 500;
+            }
+
+            .info-value {
+              display: block;
+              font-size: 0.875rem;
+              color: $gray-900;
+              font-weight: 600;
+              margin-top: 0.125rem;
+            }
+          }
+        }
+      }
+    }
+
+    .items-section {
+      padding: 0 1.5rem 1.5rem;
+
+      h3 {
+        margin: 0 0 1rem;
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: $gray-900;
+      }
+
+      .items-table {
+        .table-header {
+          display: grid;
+          grid-template-columns: 2fr 1fr 80px 1fr;
+          gap: 1rem;
+          padding: 0.75rem 1rem;
+          background: $gray-100;
+          border-radius: 8px;
+          font-size: 0.75rem;
+          font-weight: 600;
+          color: $gray-700;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+
+          @media (max-width: 640px) {
+            grid-template-columns: 2fr 1fr 60px 1fr;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            font-size: 0.6875rem;
+          }
+        }
+
+        .table-body {
+          .table-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 80px 1fr;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid $gray-100;
+            align-items: center;
+
+            @media (max-width: 640px) {
+              grid-template-columns: 2fr 1fr 60px 1fr;
+              gap: 0.5rem;
+              padding: 0.75rem 0.5rem;
+            }
+
+            &:hover {
+              background: $gray-50;
+            }
+
+            .col-producto {
+              .producto-nombre {
+                font-weight: 500;
+                color: $gray-900;
+                font-size: 0.875rem;
+                
+                @media (max-width: 640px) {
+                  font-size: 0.8125rem;
+                }
+              }
+            }
+
+            .col-precio {
+              .precio-unitario {
+                color: $gray-600;
+                font-size: 0.875rem;
+              }
+            }
+
+            .col-cantidad {
+              display: flex;
+              justify-content: center;
+
+              .cantidad-badge {
+                background: $primary-color;
+                color: white;
+                padding: 0.25rem 0.5rem;
+                border-radius: 6px;
+                font-size: 0.75rem;
+                font-weight: 600;
+                min-width: 30px;
+                text-align: center;
+              }
+            }
+
+            .col-subtotal {
+              text-align: right;
+
+              .subtotal-amount {
+                font-weight: 600;
+                color: $success-color;
+                font-size: 0.875rem;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .observaciones {
+      padding: 0 1.5rem 1.5rem;
+
+      .observaciones-card {
+        display: flex;
+        gap: 0.75rem;
+        padding: 1rem;
+        background: #fef7cd;
+        border: 1px solid #fcd34d;
+        border-radius: 12px;
+
+        mat-icon {
+          color: #f59e0b;
+          flex-shrink: 0;
+        }
+
+        .observaciones-content {
+          h4 {
+            margin: 0 0 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: $gray-900;
+          }
+
+          p {
+            margin: 0;
+            font-size: 0.875rem;
+            color: $gray-700;
+            line-height: 1.4;
+          }
+        }
+      }
+    }
+  }
+
+  // Pago Panel
+  .pago-panel {
+    .pago-content {
+      padding: 1.5rem;
+
+      .tipo-pago-section {
+        margin-bottom: 2rem;
+
+        h3 {
+          margin: 0 0 1rem;
+          font-size: 1.125rem;
+          font-weight: 600;
+          color: $gray-900;
+        }
+
+        .tipos-pago-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+          gap: 0.75rem;
+
+          @media (max-width: 640px) {
+            grid-template-columns: 1fr 1fr;
+          }
+
+          .tipo-pago-card {
+            position: relative;
+            padding: 1rem;
+            border: 2px solid $gray-200;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            text-align: center;
+
+            &:hover {
+              border-color: $primary-color;
+              transform: translateY(-1px);
+              box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            &.selected {
+              border-color: $primary-color;
+              background: #f0f4ff;
+              box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            }
+
+            mat-icon {
+              font-size: 1.5rem;
+              width: 1.5rem;
+              height: 1.5rem;
+              color: $gray-600;
+            }
+
+            span {
+              font-size: 0.875rem;
+              font-weight: 500;
+              color: $gray-700;
+            }
+
+            .radio-indicator {
+              position: absolute;
+              top: 0.5rem;
+              right: 0.5rem;
+
+              mat-icon {
+                font-size: 1rem;
+                width: 1rem;
+                height: 1rem;
+                color: $primary-color;
+              }
+            }
+
+            &.selected {
+              mat-icon:not(.radio-indicator mat-icon) {
+                color: $primary-color;
+              }
+
+              span {
+                color: $primary-color;
+              }
+            }
+          }
+        }
+      }
+
+      .totales-section {
+        margin-bottom: 2rem;
+
+        .totales-card {
+          background: $gray-50;
+          border: 1px solid $gray-200;
+          border-radius: 12px;
+          padding: 1.5rem;
+
+          .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+
+            .label {
+              font-size: 0.875rem;
+              color: $gray-600;
+              font-weight: 500;
+            }
+
+            .amount {
+              font-size: 0.875rem;
+              font-weight: 600;
+              color: $gray-900;
+
+              &.descuento {
+                color: $danger-color;
+              }
+
+              &.propina {
+                color: $success-color;
+              }
+            }
+
+            &.total-final {
+              border-top: 2px solid $gray-200;
+              padding-top: 1rem;
+              margin-top: 0.5rem;
+
+              .label {
+                font-size: 1rem;
+                color: $gray-900;
+                font-weight: 600;
+              }
+
+              .amount {
+                font-size: 1.25rem;
+                color: $success-color;
+                font-weight: 700;
+              }
+            }
+          }
+
+          .divider {
+            margin: 0.5rem 0;
+            border: none;
+            height: 1px;
+            background: $gray-200;
+          }
+        }
+
+        .acciones-extras {
+          display: flex;
+          gap: 0.75rem;
+          margin-top: 1rem;
+
+          @media (max-width: 640px) {
+            flex-direction: column;
+          }
+
+          .accion-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            font-size: 0.875rem;
+            border-radius: 8px;
+
+            mat-icon {
+              font-size: 1rem;
+              width: 1rem;
+              height: 1rem;
+            }
+          }
+        }
+      }
+
+      .pago-efectivo {
+        margin-bottom: 2rem;
+
+        .efectivo-card {
+          background: #f0f9ff;
+          border: 1px solid #c7d2fe;
+          border-radius: 12px;
+          padding: 1.5rem;
+
+          h4 {
+            margin: 0 0 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: $gray-900;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+          }
+
+          .monto-field {
+            width: 100%;
+            margin-bottom: 1rem;
+          }
+
+          .vuelto-section {
+            .vuelto-card {
+              background: #ecfdf5;
+              border: 1px solid #a7f3d0;
+              border-radius: 12px;
+              padding: 1rem;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+
+              .vuelto-header {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+
+                mat-icon {
+                  color: $success-color;
+                  font-size: 1.25rem;
+                  width: 1.25rem;
+                  height: 1.25rem;
+                }
+
+                .vuelto-label {
+                  font-size: 0.875rem;
+                  color: $gray-700;
+                  font-weight: 500;
+                }
+              }
+
+              .vuelto-monto {
+                font-size: 1.25rem;
+                font-weight: 700;
+                color: $success-color;
+              }
+            }
+          }
+
+          .error-monto {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            color: $danger-color;
+            font-size: 0.875rem;
+            font-weight: 500;
+
+            mat-icon {
+              font-size: 1rem;
+              width: 1rem;
+              height: 1rem;
+            }
+          }
+        }
+      }
+
+      .procesar-section {
+        .procesar-btn {
+          width: 100%;
+          height: 56px;
+          font-size: 1.1rem;
+          font-weight: 600;
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.75rem;
+          text-transform: none;
+          letter-spacing: 0.025em;
+
+          &:disabled {
+            background: $gray-200 !important;
+            color: $gray-500 !important;
+          }
+
+          mat-icon {
+            font-size: 1.25rem;
+            width: 1.25rem;
+            height: 1.25rem;
+          }
+
+          mat-spinner {
+            margin-right: 0.5rem;
+          }
+        }
+      }
+    }
+  }
+
+  // Loading
+  .loading-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    color: $gray-500;
+
+    p {
+      font-size: 1rem;
+      font-weight: 500;
+    }
+  }
+}
+
+// Material Design overrides
+::ng-deep {
+  .mat-form-field-appearance-outline {
+    .mat-form-field-outline {
+      color: $gray-300;
+    }
+
+    &.mat-focused .mat-form-field-outline-thick {
+      color: $primary-color;
+    }
+  }
+
+  .mat-button-toggle-group {
+    border: none;
+    background: transparent;
+  }
+
+  .mat-button-toggle {
+    border: 1px solid $gray-200 !important;
+    border-radius: 8px !important;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+
+    &.mat-button-toggle-checked {
+      background: $primary-color !important;
+      color: white !important;
+    }
+  }
+}
+
+// Agregar después de la sección .tipo-pago-section
+.cliente-section {
+  margin-bottom: 2rem;
+
+  h3 {
+    margin: 0 0 1rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: $gray-900;
+  }
+
+  .cliente-form {
+    .dni-field {
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+
+    .cliente-info {
+      .cliente-card {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: #ecfdf5;
+        border: 1px solid #a7f3d0;
+        border-radius: 12px;
+
+        mat-icon {
+          color: $success-color;
+          font-size: 1.5rem;
+          width: 1.5rem;
+          height: 1.5rem;
+        }
+
+        .cliente-datos {
+          h4 {
+            margin: 0 0 0.25rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: $gray-900;
+          }
+
+          p {
+            margin: 0;
+            font-size: 0.875rem;
+            color: $gray-600;
+            line-height: 1.3;
+          }
+        }
+      }
+    }
+
+    .cliente-no-encontrado {
+      .no-encontrado-card {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem;
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        border-radius: 12px;
+        color: $danger-color;
+        font-size: 0.875rem;
+        font-weight: 500;
+
+        mat-icon {
+          font-size: 1.25rem;
+          width: 1.25rem;
+          height: 1.25rem;
+        }
+      }
+    }
+  }
+}
+
+// Estilos para el popup de boleta
+::ng-deep {
+  .boleta-popup {
+    .swal2-html-container {
+      padding: 0 !important;
+    }
+  }
+
+  .boleta-container {
+    padding: 0 !important;
+  }
+
+  .boleta-content {
+    font-family: 'Courier New', monospace;
+    background: white;
+    padding: 1.5rem;
+    line-height: 1.4;
+    font-size: 0.875rem;
+
+    .boleta-header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #000;
+
+      h3 {
+        margin: 0 0 0.5rem;
+        font-weight: bold;
+        font-size: 1.1rem;
+      }
+
+      h4 {
+        margin: 1rem 0 0.5rem;
+        font-weight: bold;
+        text-decoration: underline;
+      }
+
+      p {
+        margin: 0.25rem 0;
+        font-size: 0.8rem;
+      }
+    }
+
+    .boleta-info {
+      margin-bottom: 1.5rem;
+
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-size: 0.85rem;
+
+        span {
+          font-weight: 500;
+        }
+      }
+    }
+
+    .boleta-items {
+      margin-bottom: 1.5rem;
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.8rem;
+
+        th {
+          border-bottom: 2px solid #000;
+          padding: 0.5rem 0.25rem;
+          text-align: left;
+          font-weight: bold;
+        }
+
+        td {
+          border-bottom: 1px solid #ccc;
+          padding: 0.5rem 0.25rem;
+        }
+
+        th:last-child,
+        td:last-child {
+          text-align: right;
+        }
+      }
+    }
+
+    .boleta-totales {
+      margin-bottom: 1.5rem;
+      border-top: 2px solid #000;
+      padding-top: 1rem;
+
+      .total-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-size: 0.85rem;
+
+        &.total-final {
+          border-top: 1px solid #000;
+          padding-top: 0.5rem;
+          margin-top: 0.5rem;
+          font-weight: bold;
+          font-size: 1rem;
+        }
+      }
+    }
+
+    .boleta-pago {
+      margin-bottom: 1.5rem;
+      border-top: 1px solid #ccc;
+      padding-top: 1rem;
+
+      .pago-info {
+        margin-bottom: 0.5rem;
+        font-size: 0.85rem;
+      }
+    }
+
+    .boleta-footer {
+      text-align: center;
+      border-top: 2px solid #000;
+      padding-top: 1rem;
+      font-size: 0.75rem;
+
+      p {
+        margin: 0.25rem 0;
+      }
+    }
+  }
+}
+
+.cliente-section {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  transition: all 0.3s ease;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.section-header h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.section-header h3 mat-icon {
+  color: #6b7280;
+  font-size: 20px;
+}
+
+.header-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #dcfce7;
+  color: #166534;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.header-badge mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.cliente-state {
+  transition: all 0.3s ease;
+}
+
+/* Estado vacío */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 32px 20px;
+  background: #f9fafb;
+  border: 2px dashed #d1d5db;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.empty-state:hover {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.empty-icon {
+  width: 64px;
+  height: 64px;
+  background: #e5e7eb;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  transition: all 0.3s ease;
+}
+
+.empty-state:hover .empty-icon {
+  background: #dbeafe;
+  transform: scale(1.05);
+}
+
+.empty-icon mat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+  color: #6b7280;
+}
+
+.empty-state:hover .empty-icon mat-icon {
+  color: #3b82f6;
+}
+
+.empty-content h4 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.empty-content p {
+  margin: 0 0 20px 0;
+  font-size: 14px;
+  color: #6b7280;
+  max-width: 280px;
+}
+
+.add-client-btn {
+  min-width: 160px;
+  height: 40px;
+  border-radius: 8px;
+  font-weight: 500;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Estado con cliente */
+.client-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.client-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.client-avatar {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.client-avatar mat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+  color: white;
+}
+
+.client-info {
+  flex: 1;
+}
+
+.client-name {
+  margin-bottom: 12px;
+}
+
+.client-name h4 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.client-badge {
+  background: #ecfdf5;
+  color: #065f46;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.client-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #4b5563;
+}
+
+.detail-item mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: #9ca3af;
+}
+
+.client-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.action-edit {
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+  transition: all 0.2s ease;
+}
+
+.action-edit:hover {
+  background: rgba(59, 130, 246, 0.2);
+  transform: scale(1.05);
+}
+
+.action-remove {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+  transition: all 0.2s ease;
+}
+
+.action-remove:hover {
+  background: rgba(239, 68, 68, 0.2);
+  transform: scale(1.05);
+}
+
+/* Animaciones */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.client-card {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .cliente-section {
+    padding: 16px;
+  }
+  
+  .client-card {
+    padding: 16px;
+    gap: 12px;
+  }
+  
+  .client-avatar {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .client-avatar mat-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+  }
+  
+  .client-actions {
+    flex-direction: column;
+  }
+}

@@ -8,7 +8,6 @@ import { Router } from '@angular/router';
 })
 
 
-
 export class ComandaComponent implements OnInit {
 
   perfil: 'mozo' | 'cocina' | 'admin' = 'mozo';

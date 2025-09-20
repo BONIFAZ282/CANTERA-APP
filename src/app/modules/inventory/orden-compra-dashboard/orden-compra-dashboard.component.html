@@ -1,0 +1,223 @@
+<!-- orden-compra-dashboard.component.html -->
+<div class="orden-compra-container">
+    <div class="header-section">
+        <div class="header-content">
+            <h1>📋 Órdenes de Compra</h1>
+            <p>Gestión de compras a proveedores</p>
+        </div>
+        <div class="acciones-header">
+            <button mat-raised-button color="primary" (click)="crearNuevaOrden()" class="crear-orden-btn">
+                <mat-icon>add_shopping_cart</mat-icon>
+                Nueva Orden
+            </button>
+        </div>
+    </div>
+
+    <!-- Estadísticas generales -->
+    <div class="estadisticas-section" *ngIf="!cargando">
+        <div class="estadistica-card pendiente">
+            <div class="card-header">
+                <mat-icon>hourglass_empty</mat-icon>
+                <h3>Pendientes</h3>
+            </div>
+            <div class="card-content">
+                <div class="numero-principal">{{ estadisticas.totalPendientes }}</div>
+                <div class="monto-info">{{ formatearMoneda(estadisticas.montoTotalPendiente) }}</div>
+            </div>
+        </div>
+
+        <div class="estadistica-card recibida">
+            <div class="card-header">
+                <mat-icon>check_circle</mat-icon>
+                <h3>Recibidas</h3>
+            </div>
+            <div class="card-content">
+                <div class="numero-principal">{{ estadisticas.totalRecibidas }}</div>
+                <div class="detalle-info">Inventario actualizado</div>
+            </div>
+        </div>
+
+        <div class="estadistica-card pagada">
+            <div class="card-header">
+                <mat-icon>paid</mat-icon>
+                <h3>Pagadas</h3>
+            </div>
+            <div class="card-content">
+                <div class="numero-principal">{{ estadisticas.totalPagadas }}</div>
+                <div class="detalle-info">Completamente procesadas</div>
+            </div>
+        </div>
+
+        <div class="estadistica-card stock-bajo">
+            <div class="card-header">
+                <mat-icon>warning</mat-icon>
+                <h3>Stock Bajo</h3>
+            </div>
+            <div class="card-content">
+                <div class="numero-principal">{{ estadisticas.insumosStockBajo }}</div>
+                <div class="detalle-info">Insumos por reponer</div>
+            </div>
+        </div>
+
+        <div class="estadistica-card anulada">
+            <div class="card-header">
+                <mat-icon>cancel</mat-icon>
+                <h3>Anuladas</h3>
+            </div>
+            <div class="card-content">
+                <div class="numero-principal">{{ estadisticas.totalAnuladas }}</div>
+                <div class="detalle-info">Este mes</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filtros-section">
+        <div class="filtros-card">
+            <div class="filtros-header">
+                <h3>Filtrar Órdenes</h3>
+            </div>
+
+            <div class="filtros-content">
+                <!-- En orden-compra-dashboard.component.html -->
+                <!-- Reemplazar la sección de filtros por estado: -->
+
+                <div class="filtro-estados">
+                    <button mat-button [class.active]="filtroEstado === 1" (click)="cambiarFiltro(1)"
+                        class="estado-btn pendiente">
+                        <mat-icon>hourglass_empty</mat-icon>
+                        Pendientes
+                    </button>
+
+                    <button mat-button [class.active]="filtroEstado === 2" (click)="cambiarFiltro(2)"
+                        class="estado-btn recibida">
+                        <mat-icon>check_circle</mat-icon>
+                        Recibidas
+                    </button>
+
+                    <!-- NUEVO TAB PAGADO -->
+                    <button mat-button [class.active]="filtroEstado === 4" (click)="cambiarFiltro(4)"
+                        class="estado-btn pagado">
+                        <mat-icon>paid</mat-icon>
+                        Pagadas
+                    </button>
+
+                    <button mat-button [class.active]="filtroEstado === 3" (click)="cambiarFiltro(3)"
+                        class="estado-btn anulada">
+                        <mat-icon>cancel</mat-icon>
+                        Anuladas
+                    </button>
+                </div>
+
+                <!-- Otros filtros -->
+                <div class="filtros-adicionales">
+                    <mat-form-field appearance="outline" class="filtro-field">
+                        <mat-label>Proveedor</mat-label>
+                        <mat-select [(value)]="filtroProveedor" (selectionChange)="aplicarFiltros()">
+                            <mat-option [value]="undefined">Todos los proveedores</mat-option>
+                            <mat-option *ngFor="let proveedor of proveedores" [value]="proveedor.supplierId">
+                                {{ proveedor.supplierName }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="filtro-field">
+                        <mat-label>Fecha desde</mat-label>
+                        <input matInput type="date" [(ngModel)]="fechaInicio" (change)="aplicarFiltros()">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="filtro-field">
+                        <mat-label>Fecha hasta</mat-label>
+                        <input matInput type="date" [(ngModel)]="fechaFin" (change)="aplicarFiltros()">
+                    </mat-form-field>
+
+                    <button mat-stroked-button (click)="limpiarFiltros()" class="limpiar-btn">
+                        <mat-icon>clear</mat-icon>
+                        Limpiar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de órdenes -->
+    <div class="ordenes-section" *ngIf="!cargando">
+        <div class="ordenes-header">
+            <h3>{{ getEstadoTexto(filtroEstado) }} ({{ ordenes.length }})</h3>
+            <p>Lista de órdenes de compra</p>
+        </div>
+
+        <!-- Sin órdenes -->
+        <div class="sin-ordenes" *ngIf="ordenes.length === 0">
+            <div class="sin-ordenes-icon">
+                <mat-icon>shopping_cart_checkout</mat-icon>
+            </div>
+            <h4>No hay órdenes {{ getEstadoTexto(filtroEstado).toLowerCase() }}</h4>
+            <p>Las órdenes aparecerán aquí una vez que las crees</p>
+        </div>
+
+        <!-- Lista de órdenes -->
+        <div class="ordenes-grid" *ngIf="ordenes.length > 0">
+            <div class="orden-card" *ngFor="let orden of ordenes" [ngClass]="getEstadoClass(orden.estadoId)">
+
+                <div class="orden-header">
+                    <div class="orden-numero">
+                        <span class="numero">#{{ orden.ordenCompraId }}</span>
+                        <span class="estado-badge" [ngClass]="getEstadoClass(orden.estadoId)">
+                            {{ orden.estado }}
+                        </span>
+                    </div>
+                    <div class="orden-fecha">{{ formatearFecha(orden.fecha) }}</div>
+                </div>
+
+                <div class="orden-content">
+                    <div class="proveedor-info">
+                        <div class="proveedor-nombre">{{ orden.proveedorNombre }}</div>
+                        <div class="proveedor-ruc">RUC: {{ orden.proveedorRuc }}</div>
+                    </div>
+
+                    <div class="orden-detalle">
+                        <div class="total-info">
+                            <span class="total-label">Total:</span>
+                            <span class="total-monto">{{ formatearMoneda(orden.total) }}</span>
+                        </div>
+                        <div class="items-info">{{ orden.totalItems }} items</div>
+                    </div>
+                </div>
+
+                <div class="orden-acciones">
+                    <button mat-stroked-button (click)="verDetalleOrden(orden)" class="accion-btn ver">
+                        <mat-icon>visibility</mat-icon>
+                        Ver
+                    </button>
+
+                    <!-- Solo mostrar Pagar si NO está pagada -->
+                    <button mat-stroked-button
+                        *ngIf="(orden.estadoId == 2 || orden.estado === 'Recibida') && !orden.pagado"
+                        (click)="registrarPago(orden)" class="accion-btn pagar">
+                        <mat-icon>attach_money</mat-icon>
+                        Pagar
+                    </button>
+
+                    <!-- Mostrar badge "Pagado" si ya está pagada -->
+                    <span *ngIf="orden.pagado" class="badge-pagado">
+                        <mat-icon>done</mat-icon>
+                        Pagado
+                    </span>
+
+                    <button mat-stroked-button *ngIf="orden.estadoId == 1 || orden.estado === 'Pendiente'"
+                        (click)="anularOrden(orden)" class="accion-btn anular">
+                        <mat-icon>close</mat-icon>
+                        Anular
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-container" *ngIf="cargando">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Cargando órdenes de compra...</p>
+    </div>
+</div>

@@ -1,0 +1,245 @@
+<div class="cocina-container">
+  <div class="header-section">
+    <div class="header-content">
+      <h1>🍳 Comandas de Cocina</h1>
+      <p>Gestiona los pedidos en preparación</p>
+    </div>
+    <div class="header-stats">
+      <div class="stat-card">
+        <span class="stat-number">{{ pedidosPendientes.length }}</span>
+        <span class="stat-label">Pendientes</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">{{ pedidosEnPreparacion.length }}</span>
+        <span class="stat-label">En Preparación</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">{{ pedidosListos.length }}</span>
+        <span class="stat-label">Listos</span>
+      </div>
+    </div>
+  </div>
+
+  <mat-tab-group class="custom-tabs" animationDuration="300ms">
+    <!-- Tab Pendientes -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon>schedule</mat-icon>
+        <span>Pendientes</span>
+        <span class="tab-badge" *ngIf="pedidosPendientes.length > 0">{{ pedidosPendientes.length }}</span>
+      </ng-template>
+
+      <div class="tab-content">
+        <div class="filtros-section">
+
+            
+          <button mat-raised-button color="primary" (click)="refrescarPedidos()" class="refresh-btn">
+            <mat-icon>refresh</mat-icon>
+            Refrescar
+          </button>
+        </div>
+
+        <div class="pedidos-grid">
+          <div *ngFor="let pedido of pedidosFiltrados('Pendiente')" class="pedido-card pendiente" (click)="abrirDetallePedido(pedido)">
+            <div class="pedido-header">
+              <div class="pedido-info">
+                <div class="pedido-numero">
+                  <h3>#{{ pedido.numero }}</h3>
+                  <div class="tipo-badge" [ngClass]="'tipo-' + pedido.tipo.toLowerCase().replace(' ', '-')">
+                    <mat-icon>{{ getTipoIcon(pedido.tipo) }}</mat-icon>
+                    {{ pedido.tipo }}
+                  </div>
+                </div>
+                <div class="pedido-mesa" *ngIf="pedido.mesa">
+                  <mat-icon>restaurant</mat-icon>
+                  <span>{{ pedido.mesa }}</span>
+                </div>
+              </div>
+              <div class="tiempo-info">
+                <div class="hora-pedido">{{ pedido.hora }}</div>
+                <div class="tiempo-transcurrido" [ngClass]="getTiempoClass(pedido.tiempoTranscurrido)">
+                  <mat-icon>timer</mat-icon>
+                  {{ pedido.tiempoTranscurrido }} min
+                </div>
+              </div>
+            </div>
+
+            <div class="pedido-body">
+              <div class="items-resumen">
+                <div class="item-cantidad" *ngFor="let item of pedido.items.slice(0, 3)">
+                  <span class="cantidad">{{ item.cantidad }}x</span>
+                  <span class="nombre">{{ item.nombre }}</span>
+                </div>
+                <div class="items-more" *ngIf="pedido.items.length > 3">
+                  +{{ pedido.items.length - 3 }} más...
+                </div>
+              </div>
+              
+              <div class="observaciones" *ngIf="pedido.observaciones">
+                <mat-icon>note</mat-icon>
+                <span>{{ pedido.observaciones }}</span>
+              </div>
+            </div>
+
+            <div class="pedido-actions">
+              <button mat-raised-button color="primary" (click)="iniciarPreparacion(pedido); $event.stopPropagation()">
+                <mat-icon>play_arrow</mat-icon>
+                Iniciar Preparación
+              </button>
+            </div>
+          </div>
+
+          <div class="empty-state" *ngIf="pedidosFiltrados('Pendiente').length === 0">
+            <mat-icon>check_circle</mat-icon>
+            <h3>¡Todo al día!</h3>
+            <p>No hay pedidos pendientes en este momento</p>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- Tab En Preparación -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon>restaurant</mat-icon>
+        <span>En Preparación</span>
+        <span class="tab-badge" *ngIf="pedidosEnPreparacion.length > 0">{{ pedidosEnPreparacion.length }}</span>
+      </ng-template>
+
+      <div class="tab-content">
+        <div class="pedidos-grid">
+          <div *ngFor="let pedido of pedidosEnPreparacion" class="pedido-card en-preparacion" (click)="abrirDetallePedido(pedido)">
+            <div class="pedido-header">
+              <div class="pedido-info">
+                <div class="pedido-numero">
+                  <h3>#{{ pedido.numero }}</h3>
+                  <div class="tipo-badge" [ngClass]="'tipo-' + pedido.tipo.toLowerCase().replace(' ', '-')">
+                    <mat-icon>{{ getTipoIcon(pedido.tipo) }}</mat-icon>
+                    {{ pedido.tipo }}
+                  </div>
+                </div>
+                <div class="pedido-mesa" *ngIf="pedido.mesa">
+                  <mat-icon>restaurant</mat-icon>
+                  <span>{{ pedido.mesa }}</span>
+                </div>
+              </div>
+              <div class="tiempo-info">
+                <div class="hora-pedido">{{ pedido.hora }}</div>
+                <div class="tiempo-preparacion" [ngClass]="getTiempoClass(pedido.tiempoPreparacion)">
+                  <mat-icon>schedule</mat-icon>
+                  {{ pedido.tiempoPreparacion }} min preparando
+                </div>
+              </div>
+            </div>
+
+            <div class="pedido-body">
+            <div class="items-resumen">
+              <div class="item-cantidad" *ngFor="let item of pedido.items.slice(0, 3)">
+                <span class="cantidad">{{ item.cantidad }}x</span>
+                <span class="nombre">{{ item.nombre || 'Cargando...' }}</span>
+              </div>
+              <div class="items-more" *ngIf="pedido.items.length > 3">
+                +{{ pedido.items.length - 3 }} más...
+              </div>
+            </div>
+
+              <div class="observaciones" *ngIf="pedido.observaciones">
+                <mat-icon>note</mat-icon>
+                <span>{{ pedido.observaciones }}</span>
+              </div>
+            </div>
+
+            <div class="pedido-actions">
+              <button mat-stroked-button (click)="pausarPreparacion(pedido); $event.stopPropagation()">
+                <mat-icon>pause</mat-icon>
+                Pausar
+              </button>
+              <button mat-raised-button color="accent" 
+                      [disabled]="!todoCompletado(pedido)"
+                      (click)="marcarListo(pedido); $event.stopPropagation()">
+                <mat-icon>check</mat-icon>
+                Marcar Listo
+              </button>
+            </div>
+          </div>
+
+          <div class="empty-state" *ngIf="pedidosEnPreparacion.length === 0">
+            <mat-icon>restaurant_menu</mat-icon>
+            <h3>Sin pedidos en preparación</h3>
+            <p>Los pedidos que inicies aparecerán aquí</p>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- Tab Listos -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon>check_circle</mat-icon>
+        <span>Listos</span>
+        <span class="tab-badge" *ngIf="pedidosListos.length > 0">{{ pedidosListos.length }}</span>
+      </ng-template>
+
+      <div class="tab-content">
+        <div class="pedidos-grid">
+          <div *ngFor="let pedido of pedidosListos" class="pedido-card listo" (click)="abrirDetallePedido(pedido)">
+            <div class="pedido-header">
+              <div class="pedido-info">
+                <div class="pedido-numero">
+                  <h3>#{{ pedido.numero }}</h3>
+                  <div class="tipo-badge" [ngClass]="'tipo-' + pedido.tipo.toLowerCase().replace(' ', '-')">
+                    <mat-icon>{{ getTipoIcon(pedido.tipo) }}</mat-icon>
+                    {{ pedido.tipo }}
+                  </div>
+                </div>
+                <div class="pedido-mesa" *ngIf="pedido.mesa">
+                  <mat-icon>restaurant</mat-icon>
+                  <span>{{ pedido.mesa }}</span>
+                </div>
+              </div>
+              <div class="tiempo-info">
+                <div class="hora-completado">Listo: {{ pedido.horaCompletado }}</div>
+                <div class="tiempo-espera">
+                  <mat-icon>hourglass_empty</mat-icon>
+                  Esperando {{ pedido.tiempoEspera }} min
+                </div>
+              </div>
+            </div>
+
+            <div class="pedido-body">
+              <div class="items-completados">
+                <div class="item-completo" *ngFor="let item of pedido.items">
+                  <mat-icon>check_circle</mat-icon>
+                  <span class="cantidad">{{ item.cantidad }}x</span>
+                  <span class="nombre">{{ item.nombre }}</span>
+                </div>
+              </div>
+
+              <div class="observaciones" *ngIf="pedido.observaciones">
+                <mat-icon>note</mat-icon>
+                <span>{{ pedido.observaciones }}</span>
+              </div>
+            </div>
+
+            <div class="pedido-actions">
+              <button mat-stroked-button (click)="reabrir(pedido); $event.stopPropagation()">
+                <mat-icon>edit</mat-icon>
+                Reabrir
+              </button>
+              <button mat-raised-button color="primary" (click)="marcarEntregado(pedido); $event.stopPropagation()">
+                <mat-icon>delivery_dining</mat-icon>
+                Marcar Entregado
+              </button>
+            </div>
+          </div>
+
+          <div class="empty-state" *ngIf="pedidosListos.length === 0">
+            <mat-icon>done_all</mat-icon>
+            <h3>Sin pedidos listos</h3>
+            <p>Los pedidos completados aparecerán aquí</p>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

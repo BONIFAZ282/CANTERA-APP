@@ -1,0 +1,285 @@
+<div class="cobrar-container">
+    <div class="cobrar-header">
+        <div class="header-left">
+            <button mat-icon-button class="back-btn" (click)="volver()">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+            <div class="pedido-info">
+                <h1>Cobrar Pedido #{{ pedidoID }}</h1>
+                <span class="mesa-info">{{ mesa }} - {{ mozo }}</span>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <button mat-stroked-button class="cancel-btn" (click)="volver()">
+                <mat-icon>close</mat-icon>
+                Cancelar
+            </button>
+        </div>
+    </div>
+
+    <div class="cobrar-content" *ngIf="!cargandoPedido">
+        <!-- Panel izquierdo - Resumen del pedido -->
+        <div class="resumen-panel">
+            <div class="panel-header">
+                <h2>Resumen del Pedido</h2>
+                <div class="pedido-stats">
+                    <span class="items-count">{{ cantidadTotalItems }} items</span>
+                    <span class="fecha">{{ fechaPedido | date:'dd/MM/yy, h:mm a' }}</span>
+                </div>
+            </div>
+
+            <div class="pedido-detalle">
+                <div class="info-grid">
+                    <div class="info-card">
+                        <mat-icon>restaurant</mat-icon>
+                        <div class="info-content">
+                            <span class="info-label">Mesa</span>
+                            <span class="info-value">{{ mesa }}</span>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <mat-icon>person</mat-icon>
+                        <div class="info-content">
+                            <span class="info-label">Mozo</span>
+                            <span class="info-value">{{ mozo }}</span>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <mat-icon>people</mat-icon>
+                        <div class="info-content">
+                            <span class="info-label">Personas</span>
+                            <span class="info-value">{{ numeroPersonas }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="items-section">
+                <h3>Artículos Pedidos</h3>
+                <div class="items-table">
+                    <div class="table-header">
+                        <span class="col-producto">Producto</span>
+                        <span class="col-precio">Precio</span>
+                        <span class="col-cantidad">Cant.</span>
+                        <span class="col-subtotal">Subtotal</span>
+                    </div>
+
+                    <div class="table-body">
+                        <div *ngFor="let item of itemsPedido" class="table-row">
+                            <div class="col-producto">
+                                <span class="producto-nombre">{{ item.nombre }}</span>
+                            </div>
+                            <div class="col-precio">
+                                <span class="precio-unitario">{{ formatearMoneda(item.precioUnitario) }}</span>
+                            </div>
+                            <div class="col-cantidad">
+                                <span class="cantidad-badge">{{ item.cantidad }}</span>
+                            </div>
+                            <div class="col-subtotal">
+                                <span class="subtotal-amount">{{ formatearMoneda(item.subtotal) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="observaciones" *ngIf="observaciones">
+                <div class="observaciones-card">
+                    <mat-icon>note</mat-icon>
+                    <div class="observaciones-content">
+                        <h4>Observaciones</h4>
+                        <p>{{ observaciones }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel derecho - Datos de pago -->
+        <div class="pago-panel">
+            <div class="panel-header">
+                <h2>Procesar Pago</h2>
+                <div class="estado-badge" [ngClass]="'estado-' + estado.toLowerCase()">
+                    <mat-icon>schedule</mat-icon>
+                    {{ estado }}
+                </div>
+            </div>
+
+            <div class="pago-content">
+                <div class="cliente-section">
+                    <div class="section-header">
+                        <h3>
+                            <mat-icon>person</mat-icon>
+                            Datos del Cliente
+                        </h3>
+                        <div class="header-badge" *ngIf="clienteEncontrado">
+                            <mat-icon>verified</mat-icon>
+                            <span>Registrado</span>
+                        </div>
+                    </div>
+
+                    <!-- Estado: Sin cliente -->
+                    <div class="cliente-state" *ngIf="!clienteEncontrado">
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <mat-icon>person_add_alt</mat-icon>
+                            </div>
+                            <div class="empty-content">
+                                <h4>Sin cliente asignado</h4>
+                                <p>Agrega los datos del cliente para generar el comprobante</p>
+                            </div>
+                            <button mat-raised-button color="primary" (click)="abrirPopupCliente()"
+                                class="add-client-btn">
+                                <mat-icon>add</mat-icon>
+                                Agregar Cliente
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Estado: Con cliente -->
+                    <div class="cliente-state" *ngIf="clienteEncontrado">
+                        <div class="client-card">
+                            <div class="client-avatar">
+                                <mat-icon>account_circle</mat-icon>
+                            </div>
+
+                            <div class="client-info">
+                                <div class="client-name">
+                                    <h4>{{ clienteEncontrado.nombre }} {{ clienteEncontrado.apellido }}</h4>
+                                    <span class="client-badge">Cliente registrado</span>
+                                </div>
+
+                                <div class="client-details">
+                                    <div class="detail-item">
+                                        <mat-icon>badge</mat-icon>
+                                        <span>{{ clienteEncontrado.dni }}</span>
+                                    </div>
+                                    <div class="detail-item" *ngIf="clienteEncontrado.telefono">
+                                        <mat-icon>phone</mat-icon>
+                                        <span>{{ clienteEncontrado.telefono }}</span>
+                                    </div>
+                                    <div class="detail-item" *ngIf="clienteEncontrado.email">
+                                        <mat-icon>email</mat-icon>
+                                        <span>{{ clienteEncontrado.email }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="client-actions">
+                                <button mat-icon-button (click)="abrirPopupCliente()" matTooltip="Editar cliente"
+                                    class="action-edit">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                                <button mat-icon-button (click)="limpiarCliente()" matTooltip="Quitar cliente"
+                                    class="action-remove">
+                                    <mat-icon>close</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tipo-pago-section">
+                    <h3>Método de Pago</h3>
+                    <div class="tipos-pago-grid">
+                        <div *ngFor="let tipo of tiposPago" class="tipo-pago-card"
+                            [class.selected]="tipoPagoSeleccionado === tipo.codigo"
+                            (click)="tipoPagoSeleccionado = tipo.codigo; onTipoPagoChange()">
+                            <mat-icon>{{ tipo.icono }}</mat-icon>
+                            <span>{{ tipo.nombre }}</span>
+                            <div class="radio-indicator">
+                                <mat-icon *ngIf="tipoPagoSeleccionado === tipo.codigo">radio_button_checked</mat-icon>
+                                <mat-icon *ngIf="tipoPagoSeleccionado !== tipo.codigo">radio_button_unchecked</mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="totales-section">
+                    <div class="totales-card">
+                        <div class="total-row">
+                            <span class="label">Subtotal</span>
+                            <span class="amount">{{ formatearMoneda(totalPedido) }}</span>
+                        </div>
+
+                        <div class="total-row descuento-row" *ngIf="descuento > 0">
+                            <span class="label">Descuento</span>
+                            <span class="amount descuento">-{{ formatearMoneda(descuento) }}</span>
+                        </div>
+
+                        <div class="total-row propina-row" *ngIf="propina > 0">
+                            <span class="label">Propina</span>
+                            <span class="amount propina">+{{ formatearMoneda(propina) }}</span>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="total-row total-final">
+                            <span class="label">Total a Pagar</span>
+                            <span class="amount">{{ formatearMoneda(totalFinal) }}</span>
+                        </div>
+                    </div>
+
+                    <div class="acciones-extras">
+                        <button mat-stroked-button (click)="aplicarDescuento()" class="accion-btn">
+                            <mat-icon>remove_circle_outline</mat-icon>
+                            Descuento
+                        </button>
+                        <button mat-stroked-button (click)="aplicarPropina()" class="accion-btn">
+                            <mat-icon>add_circle_outline</mat-icon>
+                            Propina
+                        </button>
+                    </div>
+                </div>
+
+                <div class="pago-efectivo" *ngIf="esEfectivo">
+                    <div class="efectivo-card">
+                        <h4>Pago en Efectivo</h4>
+
+                        <mat-form-field appearance="outline" class="monto-field">
+                            <mat-label>Monto Recibido</mat-label>
+                            <input matInput type="number" [(ngModel)]="montoRecibido"
+                                (ngModelChange)="onMontoRecibidoChange()" [min]="totalFinal" step="0.01"
+                                placeholder="0.00">
+                            <span matPrefix>S/ </span>
+                            <mat-icon matSuffix>payments</mat-icon>
+                        </mat-form-field>
+
+                        <div class="vuelto-section" *ngIf="vuelto > 0">
+                            <div class="vuelto-card">
+                                <div class="vuelto-header">
+                                    <mat-icon>change_circle</mat-icon>
+                                    <span class="vuelto-label">Vuelto</span>
+                                </div>
+                                <span class="vuelto-monto">{{ formatearMoneda(vuelto) }}</span>
+                            </div>
+                        </div>
+
+                        <div class="error-monto" *ngIf="montoRecibido < totalFinal && montoRecibido > 0">
+                            <mat-icon>warning</mat-icon>
+                            <span>Monto insuficiente</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="procesar-section">
+                    <button mat-raised-button color="primary" class="procesar-btn"
+                        [disabled]="procesandoPago || (esEfectivo && montoRecibido < totalFinal)"
+                        (click)="procesarPago()">
+                        <mat-icon *ngIf="!procesandoPago">{{ getTipoPagoIcono() }}</mat-icon>
+                        <mat-spinner *ngIf="procesandoPago" diameter="20"></mat-spinner>
+                        <span>{{ procesandoPago ? 'Procesando Pago...' : 'Procesar Pago' }}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-container" *ngIf="cargandoPedido">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Cargando datos del pedido...</p>
+    </div>
+</div>

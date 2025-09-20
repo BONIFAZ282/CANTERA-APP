@@ -16,7 +16,7 @@ export class ComandaMozosComponent {
   filtroEstado = 'Todos';
   busqueda = '';
   usuarioActual: any = null;
-  mesas: Mesa[] = []; 
+  mesas: Mesa[] = [];
   mesaSeleccionada: Mesa | null = null;
   cargandoMesas = false;
 
@@ -39,70 +39,12 @@ export class ComandaMozosComponent {
   cargarUsuarioActual(): void {
     this.usuarioActual = {
       id: 1,
-      nombre: this.authService.getUsername(), 
+      nombre: this.authService.getUsername(),
       cargo: this.authService.getCargoCod()
     };
 
   }
 
-  takeawayOrders = [
-    {
-      numero: 101,
-      cliente: 'Juan Pérez',
-      estado: 'Preparando',
-      horaEstimada: '12:30 PM',
-      total: 25.00,
-      items: 3
-    },
-    {
-      numero: 102,
-      cliente: 'Ana Gómez',
-      estado: 'Listo',
-      horaEstimada: '12:45 PM',
-      total: 18.50,
-      items: 2
-    }
-  ];
-
-  deliveryOrders = [
-    {
-      numero: 201,
-      cliente: 'Carlos Ruiz',
-      telefono: '987654321',
-      estado: 'Preparando',
-      direccion: 'Av. Perú 123',
-      zona: 'Centro',
-      tiempoEstimado: 30,
-      total: 42.00,
-      repartidor: '',
-      items: 4
-    },
-    {
-      numero: 202,
-      cliente: 'Lucía Torres',
-      telefono: '912345678',
-      estado: 'En Camino',
-      direccion: 'Jr. Ayacucho 456',
-      zona: 'Sur',
-      tiempoEstimado: 20,
-      total: 35.00,
-      repartidor: 'Pedro',
-      items: 3
-    }
-  ];
-
-  getDeliveryIcon(estado: string): string {
-    switch (estado.toLowerCase()) {
-      case 'preparando':
-        return 'restaurant';
-      case 'en camino':
-        return 'motorcycle';
-      case 'entregado':
-        return 'check_circle';
-      default:
-        return 'help_outline';
-    }
-  }
 
   mesasFiltradas(): Mesa[] {
     return this.mesas.filter(mesa => {
@@ -134,7 +76,7 @@ export class ComandaMozosComponent {
     if (!mesa || mesa.tableBusy === null || mesa.tableBusy === undefined) {
       return 'Disponible';
     }
-    
+
     if (mesa.tableBusy === true) {
       return 'Ocupado';
     } else if (mesa.tableBusy === false) {
@@ -148,7 +90,7 @@ export class ComandaMozosComponent {
     if (!mesa || !this.usuarioActual) {
       return false;
     }
-    
+
     if (this.getEstadoMesa(mesa) === 'Disponible') {
       return true;
     }
@@ -162,37 +104,17 @@ export class ComandaMozosComponent {
 
     if (this.getEstadoMesa(mesa) === 'Disponible') {
       this.router.navigate(['/comanda/pedido', mesa.tableCode]);
-    } else if (this.puedeGestionarMesa(mesa)) {
-      Swal.fire({
-        title: 'Mesa ocupada',
-        html: `
-          <div style="text-align: left; margin: 1rem 0;">
-            <p><strong>${mesa.tableCode}</strong> está ocupada por ti</p>
-            <p><strong>Usuario:</strong> ${mesa.username}</p>
-          </div>
-        `,
-        icon: 'info',
-        showCancelButton: true,
-        confirmButtonColor: '#4f46e5',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Ver/Editar Pedido',
-        cancelButtonText: 'Cancelar'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.router.navigate(['/comanda/pedido', mesa.tableCode]);
-        }
-      });
-    } else {
+    } else if (!this.puedeGestionarMesa(mesa)) {
       Swal.fire({
         icon: 'error',
         title: 'Acceso denegado',
         html: `
-          <div style="text-align: center; margin: 1rem 0;">
-            <p><strong>${mesa.tableCode}</strong> está siendo atendida por:</p>
-            <p style="color: #dc2626; font-weight: 600;">${mesa.username}</p>
-            <p style="font-size: 0.9rem; color: #6b7280;">Solo el mozo asignado puede gestionar esta mesa</p>
-          </div>
-        `,
+        <div style="text-align: center; margin: 1rem 0;">
+          <p><strong>${mesa.tableCode}</strong> está siendo atendida por:</p>
+          <p style="color: #dc2626; font-weight: 600;">${mesa.username}</p>
+          <p style="font-size: 0.9rem; color: #6b7280;">Solo el mozo asignado puede gestionar esta mesa</p>
+        </div>
+      `,
         confirmButtonText: 'Entendido',
         confirmButtonColor: '#4f46e5'
       });
@@ -210,7 +132,6 @@ export class ComandaMozosComponent {
       return;
     }
 
-    // Verificar estado de la mesa
     if (this.getEstadoMesa(mesa) === 'Disponible') {
       Swal.fire({
         icon: 'info',
@@ -222,7 +143,6 @@ export class ComandaMozosComponent {
       return;
     }
 
-    // Verificar permisos
     if (mesa.username !== this.usuarioActual?.nombre) {
       Swal.fire({
         icon: 'error',
@@ -257,15 +177,13 @@ export class ComandaMozosComponent {
   }
 
   private liberarMesa(mesa: Mesa): void {
-    
-    this.mesaService.actualizarMesaOcupada(mesa.tableCode).subscribe({
+
+    this.mesaService.actualizarMesaDesocupada(mesa.tableCode).subscribe({
       next: () => {
-        
-        // Actualizar estado local
+
         mesa.tableBusy = false;
         mesa.username = '';
-        
-        // Mostrar confirmación
+
         Swal.fire({
           icon: 'success',
           title: 'Mesa liberada',
@@ -288,7 +206,39 @@ export class ComandaMozosComponent {
     });
   }
 
+  verPedido(mesa: Mesa): void {
+    if (!mesa.pedidoID) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Sin pedido',
+        text: 'Esta mesa no tiene un pedido activo'
+      });
+      return;
+    }
+
+    this.router.navigate(['/comanda/pedido', mesa.tableCode, 'editar', mesa.pedidoID]);
+  }
+
   refrescarMesas(): void {
     this.cargarMesas();
+  }
+
+  cobrarPedido(mesa: Mesa): void {
+    if (!mesa.pedidoID || mesa.pedidoID <= 0) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Sin pedido',
+        text: 'Esta mesa no tiene un pedido activo para cobrar'
+      });
+      return;
+    }
+
+    console.log(mesa.pedidoID)
+    this.router.navigate(['/comanda/cobrar', mesa.pedidoID], {
+      queryParams: {
+        mesa: mesa.tableCode,
+        mozo: mesa.username
+      }
+    });
   }
 }

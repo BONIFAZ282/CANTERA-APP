@@ -24,14 +24,32 @@ import { MatTabGroup } from '@angular/material/tabs';
 import { MatOption } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
 
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatMenuModule } from '@angular/material/menu';
+
+import { MatTooltipModule } from '@angular/material/tooltip';
+
+
 import { MatSelectModule } from '@angular/material/select';
 import { MesasComponent } from './mesas/mesas.component';
+import { AdminInsumosComponent } from './admin-insumos/admin-insumos.component';
+import { ProductosComponent } from './productos/productos.component';
+import { StockInsumosComponent } from './stock-insumos/stock-insumos.component';
+import { ReporteMovimientosComponent } from './reporte-movimientos/reporte-movimientos.component';
+import { CajaDashboardComponent } from './caja-dashboard/caja-dashboard.component';
+import { OrdenCompraDashboardComponent } from './orden-compra-dashboard/orden-compra-dashboard.component';
 
 @NgModule({
   declarations: [
     InventoryComponent,
     CategoriasComponent,
-    MesasComponent
+    MesasComponent,
+    AdminInsumosComponent,
+    ProductosComponent,
+    StockInsumosComponent,
+    ReporteMovimientosComponent,
+    CajaDashboardComponent,
+    OrdenCompraDashboardComponent
   ],
   imports: [
     CommonModule,
@@ -51,7 +69,10 @@ import { MesasComponent } from './mesas/mesas.component';
     MatTabGroup,
     MatOption,
     FormsModule,
-    MatSelectModule
+    MatSelectModule,
+    MatProgressSpinnerModule,
+    MatMenuModule,
+    MatTooltipModule
   ]
 })
 export class InventoryModule { }

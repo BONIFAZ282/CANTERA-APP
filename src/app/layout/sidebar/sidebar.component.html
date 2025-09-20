@@ -1,157 +1,171 @@
-<!-- sidebar.component.html -->
 <div class="sidebar-content">
-  <!-- Logo -->
   <div class="logo">
     <img src="../../../assets/logo_cantera.jpg" alt="Logo La Cantera" />
     <span class="logo-text">LA CANTERA</span>
   </div>
 
-  <!-- Navegación -->
   <mat-nav-list class="nav-list">
-    <a mat-list-item routerLink="/dashboard" (click)="onItemClick()">
-      <mat-icon>dashboard</mat-icon> 
+    <a mat-list-item routerLink="/dashboard" routerLinkActive="active" (click)="onItemClick()">
+      <mat-icon>dashboard</mat-icon>
       <span class="nav-text">Dashboard</span>
     </a>
-
-    <a mat-list-item routerLink="/pos" (click)="onItemClick()">
-      <mat-icon>point_of_sale</mat-icon> 
+    
+    <a mat-list-item routerLink="/pos" routerLinkActive="active" (click)="onItemClick()">
+      <mat-icon>point_of_sale</mat-icon>
       <span class="nav-text">POS</span>
     </a>
 
-    <!-- Inventario -->
     <mat-expansion-panel class="nav-expansion-panel inventory-panel">
       <mat-expansion-panel-header class="expansion-header">
         <mat-panel-title class="panel-title">
-          <mat-icon>inventory_2</mat-icon> 
+          <mat-icon>inventory_2</mat-icon>
           <span class="nav-text">Inventario</span>
         </mat-panel-title>
       </mat-expansion-panel-header>
       <mat-nav-list class="sub-nav">
-        <a mat-list-item routerLink="/inventory/mesas" (click)="onItemClick()">
-          <mat-icon>table_restaurant</mat-icon> 
+        <a mat-list-item routerLink="/inventory/mesas" routerLinkActive="active" (click)="onItemClick()">
+          <mat-icon>table_restaurant</mat-icon>
           <span class="nav-text">Mesas</span>
         </a>
-        <a mat-list-item routerLink="/inventory/productos" (click)="onItemClick()">
-          <mat-icon>category</mat-icon> 
+        <a mat-list-item routerLink="/inventory/productos" routerLinkActive="active" (click)="onItemClick()">
+          <mat-icon>category</mat-icon>
           <span class="nav-text">Productos</span>
         </a>
-        <a mat-list-item routerLink="/inventory/categorias" (click)="onItemClick()">
-          <mat-icon>list</mat-icon> 
+        <a mat-list-item routerLink="/inventory/categorias" routerLinkActive="active" (click)="onItemClick()">
+          <mat-icon>list</mat-icon>
           <span class="nav-text">Categorías</span>
         </a>
-        <a mat-list-item routerLink="/inventory/movimientos" (click)="onItemClick()">
-          <mat-icon>compare_arrows</mat-icon> 
+        <a mat-list-item routerLink="/inventory/insumos" routerLinkActive="active" (click)="onItemClick()">
+          <mat-icon>inventory</mat-icon>
+          <span class="nav-text">Insumos</span>
+        </a>
+        <a mat-list-item routerLink="/inventory/stock" routerLinkActive="active" (click)="onItemClick()">
+          <mat-icon>assessment</mat-icon>
+          <span class="nav-text">Stock</span>
+        </a>
+        <a mat-list-item routerLink="/inventory/reporte" routerLinkActive="active" (click)="onItemClick()">
+          <mat-icon>analytics</mat-icon>
+          <span class="nav-text">Reporte</span>
+        </a>
+        <a mat-list-item routerLink="/inventory/caja" routerLinkActive="active" (click)="onItemClick()">
+          <mat-icon>account_balance_wallet</mat-icon>
+          <span class="nav-text">Caja</span>
+        </a>
+        <a mat-list-item routerLink="/inventory/ordenCompra" routerLinkActive="active" (click)="onItemClick()">
+          <mat-icon>shopping_cart</mat-icon>
+          <span class="nav-text">Orden Compra</span>
+        </a>
+        <a mat-list-item routerLink="/inventory/movimientos" routerLinkActive="active" (click)="onItemClick()">
+          <mat-icon>compare_arrows</mat-icon>
           <span class="nav-text">Movimientos</span>
         </a>
-        <a mat-list-item routerLink="/inventory/proveedores" (click)="onItemClick()">
-          <mat-icon>local_shipping</mat-icon> 
+        <a mat-list-item routerLink="/inventory/proveedores" routerLinkActive="active" (click)="onItemClick()">
+          <mat-icon>local_shipping</mat-icon>
           <span class="nav-text">Proveedores</span>
         </a>
-        <a mat-list-item routerLink="/ordenes" (click)="onItemClick()">
-          <mat-icon>receipt_long</mat-icon> 
+        <a mat-list-item routerLink="/ordenes" routerLinkActive="active" (click)="onItemClick()">
+          <mat-icon>receipt_long</mat-icon>
           <span class="nav-text">Órdenes de compra</span>
         </a>
-        <a mat-list-item routerLink="/inventory/mermas" (click)="onItemClick()">
-          <mat-icon>delete_sweep</mat-icon> 
+        <a mat-list-item routerLink="/inventory/mermas" routerLinkActive="active" (click)="onItemClick()">
+          <mat-icon>delete_sweep</mat-icon>
           <span class="nav-text">Mermas</span>
         </a>
-        <a mat-list-item routerLink="/inventory/transferencias" (click)="onItemClick()">
-          <mat-icon>swap_horiz</mat-icon> 
+        <a mat-list-item routerLink="/inventory/transferencias" routerLinkActive="active" (click)="onItemClick()">
+          <mat-icon>swap_horiz</mat-icon>
           <span class="nav-text">Transferencias</span>
         </a>
-        <a mat-list-item routerLink="/inventory/auditoria" (click)="onItemClick()">
-          <mat-icon>search</mat-icon> 
+        <a mat-list-item routerLink="/inventory/auditoria" routerLinkActive="active" (click)="onItemClick()">
+          <mat-icon>search</mat-icon>
           <span class="nav-text">Auditoría</span>
         </a>
-        <a mat-list-item routerLink="/inventory/alertas" (click)="onItemClick()">
-          <mat-icon>warning</mat-icon> 
+        <a mat-list-item routerLink="/inventory/alertas" routerLinkActive="active" (click)="onItemClick()">
+          <mat-icon>warning</mat-icon>
           <span class="nav-text">Alertas de stock</span>
         </a>
       </mat-nav-list>
     </mat-expansion-panel>
 
-    <a mat-list-item routerLink="/kitchen" (click)="onItemClick()">
-      <mat-icon>restaurant_menu</mat-icon> 
+    <a mat-list-item routerLink="/kitchen" routerLinkActive="active" (click)="onItemClick()">
+      <mat-icon>restaurant_menu</mat-icon>
       <span class="nav-text">Cocina</span>
     </a>
 
-    <a mat-list-item routerLink="/comanda" (click)="onItemClick()">
-      <mat-icon>receipt</mat-icon> 
+    <a mat-list-item routerLink="/comanda" routerLinkActive="active" (click)="onItemClick()">
+      <mat-icon>receipt</mat-icon>
       <span class="nav-text">Comanda</span>
     </a>
 
-    <a mat-list-item routerLink="/reports" (click)="onItemClick()">
-      <mat-icon>bar_chart</mat-icon> 
+    <a mat-list-item routerLink="/reports" routerLinkActive="active" (click)="onItemClick()">
+      <mat-icon>bar_chart</mat-icon>
       <span class="nav-text">Reportes</span>
     </a>
 
-    <!-- Finanzas -->
     <mat-expansion-panel class="nav-expansion-panel finance-panel">
       <mat-expansion-panel-header class="expansion-header">
         <mat-panel-title class="panel-title">
-          <mat-icon>account_balance_wallet</mat-icon> 
+          <mat-icon>account_balance</mat-icon>
           <span class="nav-text">Finanzas</span>
         </mat-panel-title>
       </mat-expansion-panel-header>
       <mat-nav-list class="sub-nav">
-        <a mat-list-item routerLink="/finance/aperturas" (click)="onItemClick()">
-          <mat-icon>login</mat-icon> 
+        <a mat-list-item routerLink="/finance/aperturas" routerLinkActive="active" (click)="onItemClick()">
+          <mat-icon>login</mat-icon>
           <span class="nav-text">Apertura de caja</span>
         </a>
-        <a mat-list-item routerLink="/finance/cierres" (click)="onItemClick()">
-          <mat-icon>logout</mat-icon> 
+        <a mat-list-item routerLink="/finance/cierres" routerLinkActive="active" (click)="onItemClick()">
+          <mat-icon>logout</mat-icon>
           <span class="nav-text">Cierre de caja</span>
         </a>
-        <a mat-list-item routerLink="/finance/historial" (click)="onItemClick()">
-          <mat-icon>history</mat-icon> 
+        <a mat-list-item routerLink="/finance/historial" routerLinkActive="active" (click)="onItemClick()">
+          <mat-icon>history</mat-icon>
           <span class="nav-text">Historial de cajas</span>
         </a>
-        <a mat-list-item routerLink="/finance/autorizaciones" (click)="onItemClick()">
-          <mat-icon>verified_user</mat-icon> 
+        <a mat-list-item routerLink="/finance/autorizaciones" routerLinkActive="active" (click)="onItemClick()">
+          <mat-icon>verified_user</mat-icon>
           <span class="nav-text">Autorizaciones</span>
         </a>
       </mat-nav-list>
     </mat-expansion-panel>
 
-    <a mat-list-item routerLink="/customers" (click)="onItemClick()">
-      <mat-icon>group</mat-icon> 
+    <a mat-list-item routerLink="/customers" routerLinkActive="active" (click)="onItemClick()">
+      <mat-icon>group</mat-icon>
       <span class="nav-text">Clientes</span>
     </a>
 
-    <!-- RRHH -->
     <mat-expansion-panel class="nav-expansion-panel rrhh-panel">
       <mat-expansion-panel-header class="expansion-header">
         <mat-panel-title class="panel-title">
-          <mat-icon>badge</mat-icon> 
+          <mat-icon>badge</mat-icon>
           <span class="nav-text">RRHH</span>
         </mat-panel-title>
       </mat-expansion-panel-header>
       <mat-nav-list class="sub-nav">
-        <a mat-list-item routerLink="/rrhh/cargos" (click)="onItemClick()">
-          <mat-icon>work</mat-icon> 
+        <a mat-list-item routerLink="/rrhh/cargos" routerLinkActive="active" (click)="onItemClick()">
+          <mat-icon>work</mat-icon>
           <span class="nav-text">Cargos</span>
         </a>
-        <a mat-list-item routerLink="/rrhh/turnos" (click)="onItemClick()">
-          <mat-icon>schedule</mat-icon> 
+        <a mat-list-item routerLink="/rrhh/turnos" routerLinkActive="active" (click)="onItemClick()">
+          <mat-icon>schedule</mat-icon>
           <span class="nav-text">Turnos</span>
         </a>
-        <a mat-list-item routerLink="/rrhh/empleados" (click)="onItemClick()">
-          <mat-icon>people</mat-icon> 
+        <a mat-list-item routerLink="/rrhh/empleados" routerLinkActive="active" (click)="onItemClick()">
+          <mat-icon>people</mat-icon>
           <span class="nav-text">Empleados</span>
         </a>
-        <a mat-list-item routerLink="/rrhh/privilegios" (click)="onItemClick()">
-          <mat-icon>security</mat-icon> 
+        <a mat-list-item routerLink="/rrhh/privilegios" routerLinkActive="active" (click)="onItemClick()">
+          <mat-icon>security</mat-icon>
           <span class="nav-text">Privilegios</span>
         </a>
-        <a mat-list-item routerLink="/rrhh/usuarios" (click)="onItemClick()">
-          <mat-icon>person</mat-icon> 
+        <a mat-list-item routerLink="/rrhh/usuarios" routerLinkActive="active" (click)="onItemClick()">
+          <mat-icon>person</mat-icon>
           <span class="nav-text">Usuarios</span>
         </a>
       </mat-nav-list>
     </mat-expansion-panel>
 
-    <a mat-list-item routerLink="/config" (click)="onItemClick()">
-      <mat-icon>settings</mat-icon> 
+    <a mat-list-item routerLink="/config" routerLinkActive="active" (click)="onItemClick()">
+      <mat-icon>settings</mat-icon>
       <span class="nav-text">Configuración</span>
     </a>
   </mat-nav-list>
