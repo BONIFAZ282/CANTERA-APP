@@ -1,0 +1,269 @@
+<!-- reporte-movimientos.component.html -->
+<div class="reporte-container">
+  
+  <!-- Header -->
+  <div class="header-section">
+    <div class="title-container">
+      <div class="icon-title">
+        <span class="chart-icon">📊</span>
+        <div>
+          <h1>Reporte de Movimientos</h1>
+          <p class="subtitle">Historial detallado de movimientos de inventario</p>
+        </div>
+      </div>
+      <button class="btn-export" (click)="exportarExcel()">
+        <span class="export-icon">⬇</span>
+        Exportar Excel
+      </button>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filtros-section">
+    <div class="filtros-row">
+      
+      <!-- Fecha Desde -->
+      <div class="filtro-grupo">
+        <label>Fecha Desde</label>
+        <input 
+          type="date" 
+          [(ngModel)]="filtros.fechaDesde"
+          class="input-fecha">
+      </div>
+
+      <!-- Fecha Hasta -->
+      <div class="filtro-grupo">
+        <label>Fecha Hasta</label>
+        <input 
+          type="date" 
+          [(ngModel)]="filtros.fechaHasta"
+          class="input-fecha">
+      </div>
+
+      <!-- Tipo de Operación -->
+      <div class="filtro-grupo">
+        <label>Tipo de Operación</label>
+        <select [(ngModel)]="filtros.tipoOperacion" class="select-filtro">
+          <option *ngFor="let tipo of tiposOperacion" [value]="tipo.value">
+            {{tipo.label}}
+          </option>
+        </select>
+      </div>
+
+      <!-- Usuario -->
+      <div class="filtro-grupo">
+        <label>Usuario</label>
+        <select [(ngModel)]="filtros.usuario" class="select-filtro">
+          <option value="">Todos</option>
+          <option *ngFor="let usuario of usuarios" [value]="usuario.usuario">
+            {{usuario.usuario}}
+          </option>
+        </select>
+      </div>
+
+      <!-- Botón Aplicar -->
+      <div class="filtro-grupo">
+        <button 
+          class="btn-aplicar" 
+          (click)="aplicarFiltros()"
+          [disabled]="cargando">
+          <span *ngIf="!cargando">Aplicar Filtros</span>
+          <span *ngIf="cargando" class="loading-spinner">⟳</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Tarjetas de Estadísticas -->
+  <div class="estadisticas-section">
+    
+    <!-- Entradas -->
+    <div class="stat-card entrada">
+      <div class="stat-icon">↗</div>
+      <div class="stat-content">
+        <div class="stat-number">{{estadisticas.totalEntradasInventario}}</div>
+        <div class="stat-label">Entradas</div>
+      </div>
+    </div>
+
+    <!-- Salidas -->
+    <div class="stat-card salida">
+      <div class="stat-icon">↘</div>
+      <div class="stat-content">
+        <div class="stat-number">{{estadisticas.totalSalidasInventario}}</div>
+        <div class="stat-label">Salidas</div>
+      </div>
+    </div>
+
+    <!-- Total Movimientos -->
+    <div class="stat-card total">
+      <div class="stat-icon">📋</div>
+      <div class="stat-content">
+        <div class="stat-number">{{paginacion.totalRegistros}}</div>
+        <div class="stat-label">Total Movimientos</div>
+      </div>
+    </div>
+
+    <!-- Balance Caja -->
+    <div class="stat-card balance">
+      <div class="stat-icon">💰</div>
+      <div class="stat-content">
+        <div class="stat-number">{{formatearMonto(estadisticas.balanceNeto)}}</div>
+        <div class="stat-label">Balance Neto</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Tabla de Movimientos -->
+  <div class="tabla-section">
+    <div class="tabla-header">
+      <h3>Movimientos ({{paginacion.totalRegistros}})</h3>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="cargando" class="loading-container">
+      <div class="loading-spinner big">⟳</div>
+      <p>Cargando movimientos...</p>
+    </div>
+
+    <!-- Tabla -->
+    <div *ngIf="!cargando" class="tabla-container">
+      <table class="movimientos-table">
+        
+        <thead>
+          <tr>
+            <th>Fecha y Hora</th>
+            <th>Sistema</th>
+            <th>Descripción</th>
+            <th>Operación</th>
+            <th>Detalle</th>
+            <th>Monto</th>
+            <th>Usuario</th>
+            <th>Referencia</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let movimiento of movimientos; let i = index" 
+              [class.row-even]="i % 2 === 0">
+            
+            <!-- Fecha y Hora -->
+            <td class="fecha-column">
+              {{formatearFechaHora(movimiento.fechaMovimiento)}}
+            </td>
+
+            <!-- Sistema -->
+            <td class="sistema-column">
+              <span class="sistema-badge" 
+                    [class.inventario]="movimiento.tipoSistema === 'INVENTARIO'"
+                    [class.caja]="movimiento.tipoSistema === 'CAJA'">
+                {{obtenerIconoSistema(movimiento.tipoSistema)}} {{movimiento.tipoSistema}}
+              </span>
+            </td>
+
+            <!-- Descripción -->
+            <td class="descripcion-column">
+              {{movimiento.descripcion}}
+            </td>
+
+            <!-- Operación -->
+            <td class="operacion-column">
+              <span class="operacion-badge" 
+                    [ngClass]="obtenerClaseOperacion(movimiento.tipoOperacion)">
+                <span *ngIf="movimiento.tipoOperacion === 'ENTRADA' || movimiento.tipoOperacion === 'INGRESO'">↗</span>
+                <span *ngIf="movimiento.tipoOperacion === 'SALIDA' || movimiento.tipoOperacion === 'EGRESO'">↘</span>
+                {{movimiento.tipoOperacion}}
+              </span>
+            </td>
+
+            <!-- Detalle -->
+            <td class="detalle-column">
+              <div class="detalle-text" [title]="movimiento.detalle">
+                {{movimiento.detalle}}
+              </div>
+            </td>
+
+            <!-- Monto -->
+            <td class="monto-column">
+              <span *ngIf="movimiento.montoAfectado > 0" 
+                    class="monto" 
+                    [ngClass]="obtenerClaseOperacion(movimiento.tipoOperacion)">
+                {{formatearMonto(movimiento.montoAfectado)}}
+              </span>
+              <span *ngIf="movimiento.montoAfectado === 0" class="monto-neutro">
+                -
+              </span>
+            </td>
+
+            <!-- Usuario -->
+            <td class="usuario-column">
+              {{movimiento.usuario}}
+            </td>
+
+            <!-- Referencia -->
+            <td class="referencia-column">
+              <span class="referencia-badge" 
+                    *ngIf="movimiento.referencia !== 'Sistema'">
+                {{movimiento.referencia}}
+              </span>
+              <span class="referencia-sistema" 
+                    *ngIf="movimiento.referencia === 'Sistema'">
+                Sistema
+              </span>
+            </td>
+
+          </tr>
+        </tbody>
+
+      </table>
+
+      <!-- Mensaje si no hay datos -->
+      <div *ngIf="movimientos.length === 0" class="no-data">
+        <p>No se encontraron movimientos para los filtros seleccionados</p>
+      </div>
+
+    </div>
+
+    <!-- Paginación -->
+    <div class="paginacion" *ngIf="paginacion.totalPaginas > 1">
+      
+      <!-- Botón Anterior -->
+      <button 
+        class="btn-pag" 
+        (click)="cambiarPagina(paginacion.pageNumber - 1)"
+        [disabled]="paginacion.pageNumber === 1">
+        ‹ Anterior
+      </button>
+
+      <!-- Números de página -->
+      <span class="paginas-numeros">
+        <button 
+          *ngFor="let pagina of paginasArray" 
+          class="btn-pag-numero"
+          [class.active]="pagina === paginacion.pageNumber"
+          (click)="cambiarPagina(pagina)">
+          {{pagina}}
+        </button>
+      </span>
+
+      <!-- Botón Siguiente -->
+      <button 
+        class="btn-pag" 
+        (click)="cambiarPagina(paginacion.pageNumber + 1)"
+        [disabled]="paginacion.pageNumber === paginacion.totalPaginas">
+        Siguiente ›
+      </button>
+
+      <!-- Info de paginación -->
+      <span class="pag-info">
+        Página {{paginacion.pageNumber}} de {{paginacion.totalPaginas}} 
+        ({{paginacion.totalRegistros}} registros)
+      </span>
+
+    </div>
+
+  </div>
+
+</div>

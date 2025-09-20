@@ -5,7 +5,7 @@
   </div>
 
   <mat-nav-list class="nav-list">
-    <a mat-list-item routerLink="/dashboard" routerLinkActive="active" (click)="onItemClick()">
+    <a mat-list-item routerLink="/inventory/dasboard" routerLinkActive="active" (click)="onItemClick()">
       <mat-icon>dashboard</mat-icon>
       <span class="nav-text">Dashboard</span>
     </a>
@@ -47,6 +47,11 @@
           <mat-icon>analytics</mat-icon>
           <span class="nav-text">Reporte</span>
         </a>
+        <a mat-list-item routerLink="/inventory/movimientos" routerLinkActive="active" (click)="onItemClick()">
+          <mat-icon>analytics</mat-icon>
+          <span class="nav-text">Movimientos</span>
+        </a>
+        
         <a mat-list-item routerLink="/inventory/caja" routerLinkActive="active" (click)="onItemClick()">
           <mat-icon>account_balance_wallet</mat-icon>
           <span class="nav-text">Caja</span>

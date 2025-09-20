@@ -4,7 +4,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LayoutModule } from './layout/layout.module';
 import { LoginComponent } from './modules/auth/login/login.component';
-import { HeaderComponent } from './layout/header/header.component';
+
 /* LIBRERIAS O COMPONENTES DE LAS INTERFACES*/
 import { MatIconModule } from '@angular/material/icon';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';

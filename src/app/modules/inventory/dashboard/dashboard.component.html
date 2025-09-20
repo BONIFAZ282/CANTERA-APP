@@ -1,0 +1,137 @@
+<!-- dashboard.component.html -->
+<div class="dashboard-container">
+  
+  <!-- Loading State -->
+  <div *ngIf="cargando" class="loading-container">
+    <div class="loading-spinner">⟳</div>
+    <p>Cargando datos del dashboard...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !cargando" class="error-container">
+    <div class="error-icon">⚠️</div>
+    <p>{{error}}</p>
+    <button class="btn-reintentar" (click)="cargarDatos()">
+      Reintentar
+    </button>
+  </div>
+
+  <!-- Dashboard Content -->
+  <div *ngIf="dashboardData && !cargando" class="dashboard-grid">
+    
+    <!-- Header con botón de actualización -->
+    <div class="dashboard-header">
+      <h1>Dashboard Administrativo</h1>
+      <button class="btn-actualizar" (click)="actualizarDatos()" [disabled]="cargando">
+        <span class="refresh-icon" [class.spinning]="cargando">🔄</span>
+        Actualizar
+      </button>
+    </div>
+
+    <!-- Ventas del día -->
+    <div class="card ventas-dia highlight">
+      <h3>💵 Ventas del día</h3>
+      <p>{{formatearMoneda(dashboardData.ventasDelDia.totalVentas)}}</p>
+      <div class="ventas-detalle">
+        <span>{{dashboardData.ventasDelDia.cantidadPedidos}} pedidos</span>
+        <span>Promedio: {{formatearMoneda(dashboardData.ventasDelDia.promedioTicket)}}</span>
+      </div>
+    </div>
+    
+    <!-- Caja actual -->
+    <div class="card caja tiny">
+      <h3>💰 Caja actual</h3>
+      <ul>
+        <li>Efectivo: {{formatearMoneda(dashboardData.cajaActual.efectivo)}}</li>
+        <li>Tarjeta: {{formatearMoneda(dashboardData.cajaActual.tarjeta)}}</li>
+        <li>Delivery: {{formatearMoneda(dashboardData.cajaActual.delivery)}}</li>
+        <li *ngIf="dashboardData.cajaActual.yape > 0">Yape: {{formatearMoneda(dashboardData.cajaActual.yape)}}</li>
+        <li *ngIf="dashboardData.cajaActual.plin > 0">Plin: {{formatearMoneda(dashboardData.cajaActual.plin)}}</li>
+      </ul>
+      <div class="total-caja">
+        <strong>Total: {{formatearMoneda(dashboardData.cajaActual.total)}}</strong>
+      </div>
+    </div>
+
+    <!-- Mini grid para cards pequeñas -->
+    <div class="mini-grid">
+      
+      <!-- Pedidos activos -->
+      <div class="card pedidos-activos tiny">
+        <h3>🐔 Pedidos en cocina</h3>
+        <p>{{dashboardData.pedidosActivos.enCocina}} pedidos activos</p>
+        <div class="pedidos-extra" *ngIf="dashboardData.pedidosActivos.pendientes > 0">
+          <small>{{dashboardData.pedidosActivos.pendientes}} pendientes</small>
+        </div>
+      </div>
+
+      <!-- Stock crítico -->
+      <div class="card stock-bajo tiny">
+        <h3>📦 Stock crítico</h3>
+        <ul>
+          <li *ngFor="let item of stockCriticoLimitado">
+            {{item.nombreInsumo}} - {{item.stockActual}}{{item.unidadMedida}}
+          </li>
+        </ul>
+        <div class="stock-warning" *ngIf="dashboardData.stockCritico.length > 3">
+          +{{dashboardData.stockCritico.length - 3}} más
+        </div>
+      </div>
+
+      <!-- Producto top -->
+      <div class="card producto-top tiny">
+        <h3>🍗 Producto más vendido</h3>
+        <p>{{dashboardData.productoMasVendido.nombreProducto}}</p>
+        <p>{{dashboardData.productoMasVendido.cantidadVendida}} unidades</p>
+        <div class="producto-ingresos">
+          <small>{{formatearMoneda(dashboardData.productoMasVendido.totalIngresos)}}</small>
+        </div>
+      </div>
+
+      <!-- Delivery info -->
+      <div class="card delivery tiny">
+        <h3>🚗 Pedidos en delivery</h3>
+        <p>{{dashboardData.deliveryInfo.enCamino}} en camino</p>
+        <p *ngIf="dashboardData.deliveryInfo.sinAsignar > 0">
+          {{dashboardData.deliveryInfo.sinAsignar}} sin asignar
+        </p>
+        <div class="delivery-total" *ngIf="dashboardData.deliveryInfo.completados > 0">
+          <small>{{dashboardData.deliveryInfo.completados}} completados hoy</small>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Gráfico de ventas semanales -->
+    <div class="card resumen-semanal wide tall">
+      <div class="chart-header">
+        <h3>📈 Ventas últimos 7 días</h3>
+        <div class="chart-stats">
+          <span class="total-semanal">
+            Total: {{formatearMoneda(getTotalVentasSemanales())}}
+          </span>
+        </div>
+      </div>
+      <div class="chart-wrapper">
+        <canvas id="ventasLineChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Gráfico de ventas por categoría -->
+    <div class="card grafico-ventas wide tall">
+      <div class="chart-header">
+        <h3>📊 Ventas por categoría</h3>
+        <div class="chart-stats">
+          <span class="categorias-count">
+            {{getCantidadCategorias()}} categorías
+          </span>
+        </div>
+      </div>
+      <div class="chart-wrapper">
+        <canvas id="ventasChart"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+</div>
