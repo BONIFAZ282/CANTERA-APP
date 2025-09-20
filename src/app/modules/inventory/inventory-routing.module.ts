@@ -10,6 +10,8 @@ import { CajaDashboardComponent } from './caja-dashboard/caja-dashboard.componen
 import { OrdenCompraDashboardComponent } from './orden-compra-dashboard/orden-compra-dashboard.component';
 import { MovimientosReporteComponent } from './movimientos-reporte/movimientos-reporte.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { FormaPagoComponent } from './forma-pago/forma-pago.component';
+import { ProveedoresComponent } from './proveedores/proveedores.component';
 
 const routes: Routes = [
   { path: 'categorias', component: CategoriasComponent },
@@ -20,7 +22,9 @@ const routes: Routes = [
   { path: 'caja', component: CajaDashboardComponent },
   { path: 'ordenCompra', component: OrdenCompraDashboardComponent },
   { path: 'movimientos', component: MovimientosReporteComponent },
-  { path: 'dasboard', component: DashboardComponent }
+  { path: 'dashboard', component: DashboardComponent },
+  { path: 'formaPago', component: FormaPagoComponent },
+  { path: 'proveedores', component: ProveedoresComponent }
   
 ];
 

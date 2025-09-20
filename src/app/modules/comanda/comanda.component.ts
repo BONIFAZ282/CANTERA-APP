@@ -1,34 +1,29 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from '../../core/services/AuthService';
 
 @Component({
   selector: 'app-comanda',
-  templateUrl: './comanda.component.html',
-  styleUrls: ['./comanda.component.scss']
+  template: `<router-outlet></router-outlet>`
 })
-
-
 export class ComandaComponent implements OnInit {
 
-  perfil: 'mozo' | 'cocina' | 'admin' = 'mozo';
-
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
-    this.redirigirPorPerfil();
-  }
+    const cargoCod = this.authService.getCargoCod();
 
-  redirigirPorPerfil() {
-    switch (this.perfil) {
-      case 'mozo':
-        this.router.navigate(['comanda/mozos']);
-        break;
-      case 'cocina':
-        this.router.navigate(['comanda/cocina']);
-        break;
-      case 'admin':
-        this.router.navigate(['comanda/admin']);
-        break;
+    if (cargoCod === '00001') {
+      this.router.navigate(['/comanda/admin']);
+    } else if (cargoCod === '00002') {
+      this.router.navigate(['/comanda/cocina']);
+    } else if (cargoCod === '00003') {
+      this.router.navigate(['/comanda/mozos']);
+    } else {
+      this.router.navigate(['/']); // otro → dashboard
     }
   }
 }

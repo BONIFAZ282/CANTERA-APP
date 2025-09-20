@@ -1,0 +1,171 @@
+
+<div class="forma-pago-container">
+
+  <!-- Header -->
+  <div class="header-section">
+    <div class="title-container">
+      <div class="icon-title">
+        <span class="forma-pago-icon">💳</span>
+        <div>
+          <h1>Gestión de Formas de Pago</h1>
+          <p class="subtitle">Administra los métodos de pago disponibles</p>
+        </div>
+      </div>
+      <button class="btn-nuevo" (click)="abrirModalNueva()">
+        <span class="plus-icon">+</span>
+        Nueva Forma de Pago
+      </button>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filtros-section">
+    <div class="filtros-row">
+      
+      <div class="filtro-grupo">
+        <label>Buscar forma de pago</label>
+        <input 
+          type="text" 
+          [(ngModel)]="filtros.nombre"
+          placeholder="Nombre de la forma de pago..."
+          class="input-buscar">
+      </div>
+
+      <div class="filtro-grupo">
+        <label>Estado</label>
+        <select [(ngModel)]="filtros.estado" class="select-filtro">
+          <option value="todos">Todos</option>
+          <option value="activos">Activos</option>
+          <option value="inactivos">Inactivos</option>
+        </select>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="cargando" class="loading-container">
+    <div class="loading-spinner">⟳</div>
+    <p>Cargando formas de pago...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error && !cargando" class="error-container">
+    <div class="error-icon">⚠️</div>
+    <p>{{error}}</p>
+  </div>
+
+  <!-- Grid de formas de pago -->
+  <div *ngIf="!cargando && !error" class="formas-pago-section">
+    <div class="tabla-header">
+      <h3>Formas de Pago ({{formasPagoFiltradas.length}})</h3>
+    </div>
+
+    <div class="formas-pago-grid">
+      
+      <div *ngFor="let formaPago of formasPagoFiltradas" 
+           class="forma-pago-card"
+           [class.inactive]="!formaPago.bEstado">
+        
+        <div class="card-header">
+          <div class="forma-pago-icon">💳</div>
+          <div class="acciones-grupo">
+            <button class="btn-accion editar" 
+                    (click)="abrirModalEditar(formaPago)"
+                    title="Editar">
+              ✏️
+            </button>
+            <button class="btn-accion toggle" 
+                    (click)="cambiarEstadoFormaPago(formaPago)"
+                    [title]="formaPago.bEstado ? 'Desactivar' : 'Activar'">
+              {{formaPago.bEstado ? '🔒' : '🔓'}}
+            </button>
+            <button class="btn-accion eliminar" 
+                    (click)="eliminarFormaPago(formaPago)"
+                    title="Eliminar">
+              🗑️
+            </button>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <h4>{{formaPago.cNombreFormaPago}}</h4>
+          <div class="estado-badge" 
+               [class.activo]="formaPago.bEstado"
+               [class.inactivo]="!formaPago.bEstado">
+            {{formaPago.bEstado ? 'Activo' : 'Inactivo'}}
+          </div>
+        </div>
+
+      </div>
+
+      <div *ngIf="formasPagoFiltradas.length === 0" class="no-data">
+        <p>No se encontraron formas de pago</p>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal para nueva/editar forma de pago -->
+<div class="modal-overlay" *ngIf="mostrarModal" (click)="cerrarModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    
+    <div class="modal-header">
+      <h2>{{editando ? 'Editar Forma de Pago' : 'Nueva Forma de Pago'}}</h2>
+      <button class="btn-cerrar" (click)="cerrarModal()">×</button>
+    </div>
+
+    <div class="modal-body">
+      <form class="forma-pago-form">
+        
+        <div class="form-row">
+          <div class="form-grupo full-width">
+            <label>Nombre de la Forma de Pago *</label>
+            <input type="text" 
+                   [(ngModel)]="nuevaFormaPago.cNombreFormaPago"
+                   name="nombre"
+                   required
+                   placeholder="Ej: Efectivo, Tarjeta, Yape..."
+                   class="form-input">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-grupo full-width">
+            <label>Imagen/Icono</label>
+            <input type="text" 
+                   [(ngModel)]="nuevaFormaPago.cImagen"
+                   name="imagen"
+                   placeholder="Nombre del archivo de imagen..."
+                   class="form-input">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-grupo">
+            <div class="checkbox-grupo">
+              <input type="checkbox" 
+                     [(ngModel)]="nuevaFormaPago.bEstado"
+                     name="activo"
+                     id="activoFormaPago">
+              <label for="activoFormaPago">Forma de pago activa</label>
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancelar" (click)="cerrarModal()">
+        Cancelar
+      </button>
+      <button class="btn-guardar" (click)="guardarFormaPago()">
+        {{editando ? 'Actualizar' : 'Guardar'}}
+      </button>
+    </div>
+
+  </div>
+</div>

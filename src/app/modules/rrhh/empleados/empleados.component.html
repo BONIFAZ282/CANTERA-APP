@@ -1,108 +1,299 @@
-<div class="empleado-container">
-  <mat-card class="tabs-card">
-    <mat-tab-group mat-align-tabs="start" [(selectedIndex)]="selectedTabIndex">
-      
-      <!-- Tab 1: Formulario -->
-      <mat-tab label="Registrar Empleado">
-        <div class="tab-content">
-          <mat-card-title>{{ modoEdicion ? 'Editar Empleado' : 'Registrar Empleado' }}</mat-card-title>
-          <form [formGroup]="formEmpleado" (ngSubmit)="registrarEmpleado()">
-            <div class="form-row">
-              <mat-form-field appearance="outline">
-                <mat-label>DNI</mat-label>
-                <input matInput formControlName="dni" maxlength="8" />
-              </mat-form-field>
+<!-- empleados.component.html -->
+<div class="empleados-container">
 
-              <mat-form-field appearance="outline">
-                <mat-label>Nombres</mat-label>
-                <input matInput formControlName="nombres" />
-              </mat-form-field>
-
-              <mat-form-field appearance="outline">
-                <mat-label>Cargo</mat-label>
-                <mat-select formControlName="cargo">
-                  <mat-option *ngFor="let c of cargos" [value]="c">{{ c }}</mat-option>
-                </mat-select>
-              </mat-form-field>
-
-              <mat-slide-toggle formControlName="estado" color="primary">
-                Activo
-              </mat-slide-toggle>
-            </div>
-
-            <div class="button-group">
-              <button mat-raised-button color="primary" type="submit" [disabled]="formEmpleado.invalid">
-                {{ modoEdicion ? 'Actualizar' : 'Registrar' }}
-              </button>
-              <button mat-stroked-button type="button" (click)="cancelar()">Cancelar</button>
-            </div>
-          </form>
+  <!-- Header -->
+  <div class="header-section">
+    <div class="title-container">
+      <div class="icon-title">
+        <span class="empleados-icon">👥</span>
+        <div>
+          <h1>Gestión de Empleados</h1>
+          <p class="subtitle">Administra el personal de La Cantera</p>
         </div>
-      </mat-tab>
+      </div>
+      <button class="btn-nuevo" (click)="abrirModalNuevo()">
+        <span class="plus-icon">+</span>
+        Nuevo Empleado
+      </button>
+    </div>
+  </div>
 
-      <!-- Tab 2: Listado -->
-      <mat-tab label="Lista de Empleados">
-        <div class="tab-content">
-          <mat-card-title>Lista de Empleados</mat-card-title>
-          
-          <!-- Filtro de búsqueda -->
-          <!-- <div class="search-container">
-            <mat-form-field appearance="outline">
-              <mat-label>Buscar por nombre</mat-label>
-              <input matInput (keyup)="applyFilter($event)" placeholder="Filtrar empleados...">
-              <mat-icon matSuffix>search</mat-icon>
-            </mat-form-field>
-          </div> -->
+  <!-- Filtros -->
+  <div class="filtros-section">
+    <div class="filtros-row">
 
-          <mat-table [dataSource]="dataSource" class="mat-elevation-z2" matSort>
+      <!-- Buscar por nombre -->
+      <div class="filtro-grupo">
+        <label>Buscar empleado</label>
+        <input type="text" [(ngModel)]="filtros.nombre" placeholder="Nombre o apellido..." class="input-buscar">
+      </div>
 
-            <ng-container matColumnDef="dni">
-              <mat-header-cell *matHeaderCellDef>DNI</mat-header-cell>
-              <mat-cell *matCellDef="let empleado">{{ empleado.dni }}</mat-cell>
-            </ng-container>
+      <!-- Filtro por cargo -->
+      <div class="filtro-grupo">
+        <label>Cargo</label>
+        <select [(ngModel)]="filtros.cargo" class="select-filtro">
+          <option value="">Todos los cargos</option>
+          <option *ngFor="let cargo of cargos" [value]="cargo.cNombreCargo">
+            {{cargo.cNombreCargo}}
+          </option>
+        </select>
+      </div>
 
+      <!-- Filtro por estado -->
+      <div class="filtro-grupo">
+        <label>Estado</label>
+        <select [(ngModel)]="filtros.estado" class="select-filtro">
+          <option value="todos">Todos</option>
+          <option value="activos">Activos</option>
+          <option value="inactivos">Inactivos</option>
+        </select>
+      </div>
 
-            <ng-container matColumnDef="nombres">
-              <mat-header-cell *matHeaderCellDef>Nombres</mat-header-cell>
-              <mat-cell *matCellDef="let empleado">{{ empleado.nombres }}</mat-cell>
-            </ng-container>
+    </div>
+  </div>
 
-            <ng-container matColumnDef="cargo">
-              <mat-header-cell *matHeaderCellDef>Cargo</mat-header-cell>
-              <mat-cell *matCellDef="let empleado">{{ empleado.cargo }}</mat-cell>
-            </ng-container>
+  <!-- Loading -->
+  <div *ngIf="cargando" class="loading-container">
+    <div class="loading-spinner">⟳</div>
+    <p>Cargando empleados...</p>
+  </div>
 
+  <!-- Error -->
+  <div *ngIf="error && !cargando" class="error-container">
+    <div class="error-icon">⚠️</div>
+    <p>{{error}}</p>
+  </div>
 
-            <ng-container matColumnDef="estado">
-              <mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
-              <mat-cell *matCellDef="let empleado">
-                <span [ngClass]="{ 'activo': empleado.estado, 'inactivo': !empleado.estado}">
-                  {{ empleado.estado? 'Activo' : 'Inactivo' }}
-                </span>
-              </mat-cell>
-            </ng-container>
+  <!-- Tabla de empleados -->
+  <div *ngIf="!cargando && !error" class="tabla-section">
+    <div class="tabla-header">
+      <h3>Empleados ({{empleadosFiltrados.length}})</h3>
+    </div>
 
+    <div class="tabla-container">
+      <table class="empleados-table">
 
-            <ng-container matColumnDef="acciones">
-              <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
-              <mat-cell *matCellDef="let empleado">
-                <button mat-icon-button color="accent" (click)="editarEmpleado(empleado)">
-                  <mat-icon>edit</mat-icon>
+        <thead>
+          <tr>
+            <th>Empleado</th>
+            <th>DNI</th>
+            <th>Cargo</th>
+            <th>Sueldo</th>
+            <th>Fecha Ingreso</th>
+            <th>Contacto</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let empleado of empleadosFiltrados; let i = index" [class.row-even]="i % 2 === 0"
+            [class.inactive]="!empleado.empleado.bactivo">
+
+            <!-- Empleado -->
+            <td class="empleado-column">
+              <div class="empleado-info">
+                <div class="empleado-avatar">
+                  {{empleado.persona.cNombres.charAt(0)}}{{empleado.persona.cApePaterno.charAt(0)}}
+                </div>
+                <div class="empleado-datos">
+                  <div class="nombre-completo">
+                    {{empleado.persona.cNombres}} {{empleado.persona.cApePaterno}} {{empleado.persona.cApeMaterno}}
+                  </div>
+                  <div class="edad" *ngIf="empleado.persona.dFechaNacimiento">
+                    {{calcularEdad(empleado.persona.dFechaNacimiento)}} años
+                  </div>
+                </div>
+              </div>
+            </td>
+
+            <!-- DNI -->
+            <td class="dni-column">
+              {{empleado.persona.cDni}}
+            </td>
+
+            <!-- Cargo -->
+            <td class="cargo-column">
+              <span class="cargo-badge">
+                {{empleado.cargo.cNombreCargo}}
+              </span>
+            </td>
+
+            <!-- Sueldo -->
+            <td class="sueldo-column">
+              {{formatearMoneda(empleado.cargo.nSueldo || 0)}}
+            </td>
+
+            <!-- Fecha Ingreso -->
+            <td class="fecha-column">
+              {{formatearFecha(empleado.empleado.fechaIngreso || '')}}
+            </td>
+
+            <!-- Contacto -->
+            <td class="contacto-column">
+              <div class="contacto-info">
+                <div *ngIf="empleado.persona.cTelefono" class="telefono">
+                  📞 {{empleado.persona.cTelefono}}
+                </div>
+                <div *ngIf="empleado.persona.cCorreo" class="correo">
+                  ✉️ {{empleado.persona.cCorreo}}
+                </div>
+              </div>
+            </td>
+
+            <!-- Estado -->
+            <td class="estado-column">
+              <span class="estado-badge" [class.activo]="empleado.empleado.bactivo"
+                [class.inactivo]="!empleado.empleado.bactivo">
+                {{empleado.empleado.bactivo ? 'Activo' : 'Inactivo'}}
+              </span>
+            </td>
+
+            <!-- Acciones -->
+            <td class="acciones-column">
+              <div class="acciones-grupo">
+                <button class="btn-accion editar" (click)="abrirModalEditar(empleado)" title="Editar">
+                  ✏️
                 </button>
-                <button mat-icon-button color="warn" (click)="eliminarEmpleado(empleado.id)">
-                  <mat-icon>delete</mat-icon>
+                <button class="btn-accion toggle" (click)="cambiarEstadoEmpleado(empleado)"
+                  [title]="empleado.empleado.bactivo ? 'Desactivar' : 'Activar'">
+                  {{empleado.empleado.bactivo ? '🔒' : '🔓'}}
                 </button>
-              </mat-cell>
-            </ng-container>
+                <button class="btn-accion eliminar" (click)="eliminarEmpleado(empleado)" title="Eliminar">
+                  🗑️
+                </button>
+              </div>
+            </td>
 
+          </tr>
+        </tbody>
 
+      </table>
 
-            <mat-header-row *matHeaderRowDef="columnas"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: columnas;"></mat-row>
-          </mat-table>
+      <!-- Sin datos -->
+      <div *ngIf="empleadosFiltrados.length === 0" class="no-data">
+        <p>No se encontraron empleados</p>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal para nuevo/editar empleado -->
+<div class="modal-overlay" *ngIf="mostrarModal" (click)="cerrarModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+
+    <div class="modal-header">
+      <h2>{{editando ? 'Editar Empleado' : 'Nuevo Empleado'}}</h2>
+      <button class="btn-cerrar" (click)="cerrarModal()">×</button>
+    </div>
+
+    <div class="modal-body">
+      <form class="empleado-form">
+
+        <!-- Datos Personales -->
+        <div class="seccion-form">
+          <h3>Datos Personales</h3>
+
+          <div class="form-row">
+            <div class="form-grupo">
+              <label>Nombres *</label>
+              <input type="text" [(ngModel)]="nuevoEmpleado.persona.cNombres" name="nombres" required
+                class="form-input">
+            </div>
+            <div class="form-grupo">
+              <label>Apellido Paterno *</label>
+              <input type="text" [(ngModel)]="nuevoEmpleado.persona.cApePaterno" name="apellidoPaterno" required
+                class="form-input">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-grupo">
+              <label>Apellido Materno</label>
+              <input type="text" [(ngModel)]="nuevoEmpleado.persona.cApeMaterno" name="apellidoMaterno"
+                class="form-input">
+            </div>
+            <div class="form-grupo">
+              <label>DNI *</label>
+              <input type="text" [(ngModel)]="nuevoEmpleado.persona.cDni" name="dni" maxlength="8" required
+                class="form-input">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-grupo">
+              <label>Fecha de Nacimiento</label>
+              <input type="date" [(ngModel)]="nuevoEmpleado.persona.dFechaNacimiento" name="fechaNacimiento"
+                class="form-input">
+            </div>
+            <div class="form-grupo">
+              <label>Teléfono</label>
+              <input type="tel" [(ngModel)]="nuevoEmpleado.persona.cTelefono" name="telefono" class="form-input">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-grupo full-width">
+              <label>Correo Electrónico</label>
+              <input type="email" [(ngModel)]="nuevoEmpleado.persona.cCorreo" name="correo" class="form-input">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-grupo full-width">
+              <label>Dirección</label>
+              <textarea [(ngModel)]="nuevoEmpleado.persona.cDireccion" name="direccion" rows="2"
+                class="form-textarea"></textarea>
+            </div>
+          </div>
         </div>
-      </mat-tab>
 
-    </mat-tab-group>
-  </mat-card>
+        <!-- Datos Laborales -->
+        <div class="seccion-form">
+          <h3>Datos Laborales</h3>
+
+          <div class="form-row">
+            <div class="form-grupo">
+              <label>Cargo *</label>
+              <select [(ngModel)]="nuevoEmpleado.empleado.nCargoId" (change)="onCargoChange()" name="cargo" required
+                class="form-select">
+                <option value="0">Seleccionar cargo</option>
+                <option *ngFor="let cargo of cargos" [value]="cargo.cNombreCargo">
+                  {{cargo.cNombreCargo}}
+                </option>
+              </select>
+            </div>
+            <div class="form-grupo">
+              <label>Fecha de Ingreso</label>
+              <input type="date" [(ngModel)]="nuevoEmpleado.empleado.fechaIngreso" name="fechaIngreso"
+                class="form-input">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-grupo">
+              <label>Estado</label>
+              <div class="checkbox-grupo">
+                <input type="checkbox" [(ngModel)]="nuevoEmpleado.empleado.bactivo" name="activo" id="activo">
+                <label for="activo">Empleado activo</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancelar" (click)="cerrarModal()">
+        Cancelar
+      </button>
+      <button class="btn-guardar" (click)="guardarEmpleado()">
+        {{editando ? 'Actualizar' : 'Guardar'}}
+      </button>
+    </div>
+
+  </div>
 </div>

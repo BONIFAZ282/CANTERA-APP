@@ -1,33 +1,48 @@
 <div class="admin-container">
-  <h2>👨‍💼 Resumen de Pedidos</h2>
+  <header class="admin-header">
+    <h1> Panel de Administración</h1>
+    <p>Gestión integral de pedidos y comandas</p>
+  </header>
 
-  <div class="resumen-grid">
-    <mat-card class="resumen-card activo">
-      <mat-card-title>Pedidos Activos</mat-card-title>
-      <mat-card-content>
-        <h1>{{ pedidosActivos }}</h1>
-      </mat-card-content>
-    </mat-card>
+  <div class="dashboard-content">
+    <div class="stats-grid">
+      <mat-card class="stat-card activo">
+        <mat-card-content>
+          <div class="stat-icon">🔄</div>
+          <div class="stat-number">{{ pedidosActivos }}</div>
+          <div class="stat-label">Pedidos Activos</div>
+          <div class="stat-change" [ngClass]="getCambioClass(cambioActivos)">
+            {{ cambioActivos }} desde ayer
+          </div>
+        </mat-card-content>
+      </mat-card>
 
-    <mat-card class="resumen-card llevar">
-      <mat-card-title>Para llevar</mat-card-title>
-      <mat-card-content>
-        <h1>{{ pedidosLlevar }}</h1>
-      </mat-card-content>
-    </mat-card>
+      <mat-card class="stat-card llevar">
+        <mat-card-content>
+          <div class="stat-icon">🥡</div>
+          <div class="stat-number">{{ pedidosLlevar }}</div>
+          <div class="stat-label">Pedidos en Cocina</div>
+          <div class="stat-change" [ngClass]="getCambioClass(cambioLlevar)">
+            {{ cambioLlevar }} desde ayer
+          </div>
+        </mat-card-content>
+      </mat-card>
 
-    <mat-card class="resumen-card delivery">
-      <mat-card-title>Delivery</mat-card-title>
-      <mat-card-content>
-        <h1>{{ pedidosDelivery }}</h1>
-      </mat-card-content>
-    </mat-card>
 
-    <mat-card class="resumen-card finalizado">
-      <mat-card-title>Entregados</mat-card-title>
-      <mat-card-content>
-        <h1>{{ pedidosEntregados }}</h1>
-      </mat-card-content>
-    </mat-card>
+      <mat-card class="stat-card finalizado">
+        <mat-card-content>
+          <div class="stat-icon">✅</div>
+          <div class="stat-number">{{ pedidosEntregados }}</div>
+          <div class="stat-label">Entregados Hoy</div>
+          <div class="stat-change" [ngClass]="getCambioClass(cambioEntregados)">
+            {{ cambioEntregados }} desde ayer
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
   </div>
 </div>
+
+<button mat-fab class="refresh-btn" (click)="refrescarManual()" matTooltip="Actualizar datos">
+  <mat-icon>refresh</mat-icon>
+</button>

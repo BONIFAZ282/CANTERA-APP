@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatTableDataSource } from '@angular/material/table';
+import { EmpleadoCompleto } from '../../../auth/models/empleado.model';
+import { Cargo } from '../../../auth/models/cargo.model';
+import { Turno } from '../../../auth/models/turno.model';
+import { EmpleadosService } from '../../../auth/services/empleados.service';
 
 @Component({
   selector: 'app-empleados',
@@ -8,117 +10,244 @@ import { MatTableDataSource } from '@angular/material/table';
   styleUrls: ['./empleados.component.scss']
 })
 export class EmpleadosComponent implements OnInit {
-  formEmpleado!: FormGroup;
-  modoEdicion = false;
-  idEnEdicion: number | null = null;
-  selectedTabIndex = 0; // Para controlar las tabs
-  
-  // Columnas de la tabla
-  columnas: string[] = ['dni', 'nombres', 'cargo', 'estado', 'acciones'];
-  
-  // DataSource para la tabla
-  dataSource = new MatTableDataSource<any>();
-  
-  // Lista de cargos disponibles
-  cargos: string[] = ['Gerente', 'Chef', 'Mesero', 'Cajero', 'Limpieza'];
-  
-  // Datos de ejemplo (reemplazar con datos reales del servicio)
-  empleados: any[] = [
-    { id: 1, dni: '12345678', nombres: 'Juan Pérez', cargo: 'Chef', estado: true },
-    { id: 2, dni: '87654321', nombres: 'María García', cargo: 'Mesero', estado: true },
-    { id: 3, dni: '11223344', nombres: 'Carlos López', cargo: 'Cajero', estado: false },
-  ];
 
-  constructor(private fb: FormBuilder) { }
+  empleados: EmpleadoCompleto[] = [];
+cargos: any[] = [];
+turnos: any[] = [];  
+  cargando = true;
+  error: string | null = null;
+  
+  mostrarModal = false;
+  editando = false;
+  empleadoSeleccionado: EmpleadoCompleto | null = null;
+  
+  filtros = {
+    nombre: '',
+    cargo: '',
+    estado: 'todos'
+  };
+
+  nuevoEmpleado: EmpleadoCompleto = this.crearEmpleadoVacio();
+
+  constructor(private empleadosService: EmpleadosService) {}
 
   ngOnInit(): void {
-    this.inicializarFormulario();
     this.cargarDatos();
   }
 
-  inicializarFormulario(): void {
-    this.formEmpleado = this.fb.group({
-      dni: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
-      nombres: ['', Validators.required],
-      cargo: ['', Validators.required],
-      estado: [true]
-    });
-  }
-
   cargarDatos(): void {
-    // Aquí cargarías los datos del servicio
-    this.dataSource.data = this.empleados;
-  }
+    this.cargando = true;
+    this.error = null;
 
-  registrarEmpleado(): void {
-    if (this.formEmpleado.invalid) return;
-
-    const formValue = this.formEmpleado.value;
-    
-    if (this.modoEdicion) {
-      // Actualizar empleado existente
-      const index = this.empleados.findIndex(emp => emp.id === this.idEnEdicion);
-      if (index !== -1) {
-        this.empleados[index] = {
-          ...this.empleados[index],
-          dni: formValue.dni,
-          nombres: formValue.nombres,
-          cargo: formValue.cargo,
-          estado: formValue.estado
-        };
+    this.empleadosService.listarEmpleados().subscribe({
+      next: (empleados) => {
+        this.empleados = empleados;
+        this.cargando = false;
+      },
+      error: (error) => {
+        this.error = 'Error al cargar empleados';
+        this.cargando = false;
       }
-    } else {
-      // Crear nuevo empleado
-      const nuevoEmpleado = {
-        id: this.empleados.length + 1, // En producción usar ID del backend
-        dni: formValue.dni,
-        nombres: formValue.nombres,
-        cargo: formValue.cargo,
-        estado: formValue.estado
-      };
-      this.empleados.push(nuevoEmpleado);
-    }
-
-    this.dataSource.data = [...this.empleados];
-    this.cancelar();
-    // Cambiar a la tab del listado para ver el resultado
-    this.selectedTabIndex = 1;
-  }
-
-  editarEmpleado(empleado: any): void {
-    this.formEmpleado.patchValue({
-      dni: empleado.dni,
-      nombres: empleado.nombres,
-      cargo: empleado.cargo,
-      estado: empleado.estado
     });
-    this.modoEdicion = true;
-    this.idEnEdicion = empleado.id;
-    // Cambiar a la tab del formulario para editar
-    this.selectedTabIndex = 0;
+
+    this.empleadosService.listarCargos().subscribe({
+      next: (cargos) => {
+        this.cargos = cargos;
+      }
+    });
+
+    this.empleadosService.listarTurnos().subscribe({
+      next: (turnos) => {
+        this.turnos = turnos;
+      }
+    });
   }
 
-  eliminarEmpleado(id: number): void {
-    // Aquí podrías agregar SweetAlert para confirmación
-    if (confirm('¿Estás seguro de eliminar este empleado?')) {
-      this.empleados = this.empleados.filter(emp => emp.id !== id);
-      this.dataSource.data = [...this.empleados];
+  get empleadosFiltrados(): EmpleadoCompleto[] {
+    return this.empleados.filter(emp => {
+      const nombreCompleto = `${emp.persona.cNombres} ${emp.persona.cApePaterno} ${emp.persona.cApeMaterno}`.toLowerCase();
+      const cumpleFiltroNombre = !this.filtros.nombre || nombreCompleto.includes(this.filtros.nombre.toLowerCase());
+      const cumpleFiltroCargo = !this.filtros.cargo || emp.cargo.cNombreCargo === this.filtros.cargo;
+      const cumpleFiltroEstado = this.filtros.estado === 'todos' || 
+        (this.filtros.estado === 'activos' && emp.empleado.bactivo) ||
+        (this.filtros.estado === 'inactivos' && !emp.empleado.bactivo);
+
+      return cumpleFiltroNombre && cumpleFiltroCargo && cumpleFiltroEstado;
+    });
+  }
+
+  abrirModalNuevo(): void {
+    this.editando = false;
+    this.empleadoSeleccionado = null;
+    this.nuevoEmpleado = this.crearEmpleadoVacio();
+    this.mostrarModal = true;
+  }
+
+  abrirModalEditar(empleado: EmpleadoCompleto): void {
+    this.editando = true;
+    this.empleadoSeleccionado = { ...empleado };
+    this.nuevoEmpleado = JSON.parse(JSON.stringify(empleado));
+    this.mostrarModal = true;
+  }
+
+  cerrarModal(): void {
+    this.mostrarModal = false;
+    this.nuevoEmpleado = this.crearEmpleadoVacio();
+  }
+
+  private crearEmpleadoVacio(): EmpleadoCompleto {
+    return {
+      empleado: {
+        nPersonaId: 0,
+        nCargoId: 0,
+        fechaIngreso: new Date().toISOString().split('T')[0],
+        bactivo: true
+      },
+      persona: {
+        cNombres: '',
+        cApePaterno: '',
+        cApeMaterno: '',
+        cDni: '',
+        cTelefono: '',
+        cCorreo: '',
+        cDireccion: '',
+        dFechaNacimiento: ''
+      },
+      cargo: {
+        nCargoId: 0,
+        cNombreCargo: '',
+        bEstado: true
+      }
+    };
+  }
+
+  guardarEmpleado(): void {
+    if (this.validarFormulario()) {
+      if (this.editando && this.empleadoSeleccionado) {
+        this.empleadosService.actualizarEmpleado(this.empleadoSeleccionado.empleado.nEmpleadoId!, this.nuevoEmpleado).subscribe({
+          next: (response) => {
+            console.log('Empleado actualizado:', response);
+            this.cargarDatos();
+            this.cerrarModal();
+          },
+          error: (error) => {
+            this.error = 'Error al actualizar empleado';
+          }
+        });
+      } else {
+        this.empleadosService.guardarEmpleado(this.nuevoEmpleado).subscribe({
+          next: (response) => {
+            console.log('Empleado guardado:', response);
+            this.cargarDatos();
+            this.cerrarModal();
+          },
+          error: (error) => {
+            this.error = 'Error al guardar empleado';
+          }
+        });
+      }
     }
   }
 
-  cancelar(): void {
-    this.modoEdicion = false;
-    this.idEnEdicion = null;
-    this.formEmpleado.reset({ estado: true });
+  eliminarEmpleado(empleado: EmpleadoCompleto): void {
+    if (confirm(`¿Está seguro de eliminar al empleado ${empleado.persona.cNombres} ${empleado.persona.cApePaterno}?`)) {
+      this.empleadosService.eliminarEmpleado(empleado.empleado.nEmpleadoId!).subscribe({
+        next: (response) => {
+          console.log('Empleado eliminado:', response);
+          this.cargarDatos();
+        },
+        error: (error) => {
+          this.error = 'Error al eliminar empleado';
+        }
+      });
+    }
   }
 
-  applyFilter(event: Event): void {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  cambiarEstadoEmpleado(empleado: EmpleadoCompleto): void {
+    empleado.empleado.bactivo = !empleado.empleado.bactivo;
+    this.empleadosService.actualizarEmpleado(empleado.empleado.nEmpleadoId!, empleado).subscribe({
+      next: (response) => {
+        console.log('Estado actualizado:', response);
+      },
+      error: (error) => {
+        this.error = 'Error al cambiar estado';
+        empleado.empleado.bactivo = !empleado.empleado.bactivo;
+      }
+    });
   }
 
-  // Método original que mantenías para compatibilidad
-  buscarEmpleados(): any[] {
-    return this.empleados;
+  private validarFormulario(): boolean {
+    if (!this.nuevoEmpleado.persona.cNombres.trim()) {
+      alert('El nombre es requerido');
+      return false;
+    }
+    if (!this.nuevoEmpleado.persona.cApePaterno.trim()) {
+      alert('El apellido paterno es requerido');
+      return false;
+    }
+    if (!this.nuevoEmpleado.persona.cDni.trim()) {
+      alert('El DNI es requerido');
+      return false;
+    }
+    if (this.nuevoEmpleado.persona.cDni.length !== 8) {
+      alert('El DNI debe tener 8 dígitos');
+      return false;
+    }
+    if (!this.nuevoEmpleado.empleado.nCargoId) {
+      alert('Debe seleccionar un cargo');
+      return false;
+    }
+    return true;
+  }
+
+  // Método para obtener nombre del cargo
+obtenerNombreCargo(cargo: any): string {
+  return cargo.cNombreCargo || '';
+}
+
+// Método para obtener sueldo del cargo
+obtenerSueldoCargo(cargo: any): number {
+  return cargo.nSueldo || 0;
+}
+
+onCargoChange(): void {
+  const cargoId = Number(this.nuevoEmpleado.empleado.nCargoId);
+  const cargoSeleccionado: any = this.cargos.find((c: any) => c.nCargoId === cargoId);
+  if (cargoSeleccionado) {
+    this.nuevoEmpleado.cargo = {
+      nCargoId: cargoSeleccionado.nCargoId,
+      cNombreCargo: cargoSeleccionado.cNombreCargo,
+      cDescripcion: cargoSeleccionado.cDescripcion,
+      nSueldo: cargoSeleccionado.nSueldo,
+      bEstado: true
+    };
+  }
+}
+
+  formatearMoneda(valor: number): string {
+    return new Intl.NumberFormat('es-PE', {
+      style: 'currency',
+      currency: 'PEN'
+    }).format(valor || 0);
+  }
+
+  formatearFecha(fecha: string): string {
+    if (!fecha) return '';
+    return new Date(fecha).toLocaleDateString('es-PE');
+  }
+
+  calcularEdad(fechaNacimiento: string): number {
+    if (!fechaNacimiento) return 0;
+    
+    const hoy = new Date();
+    const nacimiento = new Date(fechaNacimiento);
+    let edad = hoy.getFullYear() - nacimiento.getFullYear();
+    const mes = hoy.getMonth() - nacimiento.getMonth();
+    
+    if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
+      edad--;
+    }
+    
+    return edad;
   }
 }

@@ -1,5 +1,6 @@
-
-.empleados-container {
+/* Estilos base compartidos */
+.proveedores-container,
+.forma-pago-container {
   padding: 20px;
   background-color: #f8f9fc;
   min-height: 100vh;
@@ -20,7 +21,8 @@
       align-items: center;
       gap: 16px;
       
-      .empleados-icon {
+      .proveedores-icon,
+      .forma-pago-icon {
         font-size: 32px;
         color: #4f46e5;
       }
@@ -132,7 +134,7 @@
   color: #dc2626;
 }
 
-/* Tabla */
+/* Tabla de proveedores */
 .tabla-section {
   background: white;
   border-radius: 12px;
@@ -154,7 +156,7 @@
   .tabla-container {
     overflow-x: auto;
     
-    .empleados-table {
+    .proveedores-table {
       width: 100%;
       border-collapse: collapse;
       
@@ -198,30 +200,75 @@
         }
       }
     }
+  }
+}
+
+/* Grid de formas de pago */
+.formas-pago-section {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  
+  .formas-pago-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 24px;
     
-    .no-data {
-      padding: 60px 20px;
-      text-align: center;
+    .forma-pago-card {
+      background: white;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.2s;
+      cursor: pointer;
       
-      p {
-        color: #64748b;
-        font-size: 16px;
-        margin: 0;
+      &:hover {
+        border-color: #4f46e5;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      
+      &.inactive {
+        opacity: 0.6;
+        border-color: #d1d5db;
+      }
+      
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+        
+        .forma-pago-icon {
+          font-size: 32px;
+          color: #4f46e5;
+        }
+      }
+      
+      .card-body {
+        h4 {
+          margin: 0 0 12px 0;
+          color: #1e293b;
+          font-size: 18px;
+          font-weight: 600;
+        }
       }
     }
   }
 }
 
 /* Columnas específicas */
-.empleado-column {
+.proveedor-column {
   min-width: 200px;
   
-  .empleado-info {
+  .proveedor-info {
     display: flex;
     align-items: center;
     gap: 12px;
     
-    .empleado-avatar {
+    .proveedor-avatar {
       width: 40px;
       height: 40px;
       border-radius: 50%;
@@ -231,64 +278,33 @@
       align-items: center;
       justify-content: center;
       font-weight: 600;
-      font-size: 14px;
+      font-size: 16px;
     }
     
-    .empleado-datos {
-      .nombre-completo {
-        font-weight: 600;
-        color: #374151;
-        margin-bottom: 2px;
-      }
-      
-      .edad {
-        font-size: 12px;
-        color: #64748b;
-      }
+    .nombre-proveedor {
+      font-weight: 600;
+      color: #374151;
     }
   }
 }
 
-.dni-column {
+.ruc-column {
   font-family: monospace;
   font-weight: 500;
-}
-
-.cargo-column {
-  .cargo-badge {
-    display: inline-block;
-    padding: 4px 8px;
-    background: #e0e7ff;
-    color: #3730a3;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 500;
-  }
-}
-
-.sueldo-column {
-  font-weight: 600;
-  color: #059669;
-}
-
-.fecha-column {
   color: #64748b;
-  font-size: 13px;
 }
 
 .contacto-column {
   .contacto-info {
-    .telefono,
-    .correo {
-      font-size: 12px;
-      color: #64748b;
-      margin-bottom: 2px;
-      
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
+    font-size: 13px;
+    color: #64748b;
   }
+}
+
+.direccion-column {
+  max-width: 200px;
+  color: #64748b;
+  font-size: 13px;
 }
 
 .estado-column {
@@ -377,7 +393,7 @@
   background: white;
   border-radius: 12px;
   width: 100%;
-  max-width: 600px;
+  max-width: 500px;
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
@@ -456,20 +472,8 @@
 }
 
 /* Formulario */
-.empleado-form {
-  .seccion-form {
-    margin-bottom: 32px;
-    
-    h3 {
-      margin: 0 0 16px 0;
-      color: #374151;
-      font-size: 16px;
-      font-weight: 600;
-      padding-bottom: 8px;
-      border-bottom: 2px solid #f3f4f6;
-    }
-  }
-  
+.proveedor-form,
+.forma-pago-form {
   .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -508,7 +512,7 @@
       
       .form-textarea {
         resize: vertical;
-        min-height: 60px;
+        min-height: 80px;
       }
       
       .checkbox-grupo {
@@ -533,6 +537,17 @@
   }
 }
 
+.no-data {
+  padding: 60px 20px;
+  text-align: center;
+  
+  p {
+    color: #64748b;
+    font-size: 16px;
+    margin: 0;
+  }
+}
+
 /* Animaciones */
 @keyframes spin {
   from { transform: rotate(0deg); }
@@ -540,14 +555,9 @@
 }
 
 /* Responsive */
-@media (max-width: 1024px) {
-  .filtros-row {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
 @media (max-width: 768px) {
-  .empleados-container {
+  .proveedores-container,
+  .forma-pago-container {
     padding: 16px;
   }
   
@@ -561,46 +571,11 @@
     grid-template-columns: 1fr;
   }
   
-  .empleados-table {
-    font-size: 12px;
-    
-    th, td {
-      padding: 12px 8px;
-    }
-  }
-  
-  .modal-content {
-    margin: 10px;
-    max-width: none;
+  .formas-pago-grid {
+    grid-template-columns: 1fr;
   }
   
   .form-row {
     grid-template-columns: 1fr;
-    gap: 12px;
-  }
-}
-
-@media (max-width: 480px) {
-  .header-section .icon-title {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-    
-    .empleados-icon {
-      font-size: 24px;
-    }
-    
-    h1 {
-      font-size: 24px;
-    }
-  }
-  
-  .acciones-grupo {
-    flex-direction: column;
-    gap: 4px;
-  }
-  
-  .modal-overlay {
-    padding: 10px;
   }
 }

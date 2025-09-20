@@ -40,6 +40,8 @@ import { CajaDashboardComponent } from './caja-dashboard/caja-dashboard.componen
 import { OrdenCompraDashboardComponent } from './orden-compra-dashboard/orden-compra-dashboard.component';
 import { MovimientosReporteComponent } from './movimientos-reporte/movimientos-reporte.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { FormaPagoComponent } from './forma-pago/forma-pago.component';
+import { ProveedoresComponent } from './proveedores/proveedores.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +55,9 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     CajaDashboardComponent,
     OrdenCompraDashboardComponent,
     MovimientosReporteComponent,
-    DashboardComponent
+    DashboardComponent,
+    FormaPagoComponent,
+    ProveedoresComponent
   ],
   imports: [
     CommonModule,

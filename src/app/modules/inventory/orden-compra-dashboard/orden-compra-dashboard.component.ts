@@ -713,9 +713,9 @@ export class OrdenCompraDashboardComponent implements OnInit {
       return;
     }
 
- Swal.fire({
-    title: 'Registrar Pago a Proveedor',
-    html: `
+    Swal.fire({
+      title: 'Registrar Pago a Proveedor',
+      html: `
       <div style="text-align: left;">
         <p><strong>Orden:</strong> #${orden.ordenCompraId}</p>
         <p><strong>Proveedor:</strong> ${orden.proveedorNombre}</p>
@@ -742,90 +742,105 @@ export class OrdenCompraDashboardComponent implements OnInit {
                  placeholder="Observaciones del pago (opcional)"></textarea>
       </div>
     `,
-    showCancelButton: true,
-    confirmButtonText: 'Registrar Pago y Generar Comprobante',
-    cancelButtonText: 'Cancelar',
-    confirmButtonColor: '#3b82f6',
-    preConfirm: () => {
-      const tipoComprobante = (document.getElementById('tipoComprobante') as HTMLSelectElement).value;
-      const tipoPago = (document.getElementById('tipoPago') as HTMLSelectElement).value;
-      const montoPago = parseFloat((document.getElementById('montoPago') as HTMLInputElement).value);
-      const observaciones = (document.getElementById('observacionesPago') as HTMLTextAreaElement).value;
-      
-      if (!montoPago || montoPago <= 0) {
-        Swal.showValidationMessage('Ingresa un monto válido');
-        return false;
-      }
-      
-      return { tipoComprobante, tipoPago, montoPago, observaciones };
-    }
-  }).then((result) => {
-    if (result.isConfirmed) {
-      const { tipoComprobante, tipoPago, montoPago, observaciones } = result.value;
-      this.procesarPagoConComprobante(orden.ordenCompraId, tipoComprobante, tipoPago, montoPago, observaciones);
-    }
-  });
-}
+      showCancelButton: true,
+      confirmButtonText: 'Registrar Pago y Generar Comprobante',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#3b82f6',
+      preConfirm: () => {
+        const tipoComprobante = (document.getElementById('tipoComprobante') as HTMLSelectElement).value;
+        const tipoPago = (document.getElementById('tipoPago') as HTMLSelectElement).value;
+        const montoPago = parseFloat((document.getElementById('montoPago') as HTMLInputElement).value);
+        const observaciones = (document.getElementById('observacionesPago') as HTMLTextAreaElement).value;
 
-private procesarPagoConComprobante(ordenCompraId: number, tipoComprobante: string, tipoPago: string, montoPago: number, observaciones: string): void {
-  // Actualizar tu servicio para incluir tipoComprobante
-  this.ordenCompraService.registrarPagoOrden(ordenCompraId, tipoPago, montoPago, this.usuario, observaciones, tipoComprobante).subscribe({
-    next: (response) => {
-      if (response.success) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Pago procesado',
-          html: `
+        if (!montoPago || montoPago <= 0) {
+          Swal.showValidationMessage('Ingresa un monto válido');
+          return false;
+        }
+
+        return { tipoComprobante, tipoPago, montoPago, observaciones };
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const { tipoComprobante, tipoPago, montoPago, observaciones } = result.value;
+        this.procesarPagoConComprobante(orden.ordenCompraId, tipoComprobante, tipoPago, montoPago, observaciones);
+      }
+    });
+  }
+
+  private procesarPagoConComprobante(ordenCompraId: number, tipoComprobante: string, tipoPago: string, montoPago: number, observaciones: string): void {
+    console.log('💰 Procesando pago:', { ordenCompraId, tipoComprobante, tipoPago, montoPago });
+
+    this.ordenCompraService.registrarPagoOrden(ordenCompraId, tipoPago, montoPago, this.usuario, observaciones, tipoComprobante).subscribe({
+      next: (response) => {
+        console.log('✅ Respuesta del pago:', response);
+
+        if (response.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Pago procesado',
+            html: `
             <div style="text-align: left;">
               <p>✅ Pago registrado: <strong>S/ ${montoPago.toFixed(2)}</strong></p>
               <p>📄 Comprobante generado: <strong>${tipoComprobante}</strong></p>
               <p>💰 Registrado en caja</p>
             </div>
           `,
-          showCancelButton: true,
-          confirmButtonText: 'Ver Comprobante',
-          cancelButtonText: 'Continuar',
-          timer: 5000,
-          timerProgressBar: true
-        }).then((result) => {
-          if (result.isConfirmed) {
-            this.verComprobanteCompra(ordenCompraId);
-          }
-        });
-        this.cargarOrdenes();
+            showCancelButton: true,
+            confirmButtonText: 'Ver Comprobante',
+            cancelButtonText: 'Continuar',
+            timer: 5000,
+            timerProgressBar: true
+          }).then((result) => {
+            if (result.isConfirmed) {
+              console.log('🎯 Usuario quiere ver comprobante, llamando verComprobanteCompra...');
+              this.verComprobanteCompra(ordenCompraId);
+            }
+          });
+          this.cargarOrdenes();
+        } else {
+          console.log('❌ Error en respuesta:', response.mensaje);
+        }
+      },
+      error: (error) => {
+        console.error('❌ Error en procesarPagoConComprobante:', error);
       }
-    }
-  });
-}
+    });
+  }
+  // Agregar este método en orden-compra-dashboard.component.ts
 
-// Agregar este método en orden-compra-dashboard.component.ts
+  verComprobanteCompra(ordenCompraId: number): void {
+    console.log('🔍 Iniciando verComprobanteCompra con ID:', ordenCompraId);
 
-verComprobanteCompra(ordenCompraId: number): void {
-  // Primero necesitas crear el servicio para obtener el comprobante
-  this.ordenCompraService.obtenerComprobanteCompra(ordenCompraId).subscribe({
-    next: (comprobante) => {
-      this.mostrarComprobante(comprobante);
-    },
-    error: (error) => {
-      console.error('Error al obtener comprobante:', error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'No se pudo cargar el comprobante'
-      });
-    }
-  });
-}
+    this.ordenCompraService.obtenerComprobanteCompra(ordenCompraId).subscribe({
+      next: (comprobante) => {
+        console.log('✅ Comprobante obtenido:', comprobante);
+        this.mostrarComprobante(comprobante);
+      },
+      error: (error) => {
+        console.error('❌ Error al obtener comprobante:', error);
+        console.log('📄 Response completo:', error.error);
+        console.log('📊 Status:', error.status);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo cargar el comprobante'
+        });
+      }
+    });
+  }
+  private mostrarComprobante(comprobante: any): void {
 
-private mostrarComprobante(comprobante: any): void {
-  Swal.fire({
-    title: `${comprobante.tipoComprobante} ${comprobante.numeroComprobante}`,
-    html: `
+    console.log('📋 Mostrando comprobante:', comprobante);
+    console.log('📋 Estructura del comprobante:', Object.keys(comprobante));
+
+    Swal.fire({
+      title: `${comprobante.tipoComprobante} ${comprobante.numeroComprobante}`,
+      html: `
       <div style="text-align: left; font-family: monospace;">
         <div style="text-align: center; margin-bottom: 20px;">
-          <h3>TU EMPRESA</h3>
+          <h3>LA CANTERA</h3>
           <p>RUC: 20123456789</p>
-          <p>Dirección: Tu dirección</p>
+          <p>Dirección: Parcona</p>
         </div>
         
         <hr>
@@ -867,21 +882,21 @@ private mostrarComprobante(comprobante: any): void {
         </div>
       </div>
     `,
-    width: '600px',
-    showCancelButton: true,
-    confirmButtonText: 'Imprimir',
-    cancelButtonText: 'Cerrar'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      this.imprimirComprobante(comprobante);
-    }
-  });
-}
+      width: '600px',
+      showCancelButton: true,
+      confirmButtonText: 'Imprimir',
+      cancelButtonText: 'Cerrar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.imprimirComprobante(comprobante);
+      }
+    });
+  }
 
-private imprimirComprobante(comprobante: any): void {
-  const ventanaImpresion = window.open('', '_blank', 'width=800,height=600');
-  if (ventanaImpresion) {
-    ventanaImpresion.document.write(`
+  private imprimirComprobante(comprobante: any): void {
+    const ventanaImpresion = window.open('', '_blank', 'width=800,height=600');
+    if (ventanaImpresion) {
+      ventanaImpresion.document.write(`
       <html>
         <head>
           <title>${comprobante.tipoComprobante} ${comprobante.numeroComprobante}</title>
@@ -897,9 +912,9 @@ private imprimirComprobante(comprobante: any): void {
         </head>
         <body>
           <div class="header">
-            <h2>TU EMPRESA</h2>
+            <h2>LA CANTERA</h2>
             <p>RUC: 20123456789</p>
-            <p>Dirección: Tu dirección</p>
+            <p>Dirección: Parcona</p>
             <h3>${comprobante.tipoComprobante} ${comprobante.numeroComprobante}</h3>
           </div>
           
@@ -938,11 +953,11 @@ private imprimirComprobante(comprobante: any): void {
         </body>
       </html>
     `);
-    ventanaImpresion.document.close();
-    ventanaImpresion.focus();
-    ventanaImpresion.print();
+      ventanaImpresion.document.close();
+      ventanaImpresion.focus();
+      ventanaImpresion.print();
+    }
   }
-}
 
   private procesarPago(ordenCompraId: number, tipoPago: string, montoPago: number, observaciones: string): void {
     this.ordenCompraService.registrarPagoOrden(ordenCompraId, tipoPago, montoPago, this.usuario, observaciones).subscribe({
