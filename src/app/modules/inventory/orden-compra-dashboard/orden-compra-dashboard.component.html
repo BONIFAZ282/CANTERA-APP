@@ -191,6 +191,14 @@
                         Ver
                     </button>
 
+                    
+                    <!-- REVISAR ESTA CONDICIÓN -->
+                    <button mat-stroked-button *ngIf="orden.estadoId == 1 || orden.estado === 'Pendiente'"
+                        (click)="recibirOrden(orden)" class="accion-btn recibir">
+                        <mat-icon>check</mat-icon>
+                        Recibir
+                    </button>
+
                     <!-- Solo mostrar Pagar si NO está pagada -->
                     <button mat-stroked-button
                         *ngIf="(orden.estadoId == 2 || orden.estado === 'Recibida') && !orden.pagado"

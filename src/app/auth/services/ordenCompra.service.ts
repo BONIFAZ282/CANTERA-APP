@@ -114,4 +114,9 @@ export class OrdenCompraService {
       });
     });
   }
+
+  obtenerComprobanteCompra(ordenCompraId: number): Observable<any> {
+  console.log('📄 Obteniendo comprobante de compra:', ordenCompraId);
+  return this.http.get<any>(`${this.API_URL}/${ordenCompraId}/comprobante`);
+}
 }
